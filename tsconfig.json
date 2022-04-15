@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "ES2019",
+        "lib": ["dom", "dom.iterable", "esnext", "es6"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": false,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@tmp/front/*": ["./src/*"],
+            "@tmp/back/*": ["./backend/*"]
+        }
+    },
+    "include": ["src", "src/stories", "backend"]
+}
