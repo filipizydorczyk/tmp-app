@@ -18,6 +18,8 @@ const useSingletoRepository = () => {
                     }
                 }
             );
+
+            db.close();
         });
     };
 
@@ -35,6 +37,8 @@ const useSingletoRepository = () => {
                     }
                 }
             );
+
+            db.close();
         });
     };
 
@@ -52,6 +56,8 @@ const useSingletoRepository = () => {
                     }
                 }
             );
+
+            db.close();
         });
     };
 
