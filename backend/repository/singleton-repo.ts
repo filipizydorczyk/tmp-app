@@ -27,7 +27,7 @@ const useSingletoRepository = () => {
 
             db.run(
                 `INSERT INTO ${SINGLETON_TABLE_NAME} VALUES ('${PASSWORD_KEY}', '${password}')`,
-                (resp: RunResult, err: Error | null) => {
+                (_: RunResult, err: Error | null) => {
                     if (err) {
                         resolve(false);
                     } else {
@@ -38,7 +38,24 @@ const useSingletoRepository = () => {
         });
     };
 
-    return { getPassword, setPassword };
+    const changePassword = (password: string): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            const db = getDatabase();
+
+            db.run(
+                `UPDATE ${SINGLETON_TABLE_NAME} SET Value = '${password}' WHERE Key = '${PASSWORD_KEY}'`,
+                (_: RunResult, err: Error | null) => {
+                    if (err) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+        });
+    };
+
+    return { getPassword, setPassword, changePassword };
 };
 
 export default useSingletoRepository;

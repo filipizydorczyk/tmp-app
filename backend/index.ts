@@ -1,9 +1,10 @@
 import useSingletoRepository from "@tmp/back/repository/singleton-repo";
 
-const { getPassword, setPassword } = useSingletoRepository();
+const { getPassword, setPassword, changePassword } = useSingletoRepository();
 
 (async () => {
-    await setPassword("test");
+    const result = await changePassword("testxd");
+    console.log(result);
     const paswd = await getPassword();
     console.log(paswd);
 })();
