@@ -1,1 +1,3 @@
-console.log("BACKEND");
+import { getDatabase } from "@tmp/back/db";
+
+getDatabase().close();
