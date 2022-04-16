@@ -21,5 +21,5 @@
             "@tmp/back/*": ["./backend/*"]
         }
     },
-    "include": ["src", "src/stories", "backend"]
+    "include": ["src", "backend"]
 }
