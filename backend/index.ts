@@ -1,16 +1,6 @@
-import useSingletonService from "@tmp/back/service/singleton-service";
+import Koa from "koa";
 
-(async () => {
-    const { getPassword, setPassword } = useSingletonService();
+const APP_PORT = 6000;
+const app = new Koa();
 
-    const passwrod1 = await getPassword();
-    console.log(passwrod1);
-    await setPassword("firsttests");
-
-    const passwrod2 = await getPassword();
-    console.log(passwrod2);
-    await setPassword("gfsadjnfa");
-
-    const passwrod3 = await getPassword();
-    console.log(passwrod3);
-})();
+app.listen(APP_PORT);
