@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { API_VERSION } from "@tmp/back/routes";
-import useSingletonService from "@tmp/back/service/singleton-service";
-import useSingletonRepository from "@tmp/back/repository/singleton-repo";
+import useSingletonService from "@tmp/back/services/singleton-service";
+import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 
 const router = new Router({ prefix: `${API_VERSION}/token` });
 

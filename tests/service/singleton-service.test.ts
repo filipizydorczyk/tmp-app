@@ -1,7 +1,7 @@
 import assert from "assert";
 import sinon from "sinon";
-import useSingletonService from "@tmp/back/service/singleton-service";
-import useSingletoRepository from "@tmp/back/repository/singleton-repo";
+import useSingletonService from "@tmp/back/services/singleton-service";
+import useSingletoRepository from "@tmp/back/repositories/singleton-repo";
 
 const SUPER_SECRET_PASSWORD = "totaly-secret-and-encrypted-password";
 

@@ -1,4 +1,4 @@
-import { SingletonRepository } from "@tmp/back/repository/singleton-repo";
+import { SingletonRepository } from "@tmp/back/repositories/singleton-repo";
 import bcrypt from "bcrypt";
 
 /**
