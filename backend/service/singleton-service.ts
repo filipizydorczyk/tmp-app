@@ -52,7 +52,7 @@ const useSingletonService = () => {
         return result;
     };
 
-    return { getPassword, setPassword };
+    return { getPassword, setPassword, comparePasswords };
 };
 
 export default useSingletonService;
