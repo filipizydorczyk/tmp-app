@@ -17,4 +17,21 @@ describe("SingletonService", () => {
         const pas = await getPassword();
         assert.deepEqual(pas, SUPER_SECRET_PASSWORD);
     });
+
+    it("should create password if there is no password yet", async () => {
+        const repository = useSingletoRepository();
+        const repoSetPassSpy = sinon.spy(repository, "setPassword");
+        const repoChangePassSpy = sinon.spy(repository, "changePassword");
+        sinon.stub(repository, "getPassword").returns(
+            new Promise((resolve, _) => {
+                resolve(null);
+            })
+        );
+
+        const { setPassword } = useSingletonService(repository);
+        await setPassword(SUPER_SECRET_PASSWORD);
+
+        assert.deepEqual(repoSetPassSpy.callCount, 1);
+        assert.deepEqual(repoChangePassSpy.callCount, 0);
+    });
 });
