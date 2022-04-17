@@ -1,16 +1,17 @@
-import useSingletoRepository from "@tmp/back/repository/singleton-repo";
+import { SingletonRepository } from "@tmp/back/repository/singleton-repo";
 import bcrypt from "bcrypt";
 
 /**
  * Service for key value data
+ * @param repository responisble for connection with db
  * @returns functions to interact key value data
  */
-const useSingletonService = () => {
+const useSingletonService = (repository: SingletonRepository) => {
     const {
         getPassword: getPasswordFromDb,
         setPassword: setPasswordAtDb,
         changePassword: changePasswordAtDb,
-    } = useSingletoRepository();
+    } = repository;
 
     /**
      * Function to obtain app password

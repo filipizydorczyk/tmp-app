@@ -23,5 +23,5 @@
             "@tmp/back": ["./backend"]
         }
     },
-    "include": ["src", "backend"]
+    "include": ["src", "backend", "tests"]
 }

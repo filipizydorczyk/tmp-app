@@ -3,11 +3,17 @@ import { RunResult } from "sqlite3";
 
 const PASSWORD_KEY = "password";
 
+export type SingletonRepository = {
+    getPassword: () => Promise<string | null>;
+    setPassword: (password: string) => Promise<boolean>;
+    changePassword: (password: string) => Promise<boolean>;
+};
+
 /**
  * Repository to make db calls for key value data
  * @returns functions make db transactions on "Singletons" table
  */
-const useSingletoRepository = () => {
+const useSingletoRepository = (): SingletonRepository => {
     /**
      * Function to get password from db
      * @returns password from db if exists false otherwise
