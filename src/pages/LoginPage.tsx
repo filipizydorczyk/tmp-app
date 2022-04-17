@@ -11,7 +11,10 @@ function LoginPage() {
 
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Admin password</Form.Label>
-                    <Form.Control type="password" placeholder="Enter email" />
+                    <Form.Control
+                        type="password"
+                        placeholder="Enter password"
+                    />
                     <Form.Text className="text-muted">
                         If it's your first run whatever you type will become
                         your password.
