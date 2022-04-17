@@ -18,7 +18,9 @@
         "baseUrl": ".",
         "paths": {
             "@tmp/front/*": ["./src/*"],
-            "@tmp/back/*": ["./backend/*"]
+            "@tmp/front": ["./src"],
+            "@tmp/back/*": ["./backend/*"],
+            "@tmp/back": ["./backend"]
         }
     },
     "include": ["src", "backend"]
