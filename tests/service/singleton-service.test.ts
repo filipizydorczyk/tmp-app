@@ -34,4 +34,21 @@ describe("SingletonService", () => {
         assert.deepEqual(repoSetPassSpy.callCount, 1);
         assert.deepEqual(repoChangePassSpy.callCount, 0);
     });
+
+    it("should update password", async () => {
+        const repository = useSingletoRepository();
+        const repoSetPassSpy = sinon.spy(repository, "setPassword");
+        const repoChangePassSpy = sinon.spy(repository, "changePassword");
+        sinon.stub(repository, "getPassword").returns(
+            new Promise((resolve, _) => {
+                resolve(SUPER_SECRET_PASSWORD);
+            })
+        );
+
+        const { setPassword } = useSingletonService(repository);
+        await setPassword(SUPER_SECRET_PASSWORD);
+
+        assert.deepEqual(repoSetPassSpy.callCount, 0);
+        assert.deepEqual(repoChangePassSpy.callCount, 1);
+    });
 });
