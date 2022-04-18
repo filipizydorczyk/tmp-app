@@ -7,10 +7,18 @@ const router = new Router({ prefix: `${API_VERSION}/token` });
 
 router.get("/login", async (req, res) => {
     const repository = useSingletonRepository();
-    const { getPassword } = useSingletonService(repository);
+    const { getPassword, setPassword, comparePasswords } =
+        useSingletonService(repository);
     const currentPassword = await getPassword();
+    const providedPassword = req.body.password;
 
-    if (currentPassword === null) req.status = 400;
+    if (currentPassword === null) {
+        const isPasswordSet = await setPassword(providedPassword);
+        req.status = isPasswordSet ? 200 : 401;
+    } else {
+        const result = await comparePasswords(providedPassword);
+        req.status = result ? 200 : 401;
+    }
 
     req.body = "XDD";
 });
