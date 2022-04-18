@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import CatPuppy from "@tmp/front/components/CatPuppy";
 
 function LoginPage() {
+    const [isFocused, setIsFocused] = useState<boolean>(false);
+
     return (
         <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
             <Card className="px-3 py-4 mx-auto" style={{ maxWidth: "32rem" }}>
@@ -15,7 +17,7 @@ function LoginPage() {
                     controlId="adminPassword"
                 >
                     <CatPuppy
-                        eyes="open"
+                        eyes={isFocused ? "closed" : "open"}
                         style={{
                             position: "absolute",
                             width: "200px",
@@ -27,6 +29,8 @@ function LoginPage() {
                     <Form.Control
                         type="password"
                         placeholder="Enter password"
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
                     />
                     <Form.Text className="text-muted">
                         If it's your first run whatever you type will become
