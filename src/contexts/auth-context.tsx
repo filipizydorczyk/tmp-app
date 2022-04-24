@@ -1,4 +1,4 @@
-import React, { useState, createContext, ReactNode } from "react";
+import React, { useState, createContext, ReactNode, useContext } from "react";
 
 type AuthData = {
     isLoggedIn: boolean;
@@ -47,6 +47,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     );
 };
 
-// USE AUTH
+const useAuth = () => {
+    return useContext(AuthContext);
+};
 
-// export { useAuth, AuthProvider}
+export { useAuth, AuthProvider };
