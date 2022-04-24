@@ -41,13 +41,15 @@ function LoginPage() {
                         ref={passwdRef}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
+                        onKeyPress={(event) =>
+                            event.key === "Enter" && console.log("XD")
+                        }
                     />
                     <Form.Text className="text-muted">
                         If it's your first run whatever you type will become
                         your password.
                     </Form.Text>
                 </Form.Group>
-
                 <Button variant="primary">Submit</Button>
             </Card>
         </Container>
