@@ -16,13 +16,26 @@ type AuthProviderProps = {
     children: ReactNode;
 };
 
-const AuthContext = createContext<AuthContextProps>({
+const defaulAuthData = {
     data: { isLoggedIn: false, accessToken: null, refreshToken: null },
     logIn: (password: string) => Promise.resolve(false),
     logOut: () => Promise.resolve(false),
-});
+};
 
-// AUTH PROVIDER
+const AuthContext = createContext<AuthContextProps>(defaulAuthData);
+
+const AuthProvider = ({ children }: AuthProviderProps) => {
+    const [data, setData] = useState<AuthData>(defaulAuthData.data);
+
+    const logIn = (password: string) => Promise.resolve(false);
+    const logOut = () => Promise.resolve(false);
+
+    return (
+        <AuthContext.Provider value={{ data, logIn, logOut }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
 
 // USE AUTH
 
