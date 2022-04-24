@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import CatPuppy from "@tmp/front/components/CatPuppy";
-import { OVERVIEW_URL } from "@tmp/front/App";
 import { useNavigate } from "react-router-dom";
+import { OVERVIEW_URL } from "@tmp/front/constants";
 
 function LoginPage() {
     const [isFocused, setIsFocused] = useState<boolean>(false);

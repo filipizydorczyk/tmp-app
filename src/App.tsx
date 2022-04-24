@@ -2,9 +2,7 @@ import React from "react";
 import LoginPage from "@tmp/front/pages/LoginPage";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import ContentPage from "@tmp/front/pages/ContentPage";
-
-export const LOGIN_URL = "/login";
-export const OVERVIEW_URL = "/overview";
+import { LOGIN_URL, OVERVIEW_URL } from "@tmp/front/constants";
 
 function App() {
     return (
