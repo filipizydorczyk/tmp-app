@@ -32,7 +32,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
      * @param password password for the app
      * @returns if operation was sucessfull
      */
-    const logIn = (password: string) => Promise.resolve(false);
+    const logIn = (password: string) => {
+        return new Promise<boolean>((resolve, reject) => {
+            console.log("LOGGING");
+            resolve(true);
+        });
+    };
 
     /**
      * Removes auth data and call endpoint to clear session

@@ -3,10 +3,12 @@ import { Button, Card, Container, Form } from "react-bootstrap";
 import CatPuppy from "@tmp/front/components/CatPuppy";
 import { useNavigate } from "react-router-dom";
 import { OVERVIEW_URL } from "@tmp/front/constants";
+import { useAuth } from "@tmp/front/contexts/auth-context";
 
 function LoginPage() {
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const passwdRef = useRef<HTMLInputElement>(null);
+    const auth = useAuth();
     const nav = useNavigate();
 
     useEffect(() => {
@@ -44,9 +46,12 @@ function LoginPage() {
                         ref={passwdRef}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        onKeyPress={(event) =>
-                            event.key === "Enter" && nav(OVERVIEW_URL)
-                        }
+                        onKeyPress={(event) => {
+                            if (event.key === "Enter") {
+                                auth.logIn("tescik");
+                                nav(OVERVIEW_URL);
+                            }
+                        }}
                     />
                     <Form.Text className="text-muted">
                         If it's your first run whatever you type will become
