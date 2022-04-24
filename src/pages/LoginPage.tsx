@@ -1,9 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import CatPuppy from "@tmp/front/components/CatPuppy";
 
 function LoginPage() {
     const [isFocused, setIsFocused] = useState<boolean>(false);
+    const passwdRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        document.addEventListener("keydown", () => {
+            if (passwdRef) {
+                passwdRef.current?.focus();
+            }
+        });
+    }, []);
 
     return (
         <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
@@ -29,6 +38,7 @@ function LoginPage() {
                     <Form.Control
                         type="password"
                         placeholder="Enter password"
+                        ref={passwdRef}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                     />
