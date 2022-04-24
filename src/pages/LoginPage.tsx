@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import CatPuppy from "@tmp/front/components/CatPuppy";
+import { OVERVIEW_URL } from "@tmp/front/App";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const passwdRef = useRef<HTMLInputElement>(null);
+    const nav = useNavigate();
 
     useEffect(() => {
         document.addEventListener("keydown", () => {
@@ -42,7 +45,7 @@ function LoginPage() {
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         onKeyPress={(event) =>
-                            event.key === "Enter" && console.log("XD")
+                            event.key === "Enter" && nav(OVERVIEW_URL)
                         }
                     />
                     <Form.Text className="text-muted">
