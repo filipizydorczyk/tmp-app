@@ -16,16 +16,16 @@ type AuthProviderProps = {
     children: ReactNode;
 };
 
-const defaulAuthData = {
+const defaulAuthContextProps = {
     data: { isLoggedIn: false, accessToken: null, refreshToken: null },
     logIn: (password: string) => Promise.resolve(false),
     logOut: () => Promise.resolve(false),
 };
 
-const AuthContext = createContext<AuthContextProps>(defaulAuthData);
+const AuthContext = createContext<AuthContextProps>(defaulAuthContextProps);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [data, setData] = useState<AuthData>(defaulAuthData.data);
+    const [data, setData] = useState<AuthData>(defaulAuthContextProps.data);
 
     /**
      * Function to obtain backend authorization data
