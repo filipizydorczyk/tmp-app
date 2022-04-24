@@ -27,7 +27,17 @@ const AuthContext = createContext<AuthContextProps>(defaulAuthData);
 const AuthProvider = ({ children }: AuthProviderProps) => {
     const [data, setData] = useState<AuthData>(defaulAuthData.data);
 
+    /**
+     * Function to obtain backend authorization data
+     * @param password password for the app
+     * @returns if operation was sucessfull
+     */
     const logIn = (password: string) => Promise.resolve(false);
+
+    /**
+     * Removes auth data and call endpoint to clear session
+     * @returns if operation was sucessfull
+     */
     const logOut = () => Promise.resolve(false);
 
     return (
