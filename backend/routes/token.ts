@@ -40,15 +40,23 @@ router.post("/login", bodyParser(), async (ctx) => {
                 : "Successfully loged in!",
         accessToken:
             responseStatus === 200
-                ? jwt.sign(providedPassword, "I-will-add-token-here", {
-                      expiresIn: "15m",
-                  })
+                ? jwt.sign(
+                      { password: providedPassword },
+                      "I-will-add-token-here",
+                      {
+                          expiresIn: "15m",
+                      }
+                  )
                 : null,
         refreshToken:
             responseStatus === 200
-                ? jwt.sign(providedPassword, "I-will-add-token-here", {
-                      expiresIn: "20m",
-                  })
+                ? jwt.sign(
+                      { password: providedPassword },
+                      "I-will-add-token-here",
+                      {
+                          expiresIn: "20m",
+                      }
+                  )
                 : null,
     } as LoginDTO;
 });

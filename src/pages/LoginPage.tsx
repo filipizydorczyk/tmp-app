@@ -48,7 +48,7 @@ function LoginPage() {
                         onBlur={() => setIsFocused(false)}
                         onKeyPress={(event) => {
                             if (event.key === "Enter") {
-                                auth.logIn("tescik");
+                                auth.logIn(event.currentTarget.value);
                                 nav(OVERVIEW_URL);
                             }
                         }}

@@ -36,7 +36,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     const logIn = (password: string) => {
         return new Promise<boolean>(async (resolve, reject) => {
-            console.log(data);
             const creds = await logInCall(password);
             setData({
                 isLoggedIn: creds.accessToken !== null,
