@@ -3,15 +3,22 @@ import Router from "@koa/router";
 import { API_VERSION } from "@tmp/back/routes";
 import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
+import bodyParser from "koa-bodyparser";
 
 const router = new Router({ prefix: `${API_VERSION}/token` });
 
-router.get("/login", async (req, res) => {
+export type LoginDTO = {
+    message: string;
+    accessToken: string | null;
+    refreshToken: string | null;
+};
+
+router.post("/login", bodyParser(), async (ctx) => {
     const repository = useSingletonRepository();
     const { getPassword, setPassword, comparePasswords } =
         useSingletonService(repository);
     const currentPassword = await getPassword();
-    const providedPassword = req.body.password;
+    const providedPassword = ctx.request.body.password;
 
     let responseStatus = 401;
 
@@ -25,8 +32,8 @@ router.get("/login", async (req, res) => {
 
     // TODO process.env.REFRESH_TOKEN_SECRET
 
-    req.status = responseStatus;
-    req.body = {
+    ctx.status = responseStatus;
+    ctx.body = {
         message:
             responseStatus === 401
                 ? "Provided password was not correct"
@@ -43,7 +50,7 @@ router.get("/login", async (req, res) => {
                       expiresIn: "20m",
                   })
                 : null,
-    };
+    } as LoginDTO;
 });
 
 export default router;
