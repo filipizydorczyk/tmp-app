@@ -1,11 +1,14 @@
 import React from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
+import TodoList from "@tmp/front/components/TodoList";
 
 function ContentPage() {
     return (
         <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
             <Row>
-                <Col></Col>
+                <Col>
+                    <TodoList />
+                </Col>
                 <Col>
                     <Form>
                         <Form.Group
