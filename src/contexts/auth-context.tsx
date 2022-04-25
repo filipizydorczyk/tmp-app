@@ -36,13 +36,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     const logIn = (password: string) => {
         return new Promise<boolean>(async (resolve, reject) => {
-            const creds = await logInCall(password);
-            setData({
-                isLoggedIn: creds.accessToken !== null,
-                accessToken: creds.accessToken,
-                refreshToken: creds.refreshToken,
-            });
-            resolve(true);
+            try {
+                const creds = await logInCall(password);
+                setData({
+                    isLoggedIn: creds.accessToken !== null,
+                    accessToken: creds.accessToken,
+                    refreshToken: creds.refreshToken,
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
         });
     };
 
