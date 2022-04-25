@@ -4,6 +4,12 @@ import { API_VERSION } from "@tmp/back/routes";
 import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import bodyParser from "koa-bodyparser";
+import crypto from "crypto";
+
+const ACCESS_TOKEN_SECRET =
+    process.env.ACCESS_TOKEN_SECRET || crypto.randomBytes(64).toString("hex");
+const REFRESH_TOKEN_SECRET =
+    process.env.REFRESH_TOKEN_SECRET || crypto.randomBytes(64).toString("hex");
 
 const router = new Router({ prefix: `${API_VERSION}/token` });
 
@@ -30,8 +36,6 @@ router.post("/login", bodyParser(), async (ctx) => {
         responseStatus = result ? 200 : 401;
     }
 
-    // TODO process.env.REFRESH_TOKEN_SECRET
-
     ctx.status = responseStatus;
     ctx.body = {
         message:
@@ -42,7 +46,7 @@ router.post("/login", bodyParser(), async (ctx) => {
             responseStatus === 200
                 ? jwt.sign(
                       { password: providedPassword },
-                      "I-will-add-token-here",
+                      ACCESS_TOKEN_SECRET,
                       {
                           expiresIn: "15m",
                       }
@@ -52,7 +56,7 @@ router.post("/login", bodyParser(), async (ctx) => {
             responseStatus === 200
                 ? jwt.sign(
                       { password: providedPassword },
-                      "I-will-add-token-here",
+                      REFRESH_TOKEN_SECRET,
                       {
                           expiresIn: "20m",
                       }
