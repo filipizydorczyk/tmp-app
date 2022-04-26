@@ -1,5 +1,8 @@
 import React from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
+import deleteIcon from "./delete-svgrepo-com.svg";
+import doneIcon from "./done-all-svgrepo-com.svg";
+import undoIcon from "./undo-svgrepo-com.svg";
 
 export type TodoListElement = {
     id: string;
@@ -18,6 +21,12 @@ export type TodoListProps = {
     onAction?: TodoListElementActionCallback;
 };
 
+const iconStyle = {
+    display: "block",
+    width: "1rem",
+    cursor: "pointer",
+};
+
 function TodoList({ items, onAction = () => {} }: TodoListProps) {
     return (
         <>
@@ -27,6 +36,7 @@ function TodoList({ items, onAction = () => {} }: TodoListProps) {
                         item.done ? `bg-light` : `bg-white`
                     }`}
                     style={{ border: "1px solid #ced4da" }}
+                    key={item.id}
                 >
                     <Col>
                         <p
@@ -39,7 +49,15 @@ function TodoList({ items, onAction = () => {} }: TodoListProps) {
                             {item.title}
                         </p>
                     </Col>
-                    <Col sm="auto"></Col>
+                    <Col sm="auto">
+                        <img
+                            src={item.done ? undoIcon : doneIcon}
+                            style={iconStyle}
+                        />
+                    </Col>
+                    <Col sm="auto">
+                        <img src={deleteIcon} style={iconStyle} />
+                    </Col>
                 </Row>
             ))}
         </>
