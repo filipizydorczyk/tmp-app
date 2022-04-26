@@ -4,7 +4,7 @@ export type TodoListElement = {
     id: string;
     title: string;
     date: Date;
-    isDone: string;
+    done: boolean;
 };
 
 export type TodoListElementActionCallback = (callbackArgs: {
