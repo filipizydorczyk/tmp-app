@@ -1,5 +1,5 @@
 import React from "react";
-import { Row } from "react-bootstrap";
+import { Col, Form, Row } from "react-bootstrap";
 
 export type TodoListElement = {
     id: string;
@@ -23,18 +23,23 @@ function TodoList({ items, onAction = () => {} }: TodoListProps) {
         <>
             {items.map((item) => (
                 <Row
-                    className={`py-4 px-4 mb-1 rounded ${
+                    className={`py-4 px-2 mb-1 rounded ${
                         item.done ? `bg-light` : `bg-white`
                     }`}
                     style={{ border: "1px solid #ced4da" }}
                 >
-                    <p
-                        className={`mb-0 ${
-                            item.done ? `text-secondary` : `text-dark`
-                        }`}
-                    >
-                        {item.title}
-                    </p>
+                    <Col>
+                        <p
+                            className={`mb-0 ${
+                                item.done
+                                    ? `text-secondary text-decoration-line-through`
+                                    : `text-dark`
+                            }`}
+                        >
+                            {item.title}
+                        </p>
+                    </Col>
+                    <Col sm="auto"></Col>
                 </Row>
             ))}
         </>
