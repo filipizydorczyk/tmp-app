@@ -1,4 +1,5 @@
 import React from "react";
+import { Row } from "react-bootstrap";
 
 export type TodoListElement = {
     id: string;
@@ -18,7 +19,26 @@ export type TodoListProps = {
 };
 
 function TodoList({ items, onAction = () => {} }: TodoListProps) {
-    return <></>;
+    return (
+        <>
+            {items.map((item) => (
+                <Row
+                    className={`py-4 px-4 mb-1 rounded ${
+                        item.done ? `bg-light` : `bg-white`
+                    }`}
+                    style={{ border: "1px solid #ced4da" }}
+                >
+                    <p
+                        className={`mb-0 ${
+                            item.done ? `text-secondary` : `text-dark`
+                        }`}
+                    >
+                        {item.title}
+                    </p>
+                </Row>
+            ))}
+        </>
+    );
 }
 
 export default TodoList;

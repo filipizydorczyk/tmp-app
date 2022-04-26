@@ -7,7 +7,23 @@ function ContentPage() {
         <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
             <Row>
                 <Col>
-                    <TodoList items={[]} />
+                    <Form.Label>Todo section</Form.Label>
+                    <TodoList
+                        items={[
+                            {
+                                id: "fass223",
+                                title: "Test",
+                                date: new Date(),
+                                done: false,
+                            },
+                            {
+                                id: "fass223",
+                                title: "Test 2",
+                                date: new Date(),
+                                done: true,
+                            },
+                        ]}
+                    />
                 </Col>
                 <Col>
                     <Form>
