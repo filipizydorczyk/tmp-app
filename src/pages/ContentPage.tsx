@@ -7,7 +7,7 @@ function ContentPage() {
         <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
             <Row>
                 <Col>
-                    <TodoList />
+                    <TodoList items={[]} />
                 </Col>
                 <Col>
                     <Form>
