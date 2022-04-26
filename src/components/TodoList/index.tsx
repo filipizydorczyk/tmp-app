@@ -51,12 +51,22 @@ function TodoList({ items, onAction = () => {} }: TodoListProps) {
                     </Col>
                     <Col sm="auto">
                         <img
+                            onClick={() =>
+                                onAction({
+                                    action: item.done ? "open" : "done",
+                                    item,
+                                })
+                            }
                             src={item.done ? undoIcon : doneIcon}
                             style={iconStyle}
                         />
                     </Col>
                     <Col sm="auto">
-                        <img src={deleteIcon} style={iconStyle} />
+                        <img
+                            onClick={() => onAction({ action: "delete", item })}
+                            src={deleteIcon}
+                            style={iconStyle}
+                        />
                     </Col>
                 </Row>
             ))}

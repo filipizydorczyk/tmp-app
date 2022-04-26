@@ -23,6 +23,9 @@ function ContentPage() {
                                 done: true,
                             },
                         ]}
+                        onAction={({ action, item }) =>
+                            console.log(action, item)
+                        }
                     />
                 </Col>
                 <Col>
