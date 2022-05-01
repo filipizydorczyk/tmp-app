@@ -7,6 +7,13 @@ export type AppDependencies = {
     singletonService: SingletonService;
 };
 
+/**
+ * Creates and returns ready to run Koa app for backend application
+ * @param dependencyMiddleware middleware to create dependencies used in routes.
+ * In this function you need to assign value `ctx.dependencies` of
+ * {@link AppDependencies} type
+ * @returns Koa app ready to being started
+ */
 const useApp = (
     dependencyMiddleware: Middleware<DefaultState, DefaultContext, any>
 ) => {
