@@ -20,11 +20,12 @@ export type LoginDTO = {
 };
 
 router.post("/login", bodyParser(), async (ctx) => {
-    const repository = useSingletonRepository();
     const { getPassword, setPassword, comparePasswords } =
-        useSingletonService(repository);
+        ctx.dependencies.singletonService;
     const currentPassword = await getPassword();
     const providedPassword = ctx.request.body.password;
+
+    console.log(currentPassword, providedPassword);
 
     let responseStatus = 401;
 

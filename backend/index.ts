@@ -1,11 +1,15 @@
-import Koa from "koa";
-import cors from "@koa/cors";
-import { tokenRoutes } from "@tmp/back/routes";
+import useApp from "@tmp/back/app";
+import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
+import useSingletonService from "@tmp/back/services/singleton-service";
 
 export const APP_PORT = 8080;
 
-const app = new Koa();
+export const app = useApp(async (ctx, next) => {
+    const repository = useSingletonRepository();
+    ctx.dependencies = {
+        singletonService: useSingletonService(repository),
+    };
+    await next();
+});
 
-app.use(cors());
-app.use(tokenRoutes.routes());
 app.listen(APP_PORT);
