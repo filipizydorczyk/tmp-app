@@ -1,8 +1,6 @@
 import jwt from "jsonwebtoken";
 import Router from "@koa/router";
 import { API_VERSION } from "@tmp/back/routes";
-import useSingletonService from "@tmp/back/services/singleton-service";
-import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import bodyParser from "koa-bodyparser";
 import crypto from "crypto";
 
