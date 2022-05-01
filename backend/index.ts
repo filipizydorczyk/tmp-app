@@ -1,4 +1,4 @@
-import useApp from "@tmp/back/app";
+import useApp, { AppDependencies } from "@tmp/back/app";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import useSingletonService from "@tmp/back/services/singleton-service";
 
@@ -8,7 +8,7 @@ export const app = useApp(async (ctx, next) => {
     const repository = useSingletonRepository();
     ctx.dependencies = {
         singletonService: useSingletonService(repository),
-    };
+    } as AppDependencies;
     await next();
 });
 

@@ -1,6 +1,12 @@
 import { SingletonRepository } from "@tmp/back/repositories/singleton-repo";
 import bcrypt from "bcrypt";
 
+export type SingletonService = {
+    getPassword: () => Promise<string | null>;
+    setPassword: (password: string) => Promise<boolean>;
+    comparePasswords: (password: string) => Promise<boolean>;
+};
+
 /**
  * Service for key value data
  * @param repository responisble for connection with db
@@ -53,7 +59,7 @@ const useSingletonService = (repository: SingletonRepository) => {
         return result;
     };
 
-    return { getPassword, setPassword, comparePasswords };
+    return { getPassword, setPassword, comparePasswords } as SingletonService;
 };
 
 export default useSingletonService;

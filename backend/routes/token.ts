@@ -3,6 +3,7 @@ import Router from "@koa/router";
 import { API_VERSION } from "@tmp/back/routes";
 import bodyParser from "koa-bodyparser";
 import crypto from "crypto";
+import { AppDependencies } from "@tmp/back/app";
 
 const ACCESS_TOKEN_SECRET =
     process.env.ACCESS_TOKEN_SECRET || crypto.randomBytes(64).toString("hex");
@@ -18,12 +19,11 @@ export type LoginDTO = {
 };
 
 router.post("/login", bodyParser(), async (ctx) => {
-    const { getPassword, setPassword, comparePasswords } =
-        ctx.dependencies.singletonService;
+    const { getPassword, setPassword, comparePasswords } = (
+        ctx.dependencies as AppDependencies
+    ).singletonService;
     const currentPassword = await getPassword();
     const providedPassword = ctx.request.body.password;
-
-    console.log(currentPassword, providedPassword);
 
     let responseStatus = 401;
 
