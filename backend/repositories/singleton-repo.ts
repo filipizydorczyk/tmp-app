@@ -13,7 +13,7 @@ export type SingletonRepository = {
  * Repository to make db calls for key value data
  * @returns functions make db transactions on "Singletons" table
  */
-const useSingletoRepository = (): SingletonRepository => {
+const useSingletonRepository = (): SingletonRepository => {
     /**
      * Function to get password from db
      * @returns password from db if exists false otherwise
@@ -88,4 +88,4 @@ const useSingletoRepository = (): SingletonRepository => {
     return { getPassword, setPassword, changePassword };
 };
 
-export default useSingletoRepository;
+export default useSingletonRepository;

@@ -1,15 +1,8 @@
-import useApp, { AppDependencies } from "@tmp/back/app";
-import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
-import useSingletonService from "@tmp/back/services/singleton-service";
+import useApp from "@tmp/back/app";
+import dependencies from "@tmp/back/dependencies";
 
 export const APP_PORT = 8080;
 
-export const app = useApp(async (ctx, next) => {
-    const repository = useSingletonRepository();
-    ctx.dependencies = {
-        singletonService: useSingletonService(repository),
-    } as AppDependencies;
-    await next();
-});
+export const app = useApp(dependencies);
 
 app.listen(APP_PORT);

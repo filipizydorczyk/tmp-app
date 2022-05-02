@@ -14,13 +14,14 @@ export type AppDependencies = {
  * {@link AppDependencies} type
  * @returns Koa app ready to being started
  */
-const useApp = (
-    dependencyMiddleware: Middleware<DefaultState, DefaultContext, any>
-) => {
+const useApp = (dependencies: AppDependencies) => {
     const app = new Koa();
 
     app.use(cors());
-    app.use(dependencyMiddleware);
+    app.use(async (ctx, next) => {
+        ctx.dependencies = dependencies;
+        await next();
+    });
     app.use(tokenRoutes.routes());
 
     return app;
