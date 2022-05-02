@@ -1,4 +1,4 @@
-import Koa, { DefaultContext, DefaultState, Middleware } from "koa";
+import Koa from "koa";
 import cors from "@koa/cors";
 import { tokenRoutes } from "@tmp/back/routes";
 import { SingletonService } from "@tmp/back/services/singleton-service";
