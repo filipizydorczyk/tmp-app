@@ -1,5 +1,5 @@
 import request from "supertest";
-import useApp, { AppDependencies } from "@tmp/back/app";
+import useApp from "@tmp/back/app";
 import sinon from "sinon";
 import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";

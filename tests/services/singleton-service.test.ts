@@ -2,13 +2,13 @@ import assert from "assert";
 import bcrypt from "bcrypt";
 import sinon from "sinon";
 import useSingletonService from "@tmp/back/services/singleton-service";
-import useSingletoRepository from "@tmp/back/repositories/singleton-repo";
+import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 
 const SUPER_SECRET_PASSWORD = "totaly-secret-and-encrypted-password";
 
 describe("SingletonService", () => {
     it("should return current password", async () => {
-        const repository = useSingletoRepository();
+        const repository = useSingletonRepository();
         sinon.stub(repository, "getPassword").returns(
             new Promise((resolve, _) => {
                 resolve(SUPER_SECRET_PASSWORD);
@@ -20,7 +20,7 @@ describe("SingletonService", () => {
     });
 
     it("should create password if there is no password yet", async () => {
-        const repository = useSingletoRepository();
+        const repository = useSingletonRepository();
         const repoSetPassSpy = sinon.spy(repository, "setPassword");
         const repoChangePassSpy = sinon.spy(repository, "changePassword");
         sinon.stub(repository, "getPassword").returns(
@@ -37,7 +37,7 @@ describe("SingletonService", () => {
     });
 
     it("should update password", async () => {
-        const repository = useSingletoRepository();
+        const repository = useSingletonRepository();
         const repoSetPassSpy = sinon.spy(repository, "setPassword");
         const repoChangePassSpy = sinon.spy(repository, "changePassword");
         sinon.stub(repository, "getPassword").returns(
@@ -54,7 +54,7 @@ describe("SingletonService", () => {
     });
 
     it("should compare password with its hash with success", async () => {
-        const repository = useSingletoRepository();
+        const repository = useSingletonRepository();
         sinon.stub(repository, "getPassword").returns(
             new Promise(async (resolve, _) => {
                 const response = await bcrypt.hash(SUPER_SECRET_PASSWORD, 10);
@@ -67,7 +67,7 @@ describe("SingletonService", () => {
     });
 
     it("should compare password with its hash with failure", async () => {
-        const repository = useSingletoRepository();
+        const repository = useSingletonRepository();
         sinon.stub(repository, "getPassword").returns(
             new Promise(async (resolve, _) => {
                 const response = await bcrypt.hash(SUPER_SECRET_PASSWORD, 10);
@@ -80,7 +80,7 @@ describe("SingletonService", () => {
     });
 
     it("should compare with failure when there is no password", async () => {
-        const repository = useSingletoRepository();
+        const repository = useSingletonRepository();
         sinon.stub(repository, "getPassword").returns(
             new Promise(async (resolve, _) => {
                 resolve(null);
