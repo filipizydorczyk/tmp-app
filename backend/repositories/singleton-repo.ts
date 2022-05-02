@@ -19,7 +19,7 @@ const useSingletoRepository = (): SingletonRepository => {
      * @returns password from db if exists false otherwise
      */
     const getPassword = (): Promise<string | null> => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _) => {
             const db = getDatabase();
 
             db.get(
@@ -43,7 +43,7 @@ const useSingletoRepository = (): SingletonRepository => {
      * @returns boolean if transaction was successfull
      */
     const setPassword = (password: string): Promise<boolean> => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _) => {
             const db = getDatabase();
 
             db.run(
@@ -67,7 +67,7 @@ const useSingletoRepository = (): SingletonRepository => {
      * @returns boolean if transaction was successfull
      */
     const changePassword = (password: string): Promise<boolean> => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _) => {
             const db = getDatabase();
 
             db.run(
