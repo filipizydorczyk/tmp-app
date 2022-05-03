@@ -3,11 +3,12 @@ import useApp from "@tmp/back/app";
 import sinon from "sinon";
 import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
+import assert from "assert";
 
 const ROUTER_PREFIX = "/api/v1/token";
 
 describe(`API ${ROUTER_PREFIX}`, () => {
-    it("should validate correct creds", (done) => {
+    it("should validate when correct creds", (done) => {
         const service = useSingletonService(useSingletonRepository());
         // TODO mock rest used functions so that no actuall database requests are being made
         sinon.stub(service, "comparePasswords").returns(
@@ -24,5 +25,13 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             })
             .expect(200)
             .end(done);
+    });
+
+    it("should create password when there is no paswd yet", (_) => {
+        assert(false);
+    });
+
+    it("should fail when wrong password provided", (_) => {
+        assert(false);
     });
 });
