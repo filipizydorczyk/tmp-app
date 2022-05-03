@@ -34,6 +34,11 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 password: TEST_PASSWORD,
             })
             .expect(200)
+            .expect((req) => {
+                assert.deepEqual(req.body.message, "Successfully loged in!");
+                assert.notDeepEqual(req.body.accessToken, null);
+                assert.notDeepEqual(req.body.refreshToken, null);
+            })
             .end(done);
     });
 
