@@ -59,9 +59,13 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 password: TEST_PASSWORD,
             })
             .expect(200)
-            .expect((_) => {
+            .expect((req) => {
                 assert.deepEqual(setPassSpy.callCount, 1);
                 assert.deepEqual(compPassSpy.callCount, 0);
+
+                assert.deepEqual(req.body.message, "Successfully loged in!");
+                assert.notDeepEqual(req.body.accessToken, null);
+                assert.notDeepEqual(req.body.refreshToken, null);
             })
             .end(done);
     });
