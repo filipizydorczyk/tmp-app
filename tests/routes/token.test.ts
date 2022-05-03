@@ -105,4 +105,8 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             })
             .end(done);
     });
+
+    it("should fail when no body was provided", (_) => {
+        assert.deepEqual(false, true);
+    });
 });
