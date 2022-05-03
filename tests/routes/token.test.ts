@@ -6,22 +6,32 @@ import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import assert from "assert";
 
 const ROUTER_PREFIX = "/api/v1/token";
+const TEST_PASSWORD = "test";
 
 describe(`API ${ROUTER_PREFIX}`, () => {
     it("should validate when correct creds", (done) => {
         const service = useSingletonService(useSingletonRepository());
-        // TODO mock rest used functions so that no actuall database requests are being made
         sinon.stub(service, "comparePasswords").returns(
             new Promise((resolve, _) => {
                 resolve(true);
             })
         );
-        const app = useApp({ singletonService: service });
+        sinon.stub(service, "getPassword").returns(
+            new Promise((resolve, _) => {
+                resolve(TEST_PASSWORD);
+            })
+        );
+        sinon.stub(service, "setPassword").returns(
+            new Promise((resolve, _) => {
+                resolve(true);
+            })
+        );
 
+        const app = useApp({ singletonService: service });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
             .send({
-                password: "test",
+                password: TEST_PASSWORD,
             })
             .expect(200)
             .end(done);
