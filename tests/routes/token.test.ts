@@ -37,8 +37,28 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .end(done);
     });
 
-    it("should create password when there is no paswd yet", (_) => {
-        assert(false);
+    it("should create password when there is no paswd yet", (done) => {
+        const service = useSingletonService(useSingletonRepository());
+        const setPassSpy = sinon.spy(service, "setPassword");
+        const compPassSpy = sinon.spy(service, "comparePasswords");
+        sinon.stub(service, "getPassword").returns(
+            new Promise((resolve, _) => {
+                resolve(null);
+            })
+        );
+
+        const app = useApp({ singletonService: service });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}/login`)
+            .send({
+                password: TEST_PASSWORD,
+            })
+            .expect(200)
+            .expect((_) => {
+                assert.deepEqual(setPassSpy.callCount, 1);
+                assert.deepEqual(compPassSpy.callCount, 0);
+            })
+            .end(done);
     });
 
     it("should fail when wrong password provided", (_) => {
