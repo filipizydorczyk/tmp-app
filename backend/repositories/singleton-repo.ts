@@ -10,6 +10,7 @@ export type SingletonRepository = {
     changePassword: (password: string) => Promise<boolean>;
     getNotes: () => Promise<string | null>;
     setNotes: (notes: string) => Promise<boolean>;
+    updateNotes: (notes: string) => Promise<boolean>;
 };
 
 /**
@@ -136,7 +137,38 @@ const useSingletonRepository = (): SingletonRepository => {
         });
     };
 
-    return { getPassword, setPassword, changePassword, getNotes, setNotes };
+    /**
+     * Funciton to updates notes in db. Use it if there is already saved note in db
+     * @param notes string to be saved in database as a note
+     * @returns boolean if operation was successfull or not
+     */
+    const updateNotes = (notes: string): Promise<boolean> => {
+        return new Promise((resolve, _) => {
+            const db = getDatabase();
+
+            db.run(
+                `UPDATE ${SINGLETON_TABLE_NAME} SET Value = '${notes}' WHERE Key = '${NOTES_KEY}'`,
+                (_: RunResult, err: Error | null) => {
+                    if (err) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+
+            db.close();
+        });
+    };
+
+    return {
+        getPassword,
+        setPassword,
+        changePassword,
+        getNotes,
+        setNotes,
+        updateNotes,
+    };
 };
 
 export default useSingletonRepository;
