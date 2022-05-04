@@ -23,7 +23,7 @@ router.post("/login", bodyParser(), async (ctx) => {
         ctx.dependencies as AppDependencies
     ).singletonService;
     const currentPassword = await getPassword();
-    const providedPassword = ctx.request.body.password;
+    const providedPassword = ctx.request.body.password || "";
 
     let responseStatus = 401;
 

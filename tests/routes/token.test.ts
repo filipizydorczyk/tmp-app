@@ -106,7 +106,36 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .end(done);
     });
 
-    it("should fail when no body was provided", (_) => {
-        assert.deepEqual(false, true);
+    it("should fail when no body was provided", (done) => {
+        const service = useSingletonService(useSingletonRepository());
+        sinon.stub(service, "comparePasswords").returns(
+            new Promise((resolve, _) => {
+                resolve(false);
+            })
+        );
+        sinon.stub(service, "getPassword").returns(
+            new Promise((resolve, _) => {
+                resolve(TEST_PASSWORD);
+            })
+        );
+        sinon.stub(service, "setPassword").returns(
+            new Promise((resolve, _) => {
+                resolve(false);
+            })
+        );
+
+        const app = useApp({ singletonService: service });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}/login`)
+            .expect(401)
+            .expect((req) => {
+                assert.deepEqual(
+                    req.body.message,
+                    "Provided password was not correct"
+                );
+                assert.deepEqual(req.body.accessToken, null);
+                assert.deepEqual(req.body.refreshToken, null);
+            })
+            .end(done);
     });
 });
