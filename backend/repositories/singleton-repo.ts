@@ -8,6 +8,7 @@ export type SingletonRepository = {
     getPassword: () => Promise<string | null>;
     setPassword: (password: string) => Promise<boolean>;
     changePassword: (password: string) => Promise<boolean>;
+    getNotes: () => Promise<string | null>;
 };
 
 /**
@@ -86,7 +87,31 @@ const useSingletonRepository = (): SingletonRepository => {
         });
     };
 
-    return { getPassword, setPassword, changePassword };
+    /**
+     * Function to fetch saved notes form database. Notes have no history tracking
+     * so if you save them u will lose previous ones
+     * @returns string note fetched from db or null if there is no one yet
+     */
+    const getNotes = (): Promise<string | null> => {
+        return new Promise((resolve, _) => {
+            const db = getDatabase();
+
+            db.get(
+                `SELECT * FROM ${SINGLETON_TABLE_NAME} WHERE Key="${NOTES_KEY}"`,
+                (err, row) => {
+                    if (row === undefined || err) {
+                        resolve(null);
+                    } else {
+                        resolve(row["Value"] as string);
+                    }
+                }
+            );
+
+            db.close();
+        });
+    };
+
+    return { getPassword, setPassword, changePassword, getNotes };
 };
 
 export default useSingletonRepository;
