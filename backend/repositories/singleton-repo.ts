@@ -2,6 +2,7 @@ import { getDatabase, SINGLETON_TABLE_NAME } from "@tmp/back/db";
 import { RunResult } from "sqlite3";
 
 const PASSWORD_KEY = "password";
+const NOTES_KEY = "notes";
 
 export type SingletonRepository = {
     getPassword: () => Promise<string | null>;
