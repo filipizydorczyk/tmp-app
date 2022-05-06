@@ -5,6 +5,7 @@ import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 
 const SUPER_SECRET_PASSWORD = "totaly-secret-and-encrypted-password";
+const SAMPLE_NOTE = "I am sample note!";
 
 describe("SingletonService", () => {
     it("should return current password", async () => {
@@ -92,11 +93,28 @@ describe("SingletonService", () => {
     });
 
     it("should get notes from singleton table", async () => {
-        assert.ok(false);
+        const repository = useSingletonRepository();
+        sinon.stub(repository, "getNotes").returns(
+            new Promise(async (resolve, _) => {
+                resolve(SAMPLE_NOTE);
+            })
+        );
+        const { getNotes } = useSingletonService(repository);
+        const response = await getNotes();
+        assert.ok(typeof response === "string");
     });
 
     it("should get null from singleton table if there is no notes", async () => {
-        assert.ok(false);
+        const repository = useSingletonRepository();
+        sinon.stub(repository, "getNotes").returns(
+            new Promise(async (resolve, _) => {
+                resolve(null);
+            })
+        );
+
+        const { getNotes } = useSingletonService(repository);
+        const response = await getNotes();
+        assert.ok(response === null);
     });
 
     it("should save create record for notes if there is no notes yet", async () => {
