@@ -9,7 +9,7 @@ export type AppDependencies = {
 
 /**
  * Creates and returns ready to run Koa app for backend application
- * @param dependencyMiddleware middleware to create dependencies used in routes.
+ * @param dependencies dependencies to be passed in middleware
  * In this function you need to assign value `ctx.dependencies` of
  * {@link AppDependencies} type
  * @returns Koa app ready to being started
