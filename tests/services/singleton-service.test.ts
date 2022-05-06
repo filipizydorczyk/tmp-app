@@ -118,10 +118,34 @@ describe("SingletonService", () => {
     });
 
     it("should save create record for notes if there is no notes yet", async () => {
-        assert.ok(false);
+        const repository = useSingletonRepository();
+        sinon.stub(repository, "getNotes").returns(
+            new Promise(async (resolve, _) => {
+                resolve(null);
+            })
+        );
+        const setNotesSpy = sinon.spy(repository, "setNotes");
+        const updateNotesSpy = sinon.spy(repository, "updateNotes");
+
+        const { saveNotes } = useSingletonService(repository);
+        await saveNotes(SAMPLE_NOTE);
+        assert.deepEqual(setNotesSpy.callCount, 1);
+        assert.deepEqual(updateNotesSpy.callCount, 0);
     });
 
     it("should save update record for notes if there is no notes yet", async () => {
-        assert.ok(false);
+        const repository = useSingletonRepository();
+        sinon.stub(repository, "getNotes").returns(
+            new Promise(async (resolve, _) => {
+                resolve(SAMPLE_NOTE);
+            })
+        );
+        const setNotesSpy = sinon.spy(repository, "setNotes");
+        const updateNotesSpy = sinon.spy(repository, "updateNotes");
+
+        const { saveNotes } = useSingletonService(repository);
+        await saveNotes(SAMPLE_NOTE);
+        assert.deepEqual(setNotesSpy.callCount, 0);
+        assert.deepEqual(updateNotesSpy.callCount, 1);
     });
 });
