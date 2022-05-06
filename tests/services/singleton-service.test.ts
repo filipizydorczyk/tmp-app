@@ -90,4 +90,20 @@ describe("SingletonService", () => {
         const response = await comparePasswords(SUPER_SECRET_PASSWORD);
         assert.ok(!response);
     });
+
+    it("should get notes from singleton table", async () => {
+        assert.ok(false);
+    });
+
+    it("should get null from singleton table if there is no notes", async () => {
+        assert.ok(false);
+    });
+
+    it("should save create record for notes if there is no notes yet", async () => {
+        assert.ok(false);
+    });
+
+    it("should save update record for notes if there is no notes yet", async () => {
+        assert.ok(false);
+    });
 });
