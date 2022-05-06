@@ -5,6 +5,8 @@ export type SingletonService = {
     getPassword: () => Promise<string | null>;
     setPassword: (password: string) => Promise<boolean>;
     comparePasswords: (password: string) => Promise<boolean>;
+    getNotes: () => Promise<string | null>;
+    saveNotes: (notes: string) => Promise<boolean>;
 };
 
 /**
@@ -17,6 +19,9 @@ const useSingletonService = (repository: SingletonRepository) => {
         getPassword: getPasswordFromDb,
         setPassword: setPasswordAtDb,
         changePassword: changePasswordAtDb,
+        getNotes: getNotesFromDb,
+        setNotes,
+        updateNotes,
     } = repository;
 
     /**
@@ -59,7 +64,38 @@ const useSingletonService = (repository: SingletonRepository) => {
         return result;
     };
 
-    return { getPassword, setPassword, comparePasswords } as SingletonService;
+    /**
+     * Function to obtain app notes. There is single note for whole app
+     * since there is no users in this app
+     * @returns string if notes exists and null otherwise
+     */
+    const getNotes = async (): Promise<string | null> => {
+        return getNotesFromDb();
+    };
+
+    /**
+     * Function to save note in database. If there is no note yet it will
+     * create new record in Singleton table otherwise it will update existing record
+     * @param notes string to be saved
+     * @returns if operation was successfull
+     */
+    const saveNotes = async (notes: string): Promise<boolean> => {
+        const currentNote = await getNotesFromDb();
+
+        if (currentNote == null) {
+            return setNotes(notes);
+        } else {
+            return updateNotes(notes);
+        }
+    };
+
+    return {
+        getPassword,
+        setPassword,
+        comparePasswords,
+        getNotes,
+        saveNotes,
+    } as SingletonService;
 };
 
 export default useSingletonService;
