@@ -1,6 +1,6 @@
 import Koa from "koa";
 import cors from "@koa/cors";
-import { tokenRoutes } from "@tmp/back/routes";
+import { tokenRoutes, notesRoutes } from "@tmp/back/routes";
 import { SingletonService } from "@tmp/back/services/singleton-service";
 
 export type AppDependencies = {
@@ -23,6 +23,7 @@ const useApp = (dependencies: AppDependencies) => {
         await next();
     });
     app.use(tokenRoutes.routes());
+    app.use(notesRoutes.routes());
 
     return app;
 };
