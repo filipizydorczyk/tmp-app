@@ -64,7 +64,11 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should return newly saved note", (done) => {
         const service = useSingletonService(useSingletonRepository());
-        const saveNotesSpy = sinon.spy(service, "saveNotes");
+        const saveNotesSpy = sinon.stub(service, "saveNotes").returns(
+            new Promise((resolve, _) => {
+                resolve(true);
+            })
+        );
         sinon.stub(service, "getNotes").returns(
             new Promise((resolve, _) => {
                 resolve(TEST_NOTE);
@@ -79,6 +83,35 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .expect((req) => {
                 assert.deepEqual(req.body.message, "Notes sucessfully updated");
                 assert.deepEqual(req.body.content, TEST_NOTE);
+                assert.deepEqual(saveNotesSpy.callCount, 1);
+            })
+            .end(done);
+    });
+
+    it("should throw 500 if database request failed", (done) => {
+        const service = useSingletonService(useSingletonRepository());
+        const saveNotesSpy = sinon.stub(service, "saveNotes").returns(
+            new Promise((resolve, _) => {
+                resolve(false);
+            })
+        );
+        sinon.stub(service, "getNotes").returns(
+            new Promise((resolve, _) => {
+                resolve(TEST_NOTE);
+            })
+        );
+
+        const app = useApp({ singletonService: service });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}`)
+            .send({ content: TEST_NOTE } as NotesDTO)
+            .expect(500)
+            .expect((req) => {
+                assert.deepEqual(
+                    req.body.message,
+                    "We werent able to save this note"
+                );
+                assert.deepEqual(req.body.content, null);
                 assert.deepEqual(saveNotesSpy.callCount, 1);
             })
             .end(done);
