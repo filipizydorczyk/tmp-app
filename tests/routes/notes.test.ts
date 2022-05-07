@@ -61,4 +61,26 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             })
             .end(done);
     });
+
+    it("should return newly saved note", (done) => {
+        const service = useSingletonService(useSingletonRepository());
+        const saveNotesSpy = sinon.spy(service, "saveNotes");
+        sinon.stub(service, "getNotes").returns(
+            new Promise((resolve, _) => {
+                resolve(TEST_NOTE);
+            })
+        );
+
+        const app = useApp({ singletonService: service });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}`)
+            .send({ content: TEST_NOTE } as NotesDTO)
+            .expect(200)
+            .expect((req) => {
+                assert.deepEqual(req.body.message, "Notes sucessfully updated");
+                assert.deepEqual(req.body.content, TEST_NOTE);
+                assert.deepEqual(saveNotesSpy.callCount, 1);
+            })
+            .end(done);
+    });
 });
