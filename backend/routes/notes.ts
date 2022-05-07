@@ -17,7 +17,10 @@ router.get("/", bodyParser(), async (ctx) => {
     const notes = await getNotes();
 
     ctx.status = 200;
-    ctx.body = { content: notes || "Notes sucessfully fetched" } as NotesDTO;
+    ctx.body = {
+        content: notes || "",
+        message: "Notes sucessfully fetched",
+    } as NotesDTO;
 });
 
 router.post("/", bodyParser(), async (ctx) => {
