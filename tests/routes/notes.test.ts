@@ -47,4 +47,18 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             })
             .end(done);
     });
+
+    it("should fail when no body was provided", (done) => {
+        const service = useSingletonService(useSingletonRepository());
+
+        const app = useApp({ singletonService: service });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}`)
+            .expect(400)
+            .expect((req) => {
+                assert.deepEqual(req.body.message, "No body was provided");
+                assert.deepEqual(req.body.content, null);
+            })
+            .end(done);
+    });
 });
