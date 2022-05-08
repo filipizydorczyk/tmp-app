@@ -12,11 +12,7 @@ const TEST_NOTE = "Hello world!";
 describe(`API ${ROUTER_PREFIX}`, () => {
     it("should return note", (done) => {
         const service = useSingletonService(useSingletonRepository());
-        sinon.stub(service, "getNotes").returns(
-            new Promise((resolve, _) => {
-                resolve(TEST_NOTE);
-            })
-        );
+        sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
         const app = useApp({ singletonService: service });
         request(app.callback())
@@ -31,11 +27,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should return empy string when note is null", (done) => {
         const service = useSingletonService(useSingletonRepository());
-        sinon.stub(service, "getNotes").returns(
-            new Promise((resolve, _) => {
-                resolve(null);
-            })
-        );
+        sinon.stub(service, "getNotes").returns(Promise.resolve(null));
 
         const app = useApp({ singletonService: service });
         request(app.callback())
@@ -64,16 +56,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should return newly saved note", (done) => {
         const service = useSingletonService(useSingletonRepository());
-        const saveNotesSpy = sinon.stub(service, "saveNotes").returns(
-            new Promise((resolve, _) => {
-                resolve(true);
-            })
-        );
-        sinon.stub(service, "getNotes").returns(
-            new Promise((resolve, _) => {
-                resolve(TEST_NOTE);
-            })
-        );
+        const saveNotesSpy = sinon
+            .stub(service, "saveNotes")
+            .returns(Promise.resolve(true));
+        sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
         const app = useApp({ singletonService: service });
         request(app.callback())
@@ -95,11 +81,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 resolve(false);
             })
         );
-        sinon.stub(service, "getNotes").returns(
-            new Promise((resolve, _) => {
-                resolve(TEST_NOTE);
-            })
-        );
+        sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
         const app = useApp({ singletonService: service });
         request(app.callback())

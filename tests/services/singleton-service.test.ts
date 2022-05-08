@@ -10,11 +10,9 @@ const SAMPLE_NOTE = "I am sample note!";
 describe("SingletonService", () => {
     it("should return current password", async () => {
         const repository = useSingletonRepository();
-        sinon.stub(repository, "getPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(SUPER_SECRET_PASSWORD);
-            })
-        );
+        sinon
+            .stub(repository, "getPassword")
+            .returns(Promise.resolve(SUPER_SECRET_PASSWORD));
         const { getPassword } = useSingletonService(repository);
         const pas = await getPassword();
         assert.deepEqual(pas, SUPER_SECRET_PASSWORD);
@@ -24,11 +22,7 @@ describe("SingletonService", () => {
         const repository = useSingletonRepository();
         const repoSetPassSpy = sinon.spy(repository, "setPassword");
         const repoChangePassSpy = sinon.spy(repository, "changePassword");
-        sinon.stub(repository, "getPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(null);
-            })
-        );
+        sinon.stub(repository, "getPassword").returns(Promise.resolve(null));
 
         const { setPassword } = useSingletonService(repository);
         await setPassword(SUPER_SECRET_PASSWORD);
@@ -41,11 +35,9 @@ describe("SingletonService", () => {
         const repository = useSingletonRepository();
         const repoSetPassSpy = sinon.spy(repository, "setPassword");
         const repoChangePassSpy = sinon.spy(repository, "changePassword");
-        sinon.stub(repository, "getPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(SUPER_SECRET_PASSWORD);
-            })
-        );
+        sinon
+            .stub(repository, "getPassword")
+            .returns(Promise.resolve(SUPER_SECRET_PASSWORD));
 
         const { setPassword } = useSingletonService(repository);
         await setPassword(SUPER_SECRET_PASSWORD);
@@ -56,12 +48,9 @@ describe("SingletonService", () => {
 
     it("should compare password with its hash with success", async () => {
         const repository = useSingletonRepository();
-        sinon.stub(repository, "getPassword").returns(
-            new Promise(async (resolve, _) => {
-                const response = await bcrypt.hash(SUPER_SECRET_PASSWORD, 10);
-                resolve(response);
-            })
-        );
+        sinon
+            .stub(repository, "getPassword")
+            .returns(Promise.resolve(bcrypt.hash(SUPER_SECRET_PASSWORD, 10)));
         const { comparePasswords } = useSingletonService(repository);
         const response = await comparePasswords(SUPER_SECRET_PASSWORD);
         assert.ok(response);
@@ -69,12 +58,9 @@ describe("SingletonService", () => {
 
     it("should compare password with its hash with failure", async () => {
         const repository = useSingletonRepository();
-        sinon.stub(repository, "getPassword").returns(
-            new Promise(async (resolve, _) => {
-                const response = await bcrypt.hash(SUPER_SECRET_PASSWORD, 10);
-                resolve(response);
-            })
-        );
+        sinon
+            .stub(repository, "getPassword")
+            .returns(Promise.resolve(bcrypt.hash(SUPER_SECRET_PASSWORD, 10)));
         const { comparePasswords } = useSingletonService(repository);
         const response = await comparePasswords("not-correct-password");
         assert.ok(!response);
@@ -82,11 +68,7 @@ describe("SingletonService", () => {
 
     it("should compare with failure when there is no password", async () => {
         const repository = useSingletonRepository();
-        sinon.stub(repository, "getPassword").returns(
-            new Promise(async (resolve, _) => {
-                resolve(null);
-            })
-        );
+        sinon.stub(repository, "getPassword").returns(Promise.resolve(null));
         const { comparePasswords } = useSingletonService(repository);
         const response = await comparePasswords(SUPER_SECRET_PASSWORD);
         assert.ok(!response);
@@ -94,11 +76,9 @@ describe("SingletonService", () => {
 
     it("should get notes from singleton table", async () => {
         const repository = useSingletonRepository();
-        sinon.stub(repository, "getNotes").returns(
-            new Promise(async (resolve, _) => {
-                resolve(SAMPLE_NOTE);
-            })
-        );
+        sinon
+            .stub(repository, "getNotes")
+            .returns(Promise.resolve(SAMPLE_NOTE));
         const { getNotes } = useSingletonService(repository);
         const response = await getNotes();
         assert.ok(typeof response === "string");
@@ -106,11 +86,7 @@ describe("SingletonService", () => {
 
     it("should get null from singleton table if there is no notes", async () => {
         const repository = useSingletonRepository();
-        sinon.stub(repository, "getNotes").returns(
-            new Promise(async (resolve, _) => {
-                resolve(null);
-            })
-        );
+        sinon.stub(repository, "getNotes").returns(Promise.resolve(null));
 
         const { getNotes } = useSingletonService(repository);
         const response = await getNotes();
@@ -119,11 +95,7 @@ describe("SingletonService", () => {
 
     it("should save create record for notes if there is no notes yet", async () => {
         const repository = useSingletonRepository();
-        sinon.stub(repository, "getNotes").returns(
-            new Promise(async (resolve, _) => {
-                resolve(null);
-            })
-        );
+        sinon.stub(repository, "getNotes").returns(Promise.resolve(null));
         const setNotesSpy = sinon.spy(repository, "setNotes");
         const updateNotesSpy = sinon.spy(repository, "updateNotes");
 
@@ -135,11 +107,9 @@ describe("SingletonService", () => {
 
     it("should save update record for notes if there is no notes yet", async () => {
         const repository = useSingletonRepository();
-        sinon.stub(repository, "getNotes").returns(
-            new Promise(async (resolve, _) => {
-                resolve(SAMPLE_NOTE);
-            })
-        );
+        sinon
+            .stub(repository, "getNotes")
+            .returns(Promise.resolve(SAMPLE_NOTE));
         const setNotesSpy = sinon.spy(repository, "setNotes");
         const updateNotesSpy = sinon.spy(repository, "updateNotes");
 

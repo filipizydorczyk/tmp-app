@@ -11,21 +11,11 @@ const TEST_PASSWORD = "test";
 describe(`API ${ROUTER_PREFIX}`, () => {
     it("should validate when correct creds", (done) => {
         const service = useSingletonService(useSingletonRepository());
-        sinon.stub(service, "comparePasswords").returns(
-            new Promise((resolve, _) => {
-                resolve(true);
-            })
-        );
-        sinon.stub(service, "getPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(TEST_PASSWORD);
-            })
-        );
-        sinon.stub(service, "setPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(true);
-            })
-        );
+        sinon.stub(service, "comparePasswords").returns(Promise.resolve(true));
+        sinon
+            .stub(service, "getPassword")
+            .returns(Promise.resolve(TEST_PASSWORD));
+        sinon.stub(service, "setPassword").returns(Promise.resolve(true));
 
         const app = useApp({ singletonService: service });
         request(app.callback())
@@ -72,21 +62,11 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should fail when wrong password provided", (done) => {
         const service = useSingletonService(useSingletonRepository());
-        sinon.stub(service, "comparePasswords").returns(
-            new Promise((resolve, _) => {
-                resolve(false);
-            })
-        );
-        sinon.stub(service, "getPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(TEST_PASSWORD);
-            })
-        );
-        sinon.stub(service, "setPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(false);
-            })
-        );
+        sinon.stub(service, "comparePasswords").returns(Promise.resolve(false));
+        sinon
+            .stub(service, "getPassword")
+            .returns(Promise.resolve(TEST_PASSWORD));
+        sinon.stub(service, "setPassword").returns(Promise.resolve(false));
 
         const app = useApp({ singletonService: service });
         request(app.callback())
@@ -108,21 +88,11 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should fail when no body was provided", (done) => {
         const service = useSingletonService(useSingletonRepository());
-        sinon.stub(service, "comparePasswords").returns(
-            new Promise((resolve, _) => {
-                resolve(false);
-            })
-        );
-        sinon.stub(service, "getPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(TEST_PASSWORD);
-            })
-        );
-        sinon.stub(service, "setPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(false);
-            })
-        );
+        sinon.stub(service, "comparePasswords").returns(Promise.resolve(false));
+        sinon
+            .stub(service, "getPassword")
+            .returns(Promise.resolve(TEST_PASSWORD));
+        sinon.stub(service, "setPassword").returns(Promise.resolve(false));
 
         const app = useApp({ singletonService: service });
         request(app.callback())
