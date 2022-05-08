@@ -4,6 +4,7 @@ import useApiClient from "@tmp/front/hooks/useApiClient";
 type NotesContextProps = {
     notes: string;
     fetchNotes: () => Promise<boolean>;
+    saveNotes: (notes: string) => Promise<boolean>;
 };
 
 type NotesProviderProps = {
@@ -12,14 +13,15 @@ type NotesProviderProps = {
 
 const defaulNotesContextProps = {
     notes: "",
-    fetchNotes: async () => true,
+    fetchNotes: async () => Promise.resolve(true),
+    saveNotes: async (notes: string) => Promise.resolve(true),
 };
 
 const NotesContext = createContext<NotesContextProps>(defaulNotesContextProps);
 
 const NotesProvider = ({ children }: NotesProviderProps) => {
     const [notes, setNotes] = useState<string>("");
-    const { getNotes } = useApiClient();
+    const { getNotes, saveNotes: saveNotesRequest } = useApiClient();
 
     /**
      * This funtion will make an API call and refresh notes
@@ -32,8 +34,20 @@ const NotesProvider = ({ children }: NotesProviderProps) => {
         return true;
     };
 
+    /**
+     * Function to make save REST request
+     * @param notes note to be saved
+     * @returns boolean if action was successful.
+     * It will also refresh notes state
+     */
+    const saveNotes = async (notes: string) => {
+        const response = await saveNotesRequest(notes);
+        setNotes(response.content || "");
+        return true;
+    };
+
     return (
-        <NotesContext.Provider value={{ notes, fetchNotes }}>
+        <NotesContext.Provider value={{ notes, fetchNotes, saveNotes }}>
             {children}
         </NotesContext.Provider>
     );

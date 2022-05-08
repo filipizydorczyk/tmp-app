@@ -39,8 +39,26 @@ const useApiClient = () => {
      */
     const getNotes = () => {
         return new Promise<NotesDTO>((resolve, rejects) => {
-            const resp = Axios.get(
-                `${BACKEND_URL}/token/notes`,
+            const resp = Axios.get(`${BACKEND_URL}/notes`, requestHeaders);
+            resp.then((val) => {
+                resolve(val.data as NotesDTO);
+            });
+            resp.catch((er) => {
+                rejects(er);
+            });
+        });
+    };
+
+    /**
+     * Funtion to save notes in database
+     * @param notes sring to ba saved in backend app
+     * @returns updated notes dto
+     */
+    const saveNotes = (notes: string) => {
+        return new Promise<NotesDTO>((resolve, rejects) => {
+            const resp = Axios.post(
+                `${BACKEND_URL}/notes`,
+                { content: notes } as NotesDTO,
                 requestHeaders
             );
             resp.then((val) => {
@@ -52,7 +70,7 @@ const useApiClient = () => {
         });
     };
 
-    return { logIn, getNotes };
+    return { logIn, getNotes, saveNotes };
 };
 
 export default useApiClient;
