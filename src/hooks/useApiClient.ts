@@ -1,3 +1,4 @@
+import { NotesDTO } from "@tmp/back/routes/notes";
 import { LoginDTO } from "@tmp/back/routes/token";
 import Axios, { AxiosRequestConfig } from "axios";
 
@@ -31,7 +32,27 @@ const useApiClient = () => {
         });
     };
 
-    return { logIn };
+    /**
+     * Function to fetch notes. For no no authorization is required
+     * but it will be in future
+     * @returns dto conatining notes
+     */
+    const getNotes = () => {
+        return new Promise<NotesDTO>((resolve, rejects) => {
+            const resp = Axios.get(
+                `${BACKEND_URL}/token/notes`,
+                requestHeaders
+            );
+            resp.then((val) => {
+                resolve(val.data as NotesDTO);
+            });
+            resp.catch((er) => {
+                rejects(er);
+            });
+        });
+    };
+
+    return { logIn, getNotes };
 };
 
 export default useApiClient;

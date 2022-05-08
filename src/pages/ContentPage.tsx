@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import TodoList from "@tmp/front/components/TodoList";
+import { NotesProvider, useNotes } from "@tmp/front/contexts/notes-context";
 
 function ContentPage() {
+    const notes = useNotes();
+
+    useEffect(() => {
+        notes.fetchNotes();
+    }, []);
+
     return (
         <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
             <Row>
@@ -35,7 +42,13 @@ function ContentPage() {
                             controlId="exampleForm.ControlTextarea1"
                         >
                             <Form.Label>Temporary notes</Form.Label>
-                            <Form.Control as="textarea" rows={3} />
+                            <NotesProvider>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    value={notes.notes}
+                                />
+                            </NotesProvider>
                         </Form.Group>
                     </Form>
                 </Col>
