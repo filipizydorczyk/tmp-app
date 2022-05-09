@@ -3,22 +3,29 @@ import { randomUUID } from "crypto";
 import { RunResult } from "sqlite3";
 
 export type TaskEntity = {
-    id: string;
-    title: string;
-    date: string;
-    done: 0 | 1;
+    Id: string;
+    Title: string;
+    Date: string;
+    Done: 0 | 1;
 };
 
-const useTaskRepository = () => {
+export type TaskRepository = {
+    getAllTasks: () => Promise<TaskEntity[]>;
+    createTask: (values: TaskEntity) => Promise<TaskEntity>;
+    updateTask: (values: TaskEntity) => Promise<boolean>;
+    deleteTask: (id: string) => Promise<boolean>;
+};
+
+const useTaskRepository = (): TaskRepository => {
     const getAllTasks = (): Promise<TaskEntity[]> => {
         return new Promise((resolve, reject) => {
             const db = getDatabase();
 
-            db.get(`SELECT * FROM ${TASK_TABLE_NAME}"`, (err, row) => {
+            db.all(`SELECT * FROM ${TASK_TABLE_NAME}`, (err, resp) => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(row as TaskEntity[]);
+                    resolve(resp as TaskEntity[]);
                 }
             });
 
@@ -26,21 +33,21 @@ const useTaskRepository = () => {
         });
     };
     const createTask = ({
-        title,
-        date,
-        done,
+        Title,
+        Date,
+        Done,
     }: TaskEntity): Promise<TaskEntity> => {
         return new Promise((resolve, rejects) => {
             const db = getDatabase();
             const id = randomUUID();
 
             db.run(
-                `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${id}', '${title}', '${date}', ${done})`,
+                `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${id}', '${Title}', '${Date}', ${Done})`,
                 (_: RunResult, err: Error | null) => {
                     if (err) {
                         rejects(err);
                     } else {
-                        resolve({ id, title, date, done });
+                        resolve({ Id: id, Title, Date, Done });
                     }
                 }
             );
@@ -48,12 +55,17 @@ const useTaskRepository = () => {
             db.close();
         });
     };
-    const updateTask = ({ id, title, date, done }: TaskEntity) => {
+    const updateTask = ({
+        Id,
+        Title,
+        Date,
+        Done,
+    }: TaskEntity): Promise<boolean> => {
         return new Promise((resolve, _) => {
             const db = getDatabase();
 
             db.run(
-                `UPDATE ${TASK_TABLE_NAME} SET Title = '${title}', Date = '${date}', Done = ${done} WHERE Id = '${id}'`,
+                `UPDATE ${TASK_TABLE_NAME} SET Title = '${Title}', Date = '${Date}', Done = ${Done} WHERE Id = '${Id}'`,
                 (_: RunResult, err: Error | null) => {
                     if (err) {
                         resolve(false);
@@ -66,7 +78,7 @@ const useTaskRepository = () => {
             db.close();
         });
     };
-    const deleteTask = (id: string) => {
+    const deleteTask = (id: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
             const db = getDatabase();
 
@@ -92,3 +104,5 @@ const useTaskRepository = () => {
         deleteTask,
     };
 };
+
+export default useTaskRepository;
