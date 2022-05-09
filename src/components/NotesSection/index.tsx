@@ -10,6 +10,7 @@ function NotesSection() {
     const notesRef = useRef<HTMLTextAreaElement>(null);
     const [resultToast, setResultToast] = useState<ResultToastMessage>({
         type: "none",
+        header: "",
         content: "",
     });
 
@@ -39,7 +40,8 @@ function NotesSection() {
                                 .then((_) => {
                                     setResultToast({
                                         type: "success",
-                                        content: "",
+                                        header: "The operation was successful",
+                                        content: "Notes successfully saved",
                                     });
                                 });
                         }}

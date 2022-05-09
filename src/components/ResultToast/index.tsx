@@ -3,6 +3,7 @@ import { Toast } from "react-bootstrap";
 
 export type ResultToastMessage = {
     type: "success" | "failure" | "none";
+    header: string;
     content: string;
 };
 
@@ -33,9 +34,17 @@ function ResultToast({ message }: ResultToastProps) {
             animation={true}
         >
             <Toast.Header>
-                <strong className="me-auto">Notes saved</strong>
+                <strong
+                    className={`me-auto ${
+                        message.type === "success"
+                            ? "text-success"
+                            : "text-danger"
+                    }`}
+                >
+                    {message.header}
+                </strong>
             </Toast.Header>
-            <Toast.Body>Click to close this message.</Toast.Body>
+            <Toast.Body>{message.content}</Toast.Body>
         </Toast>
     );
 }
