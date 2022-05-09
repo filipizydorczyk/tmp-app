@@ -7,7 +7,7 @@ import NotesSection from "@tmp/front/components/NotesSection";
 function ContentPage() {
     return (
         <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
-            <Row>
+            <Row style={{ height: "100%" }}>
                 <Col>
                     <Form.Label>Todo section</Form.Label>
                     <TodoList

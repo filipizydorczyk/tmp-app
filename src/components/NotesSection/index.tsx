@@ -20,14 +20,19 @@ function NotesSection() {
 
     return (
         <>
-            <Form>
-                <Form.Group className="mb-3" controlId="notes">
+            <Form style={{ height: "100%" }}>
+                <Form.Group
+                    className="mb-3"
+                    style={{ height: "100%" }}
+                    controlId="notes"
+                >
                     <Form.Label>Temporary notes</Form.Label>
 
                     <Form.Control
+                        style={{ height: "90%" }}
                         ref={notesRef}
                         as="textarea"
-                        rows={3}
+                        rows={30}
                         defaultValue={notes.notes}
                     />
 
