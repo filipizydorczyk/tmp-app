@@ -66,7 +66,24 @@ const useTaskRepository = () => {
             db.close();
         });
     };
-    const deleteTask = (id: string) => {};
+    const deleteTask = (id: string) => {
+        return new Promise((resolve, _) => {
+            const db = getDatabase();
+
+            db.run(
+                `DELETE FROM ${TASK_TABLE_NAME} WHERE Id = '${id}'`,
+                (_: RunResult, err: Error | null) => {
+                    if (err) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+
+            db.close();
+        });
+    };
 
     return {
         getAllTasks,
