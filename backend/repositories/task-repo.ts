@@ -29,8 +29,8 @@ const useTaskRepository = () => {
         title,
         date,
         done,
-    }: TaskEntity): Promise<boolean> => {
-        return new Promise((resolve, _) => {
+    }: TaskEntity): Promise<TaskEntity> => {
+        return new Promise((resolve, rejects) => {
             const db = getDatabase();
             const id = randomUUID();
 
@@ -38,9 +38,9 @@ const useTaskRepository = () => {
                 `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${id}', '${title}', '${date}', ${done})`,
                 (_: RunResult, err: Error | null) => {
                     if (err) {
-                        resolve(false);
+                        rejects(err);
                     } else {
-                        resolve(true);
+                        resolve({ id, title, date, done });
                     }
                 }
             );
