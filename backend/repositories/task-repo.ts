@@ -16,7 +16,17 @@ export type TaskRepository = {
     deleteTask: (id: string) => Promise<boolean>;
 };
 
+/**
+ * Funtion to get database calls realted to Tasks table in db
+ * @returns collection of functions
+ */
 const useTaskRepository = (): TaskRepository => {
+    /**
+     * Function to get all tasks from db
+     * @returns list of task entitites. Entity keys are matching
+     * database columns names and because of that type keys are
+     * uppercased
+     */
     const getAllTasks = (): Promise<TaskEntity[]> => {
         return new Promise((resolve, reject) => {
             const db = getDatabase();
@@ -32,6 +42,18 @@ const useTaskRepository = (): TaskRepository => {
             db.close();
         });
     };
+
+    /**
+     * Function to create new task in database. If this function fails
+     * make sure that you use node that supports `randomUUID` function
+     * from `crypto` package.
+     *
+     * @param values entity be inserted database. Since this function
+     * will create new entry `Id` field will be ignored even if it
+     * was provided
+     *
+     * @returns entity of newly created task
+     */
     const createTask = ({
         Title,
         Date,
@@ -55,6 +77,16 @@ const useTaskRepository = (): TaskRepository => {
             db.close();
         });
     };
+
+    /**
+     * Functtion to update existing task in database.
+     *
+     * @param values entity with values to be inserted. If you want to
+     * keep old values in some fileds you need to put them in provided
+     * entity
+     *
+     * @returns boolean if operation was successful
+     */
     const updateTask = ({
         Id,
         Title,
@@ -78,6 +110,14 @@ const useTaskRepository = (): TaskRepository => {
             db.close();
         });
     };
+
+    /**
+     * Function to delete task from database. This task will be removed
+     * pernamently from database
+     *
+     * @param id of task to be deleted
+     * @returns boolean if operation was successful
+     */
     const deleteTask = (id: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
             const db = getDatabase();
