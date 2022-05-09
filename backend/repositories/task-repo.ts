@@ -1,4 +1,6 @@
 import { getDatabase, TASK_TABLE_NAME } from "@tmp/back/db";
+import { randomUUID } from "crypto";
+import { RunResult } from "sqlite3";
 
 export type TaskEntity = {
     id: string;
@@ -23,7 +25,29 @@ const useTaskRepository = () => {
             db.close();
         });
     };
-    const createTask = ({ title, date, done }: TaskEntity) => {};
+    const createTask = ({
+        title,
+        date,
+        done,
+    }: TaskEntity): Promise<boolean> => {
+        return new Promise((resolve, _) => {
+            const db = getDatabase();
+            const id = randomUUID();
+
+            db.run(
+                `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${id}', '${title}', '${date}', ${done})`,
+                (_: RunResult, err: Error | null) => {
+                    if (err) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+
+            db.close();
+        });
+    };
     const updateTask = ({ id, title, date, done }: TaskEntity) => {};
     const deleteTask = (id: string) => {};
 
