@@ -48,7 +48,24 @@ const useTaskRepository = () => {
             db.close();
         });
     };
-    const updateTask = ({ id, title, date, done }: TaskEntity) => {};
+    const updateTask = ({ id, title, date, done }: TaskEntity) => {
+        return new Promise((resolve, _) => {
+            const db = getDatabase();
+
+            db.run(
+                `UPDATE ${TASK_TABLE_NAME} SET Title = '${title}', Date = '${date}', Done = ${done} WHERE Id = '${id}'`,
+                (_: RunResult, err: Error | null) => {
+                    if (err) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }
+            );
+
+            db.close();
+        });
+    };
     const deleteTask = (id: string) => {};
 
     return {
