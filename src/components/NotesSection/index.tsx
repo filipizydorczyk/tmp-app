@@ -1,11 +1,17 @@
 import { useNotes } from "@tmp/front/contexts/notes-context";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, Toast } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
+import ResultToast, {
+    ResultToastMessage,
+} from "@tmp/front/components/ResultToast";
 
 function NotesSection() {
     const notes = useNotes();
     const notesRef = useRef<HTMLTextAreaElement>(null);
-    const [resultToast, setResultToast] = useState<boolean>(false);
+    const [resultToast, setResultToast] = useState<ResultToastMessage>({
+        type: "none",
+        content: "",
+    });
 
     useEffect(() => {
         notes.fetchNotes();
@@ -31,7 +37,10 @@ function NotesSection() {
                             notes
                                 .saveNotes(notesRef.current?.value || "")
                                 .then((_) => {
-                                    setResultToast(true);
+                                    setResultToast({
+                                        type: "success",
+                                        content: "",
+                                    });
                                 });
                         }}
                     >
@@ -40,18 +49,7 @@ function NotesSection() {
                 </Form.Group>
             </Form>
 
-            <Toast
-                className="my-4 mx-5"
-                style={{ position: "absolute", bottom: "0", right: 0 }}
-                onClose={() => setResultToast(false)}
-                show={resultToast}
-                animation={true}
-            >
-                <Toast.Header>
-                    <strong className="me-auto">Notes saved</strong>
-                </Toast.Header>
-                <Toast.Body>Click to close this message.</Toast.Body>
-            </Toast>
+            <ResultToast message={resultToast} />
         </>
     );
 }
