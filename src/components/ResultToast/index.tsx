@@ -27,7 +27,7 @@ function ResultToast({ message }: ResultToastProps) {
     return (
         <Toast
             className="my-4 mx-5"
-            style={{ position: "absolute", bottom: "0", right: 0 }}
+            style={{ position: "absolute", bottom: "0", right: "0" }}
             onClose={() => setDisplay(false)}
             show={display}
             animation={true}
