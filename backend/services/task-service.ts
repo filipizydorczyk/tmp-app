@@ -5,11 +5,10 @@ export const useTaskService = (repository: TaskRepository) => {
     const getTasks = (): Promise<TaskEntity[]> => {
         return repository.getAllTasks();
     };
-    const changeTaksStatus = (id: string) => {};
     const deleteTask = (id: string) => {};
     const updateTask = (task: TaskDTO) => {};
 
-    return { getTasks, changeTaksStatus, deleteTask, updateTask };
+    return { getTasks, deleteTask, updateTask };
 };
 
 export default useTaskService;
