@@ -1,15 +1,10 @@
 import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
-
+import { NotesDTO } from "@tmp/back/dto";
 import { API_VERSION } from "@tmp/back/routes";
 import { AppDependencies } from "@tmp/back/app";
 
 const router = new Router({ prefix: `${API_VERSION}/notes` });
-
-export type NotesDTO = {
-    content: string | null;
-    message: string;
-};
 
 router.get("/", bodyParser(), async (ctx) => {
     // TODO add token validation for now there is none
