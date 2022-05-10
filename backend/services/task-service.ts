@@ -15,7 +15,7 @@ export const useTaskService = (repository: TaskRepository) => {
                 return {
                     id: task.Id,
                     title: task.Title,
-                    date: new Date(),
+                    date: new Date(task.Date),
                     done: !!task.Done,
                 } as TaskDTO;
             })
