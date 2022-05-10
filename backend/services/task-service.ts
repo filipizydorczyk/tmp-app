@@ -1,5 +1,5 @@
 import { TaskEntity, TaskRepository } from "@tmp/back/repositories/task-repo";
-import { TaskDTO } from "@tmp/back/routes/tasks";
+import { TaskDTO } from "@tmp/back/dto";
 
 export const useTaskService = (repository: TaskRepository) => {
     const getTasks = (): Promise<TaskEntity[]> => {
