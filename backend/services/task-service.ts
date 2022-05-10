@@ -8,8 +8,18 @@ export const useTaskService = (repository: TaskRepository) => {
         updateTask: updateTaskInDb,
     } = repository;
 
-    const getTasks = (): Promise<TaskEntity[]> => {
-        return getAllTasks();
+    const getTasks = async (): Promise<TaskDTO[]> => {
+        const allTasks = await getAllTasks();
+        return Promise.all(
+            allTasks.map((task) => {
+                return {
+                    id: task.Id,
+                    title: task.Title,
+                    date: new Date(),
+                    done: !!task.Done,
+                } as TaskDTO;
+            })
+        );
     };
     const deleteTask = (id: string): Promise<boolean> => {
         return deleteTaskFromDb(id);
