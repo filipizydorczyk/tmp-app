@@ -1,5 +1,5 @@
 import { NotesDTO } from "@tmp/back/routes/notes";
-import { LoginDTO } from "@tmp/back/routes/token";
+import { LoginDTO } from "@tmp/back/dto";
 import Axios, { AxiosRequestConfig } from "axios";
 
 const BACKEND_URL = "http://localhost:8080/api/v1";

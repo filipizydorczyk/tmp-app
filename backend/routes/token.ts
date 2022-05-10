@@ -4,6 +4,7 @@ import { API_VERSION } from "@tmp/back/routes";
 import bodyParser from "koa-bodyparser";
 import crypto from "crypto";
 import { AppDependencies } from "@tmp/back/app";
+import { LoginDTO } from "@tmp/back/dto";
 
 const ACCESS_TOKEN_SECRET =
     process.env.ACCESS_TOKEN_SECRET || crypto.randomBytes(64).toString("hex");
@@ -11,12 +12,6 @@ const REFRESH_TOKEN_SECRET =
     process.env.REFRESH_TOKEN_SECRET || crypto.randomBytes(64).toString("hex");
 
 const router = new Router({ prefix: `${API_VERSION}/token` });
-
-export type LoginDTO = {
-    message: string;
-    accessToken: string | null;
-    refreshToken: string | null;
-};
 
 router.post("/login", bodyParser(), async (ctx) => {
     const { getPassword, setPassword, comparePasswords } = (
