@@ -1,4 +1,4 @@
-import { TaskEntity, TaskRepository } from "@tmp/back/repositories/task-repo";
+import { TaskRepository } from "@tmp/back/repositories/task-repo";
 import { TaskDTO } from "@tmp/back/dto";
 
 export const useTaskService = (repository: TaskRepository) => {
