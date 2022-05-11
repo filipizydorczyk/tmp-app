@@ -1,4 +1,5 @@
 import { getDatabase, TASK_TABLE_NAME } from "@tmp/back/db";
+import { Page } from "@tmp/back/util";
 import { randomUUID } from "crypto";
 import { RunResult } from "sqlite3";
 
@@ -10,7 +11,7 @@ export type TaskEntity = {
 };
 
 export type TaskRepository = {
-    getAllTasks: () => Promise<TaskEntity[]>;
+    getAllTasks: (page: number, size: number) => Promise<Page<TaskEntity>>;
     createTask: (values: TaskEntity) => Promise<TaskEntity>;
     updateTask: (values: TaskEntity) => Promise<boolean>;
     deleteTask: (id: string) => Promise<boolean>;
@@ -23,21 +24,38 @@ export type TaskRepository = {
 const useTaskRepository = (): TaskRepository => {
     /**
      * Function to get all tasks from db
+     *
+     * @param page which page should be fetch. First page should be 0
+     * @param size ammount of element at single page
      * @returns list of task entitites. Entity keys are matching
      * database columns names and because of that type keys are
      * uppercased
      */
-    const getAllTasks = (): Promise<TaskEntity[]> => {
+    const getAllTasks = (
+        page: number,
+        size: number
+    ): Promise<Page<TaskEntity>> => {
         return new Promise((resolve, reject) => {
             const db = getDatabase();
 
-            db.all(`SELECT * FROM ${TASK_TABLE_NAME}`, (err, resp) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(resp as TaskEntity[]);
+            db.all(
+                `SELECT * FROM ${TASK_TABLE_NAME} LIMIT ${size} OFFSET ${
+                    page * size
+                }`,
+                (err, resp) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve({
+                            page,
+                            size,
+                            pages: 0,
+                            total: 0,
+                            content: resp as TaskEntity[],
+                        });
+                    }
                 }
-            });
+            );
 
             db.close();
         });

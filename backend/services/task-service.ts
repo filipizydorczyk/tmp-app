@@ -1,6 +1,8 @@
 import { TaskRepository } from "@tmp/back/repositories/task-repo";
 import { TaskDTO } from "@tmp/back/dto";
-import { isIsoDate } from "@tmp/back/util";
+import { isIsoDate, Page } from "@tmp/back/util";
+
+const PAGE_SIZE = 25;
 
 /**
  * Service for tasks
@@ -17,20 +19,21 @@ export const useTaskService = (repository: TaskRepository) => {
 
     /**
      * Function to get all tasks in database
-     * @returns list of all tasks dto
+     * @returns page type with content as task dto
      */
-    const getTasks = async (): Promise<TaskDTO[]> => {
-        const allTasks = await getAllTasks();
-        return Promise.all(
-            allTasks.map((task) => {
+    const getTasks = async (): Promise<Page<TaskDTO>> => {
+        const allTasks = await getAllTasks(0, PAGE_SIZE);
+        return {
+            ...allTasks,
+            content: allTasks.content.map((task) => {
                 return {
                     id: task.Id,
                     title: task.Title,
                     date: isIsoDate(task.Date) ? task.Date : "",
                     done: !!task.Done,
                 } as TaskDTO;
-            })
-        );
+            }),
+        };
     };
 
     /**
