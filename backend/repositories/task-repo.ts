@@ -11,6 +11,7 @@ export type TaskEntity = {
 };
 
 export type TaskRepository = {
+    getTotalTaskCount: () => Promise<number>;
     getAllTasks: (page: number, size: number) => Promise<Page<TaskEntity>>;
     createTask: (values: TaskEntity) => Promise<TaskEntity>;
     updateTask: (values: TaskEntity) => Promise<boolean>;
@@ -23,6 +24,28 @@ export type TaskRepository = {
  */
 const useTaskRepository = (): TaskRepository => {
     /**
+     * Function tp get number of how many tasks are being
+     * stored in db
+     *
+     * @returns number of stored task
+     */
+    const getTotalTaskCount = async (): Promise<number> => {
+        return new Promise((resolve, reject) => {
+            const db = getDatabase();
+
+            db.get(`SELECT COUNT(*) FROM ${TASK_TABLE_NAME}`, (err, resp) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(resp as number);
+                }
+            });
+
+            db.close();
+        });
+    };
+
+    /**
      * Function to get all tasks from db
      *
      * @param page which page should be fetch. First page should be 0
@@ -31,12 +54,13 @@ const useTaskRepository = (): TaskRepository => {
      * database columns names and because of that type keys are
      * uppercased
      */
-    const getAllTasks = (
+    const getAllTasks = async (
         page: number,
         size: number
     ): Promise<Page<TaskEntity>> => {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const db = getDatabase();
+            const totalElements = await getTotalTaskCount();
 
             db.all(
                 `SELECT * FROM ${TASK_TABLE_NAME} LIMIT ${size} OFFSET ${
@@ -49,8 +73,8 @@ const useTaskRepository = (): TaskRepository => {
                         resolve({
                             page,
                             size,
-                            pages: 0,
-                            total: 0,
+                            pages: Math.ceil(totalElements / size),
+                            total: totalElements,
                             content: resp as TaskEntity[],
                         });
                     }
@@ -72,7 +96,7 @@ const useTaskRepository = (): TaskRepository => {
      *
      * @returns entity of newly created task
      */
-    const createTask = ({
+    const createTask = async ({
         Title,
         Date,
         Done,
@@ -105,7 +129,7 @@ const useTaskRepository = (): TaskRepository => {
      *
      * @returns boolean if operation was successful
      */
-    const updateTask = ({
+    const updateTask = async ({
         Id,
         Title,
         Date,
@@ -136,7 +160,7 @@ const useTaskRepository = (): TaskRepository => {
      * @param id of task to be deleted
      * @returns boolean if operation was successful
      */
-    const deleteTask = (id: string): Promise<boolean> => {
+    const deleteTask = async (id: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
             const db = getDatabase();
 
@@ -156,6 +180,7 @@ const useTaskRepository = (): TaskRepository => {
     };
 
     return {
+        getTotalTaskCount,
         getAllTasks,
         createTask,
         updateTask,
