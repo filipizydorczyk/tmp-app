@@ -33,7 +33,7 @@ export const useTaskService = (repository: TaskRepository) => {
      * @param id of task to be removed from db
      * @returns boolen if operation was successful
      */
-    const deleteTask = (id: string): Promise<boolean> => {
+    const deleteTask = async (id: string): Promise<boolean> => {
         return deleteTaskFromDb(id);
     };
 
@@ -44,7 +44,7 @@ export const useTaskService = (repository: TaskRepository) => {
      *
      * @returns boolen if operation was successful
      */
-    const updateTask = (task: TaskDTO): Promise<boolean> => {
+    const updateTask = async (task: TaskDTO): Promise<boolean> => {
         return updateTaskInDb({
             Id: task.id,
             Title: task.title,
@@ -60,13 +60,20 @@ export const useTaskService = (repository: TaskRepository) => {
      *
      * @returns
      */
-    const createTask = (task: TaskDTO) => {
-        return createTaskInDb({
+    const createTask = async (task: TaskDTO): Promise<TaskDTO> => {
+        const createdTask = await createTaskInDb({
             Id: "",
             Title: task.title,
             Done: task.done ? 1 : 0,
             Date: isIsoDate(task.date) ? task.date : "",
         });
+
+        return {
+            id: createdTask.Id,
+            title: createdTask.Title,
+            date: isIsoDate(createdTask.Date) ? createdTask.Date : "",
+            done: !!createdTask.Done,
+        } as TaskDTO;
     };
 
     return { getTasks, deleteTask, updateTask, createTask };
