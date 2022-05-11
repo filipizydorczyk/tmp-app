@@ -8,3 +8,18 @@ export const isIsoDate = (str: string): boolean => {
     var d = new Date(str);
     return d.toISOString() === str;
 };
+
+/**
+ * `page` - is current returned page
+ * `size` - how many elements are in page
+ * `pages` - amount of total pages
+ * `total` - amount of total elements
+ * `content` - array of current page content
+ */
+export type Page<Content> = {
+    page: number;
+    size: number;
+    pages: number;
+    total: number;
+    content: Content[];
+};
