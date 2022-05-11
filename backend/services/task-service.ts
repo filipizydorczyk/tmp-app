@@ -2,6 +2,11 @@ import { TaskRepository } from "@tmp/back/repositories/task-repo";
 import { TaskDTO } from "@tmp/back/dto";
 import { isIsoDate } from "@tmp/back/util";
 
+/**
+ * Service for tasks
+ * @param repository to make db calls
+ * @returns object with functions to perform task actions
+ */
 export const useTaskService = (repository: TaskRepository) => {
     const {
         getAllTasks,
