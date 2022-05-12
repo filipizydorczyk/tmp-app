@@ -1,4 +1,5 @@
-import { LoginDTO, NotesDTO } from "@tmp/back/dto";
+import { LoginDTO, NotesDTO, TaskDTO } from "@tmp/back/dto";
+import { Page } from "@tmp/back/util";
 import Axios, { AxiosRequestConfig } from "axios";
 
 const BACKEND_URL = "http://localhost:8080/api/v1";
@@ -69,7 +70,23 @@ const useApiClient = () => {
         });
     };
 
-    return { logIn, getNotes, saveNotes };
+    /**
+     * Funciton to get tasks from database
+     * @returns paginated list of tasks
+     */
+    const getTasks = () => {
+        return new Promise<Page<TaskDTO>>((resolve, rejects) => {
+            const resp = Axios.get(`${BACKEND_URL}/tasks`, requestHeaders);
+            resp.then((val) => {
+                resolve(val.data as Page<TaskDTO>);
+            });
+            resp.catch((er) => {
+                rejects(er);
+            });
+        });
+    };
+
+    return { logIn, getNotes, saveNotes, getTasks };
 };
 
 export default useApiClient;
