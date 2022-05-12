@@ -4,7 +4,7 @@ import sinon from "sinon";
 import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import assert from "assert";
-import { NotesDTO } from "@tmp/back/routes/notes";
+import { NotesDTO } from "@tmp/back/dto";
 
 const ROUTER_PREFIX = "/api/v1/notes";
 const TEST_NOTE = "Hello world!";
