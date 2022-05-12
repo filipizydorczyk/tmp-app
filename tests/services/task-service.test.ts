@@ -80,6 +80,11 @@ describe.only("TaskService", () => {
     });
 
     it("should delete task", async () => {
-        assert.ok(false);
+        const repository = useTaskRepository();
+        sinon.stub(repository, "deleteTask").returns(Promise.resolve(true));
+        const { deleteTask } = useTaskService(repository);
+
+        const reponse = await deleteTask(TEST_ID);
+        assert.strictEqual(reponse, true);
     });
 });
