@@ -1,6 +1,6 @@
 import Koa from "koa";
 import cors from "@koa/cors";
-import { tokenRoutes, notesRoutes } from "@tmp/back/routes";
+import { tokenRoutes, notesRoutes, taskRoutes } from "@tmp/back/routes";
 import { SingletonService } from "@tmp/back/services/singleton-service";
 import { TaskService } from "@tmp/back/services/task-service";
 
@@ -26,6 +26,7 @@ const useApp = (dependencies: AppDependencies) => {
     });
     app.use(tokenRoutes.routes());
     app.use(notesRoutes.routes());
+    app.use(taskRoutes.routes());
 
     return app;
 };
