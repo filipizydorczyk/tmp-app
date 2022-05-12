@@ -6,6 +6,7 @@ describe.only("TaskService", () => {
         const repository = useTaskRepository();
         const service = useTaskService(repository);
 
-        const allTasks = await repository.getAllTasks(0, 2);
+        const allTasks = await repository.getAllTasks(3, 2);
+        console.log(allTasks);
     });
 });

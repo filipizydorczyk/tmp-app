@@ -37,7 +37,7 @@ const useTaskRepository = (): TaskRepository => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(resp as number);
+                    resolve(resp["COUNT(*)"] as number);
                 }
             });
 
