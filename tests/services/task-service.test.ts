@@ -66,7 +66,17 @@ describe.only("TaskService", () => {
     });
 
     it("should update task", async () => {
-        assert.ok(false);
+        const repository = useTaskRepository();
+        sinon.stub(repository, "updateTask").returns(Promise.resolve(true));
+        const { updateTask } = useTaskService(repository);
+
+        const reponse = await updateTask({
+            id: TEST_ID,
+            title: TEST_TITLE,
+            date: TEST_DATE,
+            done: true,
+        });
+        assert.strictEqual(reponse, true);
     });
 
     it("should delete task", async () => {
