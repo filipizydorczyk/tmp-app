@@ -1,5 +1,5 @@
 import { useNotes } from "@tmp/front/contexts/notes-context";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import ResultToast, {
     ResultToastMessage,
