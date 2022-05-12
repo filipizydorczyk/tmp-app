@@ -4,12 +4,19 @@ import { isIsoDate, Page } from "@tmp/back/util";
 
 const PAGE_SIZE = 25;
 
+export type TaskService = {
+    getTasks: () => Promise<Page<TaskDTO>>;
+    deleteTask: (id: string) => Promise<boolean>;
+    updateTask: (task: TaskDTO) => Promise<boolean>;
+    createTask: (task: TaskDTO) => Promise<TaskDTO>;
+};
+
 /**
  * Service for tasks
  * @param repository to make db calls
  * @returns object with functions to perform task actions
  */
-export const useTaskService = (repository: TaskRepository) => {
+export const useTaskService = (repository: TaskRepository): TaskService => {
     const {
         getAllTasks,
         deleteTask: deleteTaskFromDb,

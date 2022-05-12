@@ -5,6 +5,7 @@ import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import assert from "assert";
 import { NotesDTO } from "@tmp/back/dto";
+import { TaskService } from "@tmp/back/services/task-service";
 
 const ROUTER_PREFIX = "/api/v1/notes";
 const TEST_NOTE = "Hello world!";
@@ -14,7 +15,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const service = useSingletonService(useSingletonRepository());
         sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .get(`${ROUTER_PREFIX}`)
             .expect(200)
@@ -29,7 +33,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const service = useSingletonService(useSingletonRepository());
         sinon.stub(service, "getNotes").returns(Promise.resolve(null));
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .get(`${ROUTER_PREFIX}`)
             .expect(200)
@@ -43,7 +50,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
     it("should fail when no body was provided", (done) => {
         const service = useSingletonService(useSingletonRepository());
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)
             .expect(400)
@@ -61,7 +71,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .returns(Promise.resolve(true));
         sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)
             .send({ content: TEST_NOTE } as NotesDTO)
@@ -83,7 +96,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         );
         sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)
             .send({ content: TEST_NOTE } as NotesDTO)

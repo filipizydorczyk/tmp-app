@@ -4,6 +4,7 @@ import sinon from "sinon";
 import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import assert from "assert";
+import { TaskService } from "@tmp/back/services/task-service";
 
 const ROUTER_PREFIX = "/api/v1/token";
 const TEST_PASSWORD = "test";
@@ -17,7 +18,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .returns(Promise.resolve(TEST_PASSWORD));
         sinon.stub(service, "setPassword").returns(Promise.resolve(true));
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
             .send({
@@ -42,7 +46,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             })
         );
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
             .send({
@@ -68,7 +75,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .returns(Promise.resolve(TEST_PASSWORD));
         sinon.stub(service, "setPassword").returns(Promise.resolve(false));
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
             .send({
@@ -94,7 +104,10 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .returns(Promise.resolve(TEST_PASSWORD));
         sinon.stub(service, "setPassword").returns(Promise.resolve(false));
 
-        const app = useApp({ singletonService: service });
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+        });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
             .expect(401)
