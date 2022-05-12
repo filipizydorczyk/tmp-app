@@ -14,10 +14,6 @@ function NotesSection() {
         content: "",
     });
 
-    useEffect(() => {
-        notes.fetchNotes();
-    }, []);
-
     return (
         <>
             <Form style={{ height: "100%" }}>

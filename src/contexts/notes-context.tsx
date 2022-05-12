@@ -1,4 +1,10 @@
-import React, { useState, createContext, ReactNode, useContext } from "react";
+import React, {
+    useState,
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+} from "react";
 import useApiClient from "@tmp/front/hooks/useApiClient";
 
 type NotesContextProps = {
@@ -45,6 +51,10 @@ const NotesProvider = ({ children }: NotesProviderProps) => {
         setNotes(response.content || "");
         return true;
     };
+
+    useEffect(() => {
+        fetchNotes();
+    }, []);
 
     return (
         <NotesContext.Provider value={{ notes, fetchNotes, saveNotes }}>

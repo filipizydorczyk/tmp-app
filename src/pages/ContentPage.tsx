@@ -1,6 +1,5 @@
 import React from "react";
-import { Col, Container, Form, Row } from "react-bootstrap";
-import TodoList from "@tmp/front/components/TodoList";
+import { Col, Container, Row } from "react-bootstrap";
 import { NotesProvider } from "@tmp/front/contexts/notes-context";
 import NotesSection from "@tmp/front/components/NotesSection";
 import { TaskProvider } from "@tmp/front/contexts/tasks-context";
