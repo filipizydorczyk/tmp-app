@@ -1,4 +1,3 @@
-import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import useTaskRepository from "@tmp/back/repositories/task-repo";
 import useTaskService from "@tmp/back/services/task-service";
 import assert from "assert";
@@ -8,10 +7,11 @@ const TEST_ID = "totally-not-fake-id";
 const TEST_TITLE = "Test title";
 const TEST_DATE = "2022-05-12T19:46:25.667Z";
 
-describe.only("TaskService", () => {
+describe("TaskService", () => {
     it("should return all tasks", async () => {
         const repository = useTaskRepository();
-        sinon.stub(repository, "getAllTasks").returns(
+        sinon.stub(repository, "getTotalTaskCount").returns(Promise.resolve(2));
+        const getTasksSpy = sinon.stub(repository, "getAllTasks").returns(
             Promise.resolve({
                 page: 0,
                 size: 1,
@@ -39,11 +39,12 @@ describe.only("TaskService", () => {
         assert.strictEqual(reponse.content[0].done, false);
         assert.strictEqual(reponse.content[0].id, TEST_ID);
         assert.strictEqual(reponse.content[0].title, TEST_TITLE);
+        assert.strictEqual(getTasksSpy.callCount, 1);
     });
 
     it("should create task", async () => {
         const repository = useTaskRepository();
-        sinon.stub(repository, "createTask").returns(
+        const createTaskSpy = sinon.stub(repository, "createTask").returns(
             Promise.resolve({
                 Id: TEST_ID,
                 Title: TEST_TITLE,
@@ -63,11 +64,14 @@ describe.only("TaskService", () => {
         assert.strictEqual(reponse.title, TEST_TITLE);
         assert.strictEqual(reponse.date, TEST_DATE);
         assert.strictEqual(reponse.done, true);
+        assert.strictEqual(createTaskSpy.callCount, 1);
     });
 
     it("should update task", async () => {
         const repository = useTaskRepository();
-        sinon.stub(repository, "updateTask").returns(Promise.resolve(true));
+        const updateTaskSpy = sinon
+            .stub(repository, "updateTask")
+            .returns(Promise.resolve(true));
         const { updateTask } = useTaskService(repository);
 
         const reponse = await updateTask({
@@ -77,14 +81,18 @@ describe.only("TaskService", () => {
             done: true,
         });
         assert.strictEqual(reponse, true);
+        assert.strictEqual(updateTaskSpy.callCount, 1);
     });
 
     it("should delete task", async () => {
         const repository = useTaskRepository();
-        sinon.stub(repository, "deleteTask").returns(Promise.resolve(true));
+        const deleteTaskSpy = sinon
+            .stub(repository, "deleteTask")
+            .returns(Promise.resolve(true));
         const { deleteTask } = useTaskService(repository);
 
         const reponse = await deleteTask(TEST_ID);
         assert.strictEqual(reponse, true);
+        assert.strictEqual(deleteTaskSpy.callCount, 1);
     });
 });
