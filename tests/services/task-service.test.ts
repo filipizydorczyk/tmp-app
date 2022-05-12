@@ -42,7 +42,27 @@ describe.only("TaskService", () => {
     });
 
     it("should create task", async () => {
-        assert.ok(false);
+        const repository = useTaskRepository();
+        sinon.stub(repository, "createTask").returns(
+            Promise.resolve({
+                Id: TEST_ID,
+                Title: TEST_TITLE,
+                Date: TEST_DATE,
+                Done: 1,
+            })
+        );
+        const { createTask } = useTaskService(repository);
+
+        const reponse = await createTask({
+            id: TEST_ID,
+            title: TEST_TITLE,
+            date: TEST_DATE,
+            done: true,
+        });
+        assert.strictEqual(reponse.id, TEST_ID);
+        assert.strictEqual(reponse.title, TEST_TITLE);
+        assert.strictEqual(reponse.date, TEST_DATE);
+        assert.strictEqual(reponse.done, true);
     });
 
     it("should update task", async () => {
