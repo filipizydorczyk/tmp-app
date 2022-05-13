@@ -19,12 +19,22 @@ router.put("/", bodyParser(), async (ctx) => {
     // TODO add token validation for now there is none
     const { updateTask } = (ctx.dependencies as AppDependencies).taskService;
     const newValues = ctx.request.body as TaskDTO;
-    console.log(newValues);
 
     const result = await updateTask(newValues);
 
     ctx.status = result ? 200 : 500;
     ctx.body = newValues;
+});
+
+router.delete("/:id", bodyParser(), async (ctx) => {
+    // TODO add token validation for now there is none
+    const { deleteTask } = (ctx.dependencies as AppDependencies).taskService;
+    const id = ctx.params.id;
+
+    const result = await deleteTask(id);
+
+    ctx.status = result ? 200 : 500;
+    ctx.body = {};
 });
 
 export default router;

@@ -102,7 +102,22 @@ const useApiClient = () => {
         });
     };
 
-    return { logIn, getNotes, saveNotes, getTasks, updateTask };
+    const deleteTask = (id: string) => {
+        return new Promise<TaskDTO>((resolve, rejects) => {
+            const resp = Axios.delete(
+                `${BACKEND_URL}/tasks/${id}`,
+                requestHeaders
+            );
+            resp.then((val) => {
+                resolve(val.data);
+            });
+            resp.catch((er) => {
+                rejects(er);
+            });
+        });
+    };
+
+    return { logIn, getNotes, saveNotes, getTasks, updateTask, deleteTask };
 };
 
 export default useApiClient;
