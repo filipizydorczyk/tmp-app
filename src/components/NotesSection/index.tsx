@@ -1,6 +1,6 @@
 import { useNotes } from "@tmp/front/contexts/notes-context";
 import React, { useRef, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Row } from "react-bootstrap";
 import ResultToast, {
     ResultToastMessage,
 } from "@tmp/front/components/ResultToast";
@@ -22,7 +22,9 @@ function NotesSection() {
                     style={{ height: "100%" }}
                     controlId="notes"
                 >
-                    <Form.Label>Temporary notes</Form.Label>
+                    <Row className="py-2">
+                        <Form.Label>Temporary notes</Form.Label>
+                    </Row>
 
                     <Form.Control
                         style={{ height: "90%" }}
