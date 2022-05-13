@@ -21,12 +21,7 @@ router.post("/", bodyParser(), async (ctx) => {
     const body = ctx.request.body as NewTaskDTO;
 
     // TODO move creating logic to service (also id creating from repo to service)
-    const response = await createTask({
-        id: "",
-        title: body.title,
-        date: new Date().toISOString(),
-        done: false,
-    });
+    const response = await createTask(body);
 
     ctx.status = 200;
     ctx.body = response;

@@ -1,6 +1,5 @@
 import { getDatabase, TASK_TABLE_NAME } from "@tmp/back/db";
 import { Page } from "@tmp/back/util";
-import uuid4 from "uuid4";
 import { RunResult } from "sqlite3";
 
 export type TaskEntity = {
@@ -97,21 +96,21 @@ const useTaskRepository = (): TaskRepository => {
      * @returns entity of newly created task
      */
     const createTask = async ({
+        Id,
         Title,
         Date,
         Done,
     }: TaskEntity): Promise<TaskEntity> => {
         return new Promise((resolve, rejects) => {
             const db = getDatabase();
-            const id = uuid4();
 
             db.run(
-                `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${id}', '${Title}', '${Date}', ${Done})`,
+                `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${Id}', '${Title}', '${Date}', ${Done})`,
                 (_: RunResult, err: Error | null) => {
                     if (err) {
                         rejects(err);
                     } else {
-                        resolve({ Id: id, Title, Date, Done });
+                        resolve({ Id, Title, Date, Done });
                     }
                 }
             );

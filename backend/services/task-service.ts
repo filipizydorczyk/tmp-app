@@ -1,6 +1,7 @@
 import { TaskRepository } from "@tmp/back/repositories/task-repo";
-import { TaskDTO } from "@tmp/back/dto";
+import { TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 import { isIsoDate, Page } from "@tmp/back/util";
+import uuid4 from "uuid4";
 
 const PAGE_SIZE = 25;
 
@@ -8,7 +9,7 @@ export type TaskService = {
     getTasks: () => Promise<Page<TaskDTO>>;
     deleteTask: (id: string) => Promise<boolean>;
     updateTask: (task: TaskDTO) => Promise<boolean>;
-    createTask: (task: TaskDTO) => Promise<TaskDTO>;
+    createTask: (task: NewTaskDTO) => Promise<TaskDTO>;
 };
 
 /**
@@ -75,12 +76,12 @@ export const useTaskService = (repository: TaskRepository): TaskService => {
      *
      * @returns dto of created task
      */
-    const createTask = async (task: TaskDTO): Promise<TaskDTO> => {
+    const createTask = async (task: NewTaskDTO): Promise<TaskDTO> => {
         const createdTask = await createTaskInDb({
-            Id: "",
+            Id: uuid4(),
             Title: task.title,
-            Done: task.done ? 1 : 0,
-            Date: isIsoDate(task.date) ? task.date : "",
+            Done: 0,
+            Date: new Date().toISOString(),
         });
 
         return {
