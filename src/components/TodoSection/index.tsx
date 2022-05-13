@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import TodoList, {
     TodoListElementActionCallback,
 } from "@tmp/front/components/TodoList";
 import { useTasks } from "@tmp/front/contexts/tasks-context";
+import CreateTaskModal from "@tmp/front/components/CreateTaskModal";
 
 function TodoSection() {
+    const [showCreateModal, setShowCreateModal] = useState(false);
     const tasks = useTasks();
 
+    const openCreateTaskModalHandler = () => setShowCreateModal(true);
+    const closeCreateTaskModalHandler = () => setShowCreateModal(false);
     const onActionHandler: TodoListElementActionCallback = ({
         action,
         item,
@@ -31,7 +35,11 @@ function TodoSection() {
                     <Form.Label>Todo section</Form.Label>
                 </Col>
                 <Col className="px-0" sm="auto">
-                    <Button variant="secondary" className="px-2 py-0">
+                    <Button
+                        variant="secondary"
+                        className="px-2 py-0"
+                        onClick={openCreateTaskModalHandler}
+                    >
                         +
                     </Button>
                 </Col>
@@ -42,6 +50,11 @@ function TodoSection() {
                     date: new Date(element.date),
                 }))}
                 onAction={onActionHandler}
+            />
+
+            <CreateTaskModal
+                show={showCreateModal}
+                closeHandler={closeCreateTaskModalHandler}
             />
         </>
     );
