@@ -9,3 +9,7 @@ export type TaskDTO = {
     date: string;
     done: boolean;
 };
+
+export type NewTaskDTO = {
+    title: string;
+};
