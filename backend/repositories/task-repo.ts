@@ -1,6 +1,6 @@
 import { getDatabase, TASK_TABLE_NAME } from "@tmp/back/db";
 import { Page } from "@tmp/back/util";
-import { randomUUID } from "crypto";
+import uuid4 from "uuid4";
 import { RunResult } from "sqlite3";
 
 export type TaskEntity = {
@@ -103,7 +103,7 @@ const useTaskRepository = (): TaskRepository => {
     }: TaskEntity): Promise<TaskEntity> => {
         return new Promise((resolve, rejects) => {
             const db = getDatabase();
-            const id = randomUUID();
+            const id = uuid4();
 
             db.run(
                 `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${id}', '${Title}', '${Date}', ${Done})`,

@@ -7,12 +7,13 @@ import React, {
 } from "react";
 import useApiClient from "@tmp/front/hooks/useApiClient";
 import { Page } from "@tmp/back/util";
-import { TaskDTO } from "@tmp/back/dto";
+import { TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 
 type TaskContextProps = {
     data: Page<TaskDTO>;
     updateTask: (data: TaskDTO) => void;
     deleteTask: (data: TaskDTO) => void;
+    createTask: (data: NewTaskDTO) => void;
 };
 
 type TaskProviderProps = {
@@ -27,6 +28,7 @@ const defaulAuthContextProps = {
         total: 0,
         content: [],
     },
+    createTask: () => {},
     updateTask: () => {},
     deleteTask: () => {},
 };
@@ -41,6 +43,7 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
         getTasks,
         updateTask: updateTaskREST,
         deleteTask: deleteTaskREST,
+        createTask: createTaskREST,
     } = useApiClient();
 
     useEffect(() => {
@@ -48,6 +51,13 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
             setData(response);
         });
     }, []);
+
+    const createTask = async (data: NewTaskDTO) => {
+        await createTaskREST(data);
+        await getTasks().then((response) => {
+            setData(response);
+        });
+    };
 
     const updateTask = async (data: TaskDTO) => {
         await updateTaskREST(data);
@@ -64,7 +74,9 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
     };
 
     return (
-        <TaskContext.Provider value={{ data, updateTask, deleteTask }}>
+        <TaskContext.Provider
+            value={{ data, updateTask, deleteTask, createTask }}
+        >
             {children}
         </TaskContext.Provider>
     );

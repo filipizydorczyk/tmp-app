@@ -20,8 +20,9 @@
         "sealious": "^0.14.4",
         "sql-template-strings": "^2.2.2",
         "sqlite3": "^5.0.3",
-        "ts-node": "^10.5.0",
+        "ts-node": "^10.7.0",
         "typescript": "^4.5.5",
+        "uuid4": "^2.0.2",
         "web-vitals": "^2.1.4"
     },
     "scripts": {
@@ -78,6 +79,7 @@
         "@types/sinon": "^10.0.11",
         "@types/sqlite3": "^3.1.8",
         "@types/supertest": "^2.0.12",
+        "@types/uuid4": "^2.0.0",
         "lorem-ipsum": "^2.0.4",
         "mocha": "^9.2.2",
         "multiple-scripts-tmux": "^1.0.4",
