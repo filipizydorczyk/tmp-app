@@ -11,6 +11,7 @@ import { TaskDTO } from "@tmp/back/dto";
 
 type TaskContextProps = {
     data: Page<TaskDTO>;
+    updateTask: (data: TaskDTO) => void;
 };
 
 type TaskProviderProps = {
@@ -25,6 +26,7 @@ const defaulAuthContextProps = {
         total: 0,
         content: [],
     },
+    updateTask: () => {},
 };
 
 const TaskContext = createContext<TaskContextProps>(defaulAuthContextProps);
@@ -33,7 +35,7 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
     const [data, setData] = useState<Page<TaskDTO>>(
         defaulAuthContextProps.data
     );
-    const { getTasks } = useApiClient();
+    const { getTasks, updateTask: updateTaskREST } = useApiClient();
 
     useEffect(() => {
         getTasks().then((response) => {
@@ -41,8 +43,17 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
         });
     }, []);
 
+    const updateTask = async (data: TaskDTO) => {
+        await updateTaskREST(data);
+        await getTasks().then((response) => {
+            setData(response);
+        });
+    };
+
     return (
-        <TaskContext.Provider value={{ data }}>{children}</TaskContext.Provider>
+        <TaskContext.Provider value={{ data, updateTask }}>
+            {children}
+        </TaskContext.Provider>
     );
 };
 

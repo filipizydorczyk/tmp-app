@@ -86,7 +86,23 @@ const useApiClient = () => {
         });
     };
 
-    return { logIn, getNotes, saveNotes, getTasks };
+    const updateTask = (data: TaskDTO) => {
+        return new Promise<TaskDTO>((resolve, rejects) => {
+            const resp = Axios.put(
+                `${BACKEND_URL}/tasks`,
+                data,
+                requestHeaders
+            );
+            resp.then((val) => {
+                resolve(val.data as TaskDTO);
+            });
+            resp.catch((er) => {
+                rejects(er);
+            });
+        });
+    };
+
+    return { logIn, getNotes, saveNotes, getTasks, updateTask };
 };
 
 export default useApiClient;

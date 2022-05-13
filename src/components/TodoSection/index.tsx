@@ -14,7 +14,14 @@ function TodoSection() {
                     ...element,
                     date: new Date(element.date),
                 }))}
-                onAction={({ action, item }) => console.log(action, item)}
+                onAction={({ action, item }) => {
+                    console.log(item);
+                    tasks.updateTask({
+                        ...item,
+                        date: "",
+                        done: action === "done",
+                    });
+                }}
             />
         </>
     );
