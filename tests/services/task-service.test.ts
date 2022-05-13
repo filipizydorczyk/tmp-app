@@ -55,10 +55,7 @@ describe("TaskService", () => {
         const { createTask } = useTaskService(repository);
 
         const reponse = await createTask({
-            id: TEST_ID,
             title: TEST_TITLE,
-            date: TEST_DATE,
-            done: true,
         });
         assert.strictEqual(reponse.id, TEST_ID);
         assert.strictEqual(reponse.title, TEST_TITLE);
