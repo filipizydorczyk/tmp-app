@@ -11,9 +11,9 @@ import { TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 
 type TaskContextProps = {
     data: Page<TaskDTO>;
-    updateTask: (data: TaskDTO) => void;
-    deleteTask: (data: TaskDTO) => void;
-    createTask: (data: NewTaskDTO) => void;
+    updateTask: (data: TaskDTO) => Promise<boolean>;
+    deleteTask: (data: TaskDTO) => Promise<boolean>;
+    createTask: (data: NewTaskDTO) => Promise<boolean>;
 };
 
 type TaskProviderProps = {
@@ -28,9 +28,9 @@ const defaulAuthContextProps = {
         total: 0,
         content: [],
     },
-    createTask: () => {},
-    updateTask: () => {},
-    deleteTask: () => {},
+    createTask: () => Promise.resolve(true),
+    updateTask: () => Promise.resolve(true),
+    deleteTask: () => Promise.resolve(true),
 };
 
 const TaskContext = createContext<TaskContextProps>(defaulAuthContextProps);
@@ -52,24 +52,33 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
         });
     }, []);
 
-    const createTask = async (data: NewTaskDTO) => {
-        await createTaskREST(data);
-        await getTasks().then((response) => {
-            setData(response);
+    const createTask = async (data: NewTaskDTO): Promise<boolean> => {
+        return new Promise(async (resolve, _) => {
+            await createTaskREST(data).catch(() => resolve(false));
+            await getTasks().then((response) => {
+                setData(response);
+                resolve(true);
+            });
         });
     };
 
-    const updateTask = async (data: TaskDTO) => {
-        await updateTaskREST(data);
-        await getTasks().then((response) => {
-            setData(response);
+    const updateTask = async (data: TaskDTO): Promise<boolean> => {
+        return new Promise(async (resolve, _) => {
+            await updateTaskREST(data).catch(() => resolve(false));
+            await getTasks().then((response) => {
+                setData(response);
+                resolve(true);
+            });
         });
     };
 
-    const deleteTask = async (data: TaskDTO) => {
-        await deleteTaskREST(data.id);
-        await getTasks().then((response) => {
-            setData(response);
+    const deleteTask = async (data: TaskDTO): Promise<boolean> => {
+        return new Promise(async (resolve, _) => {
+            await deleteTaskREST(data.id).catch(() => resolve(false));
+            await getTasks().then((response) => {
+                setData(response);
+                resolve(true);
+            });
         });
     };
 

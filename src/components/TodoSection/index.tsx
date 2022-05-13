@@ -55,7 +55,12 @@ function TodoSection() {
             <CreateTaskModal
                 show={showCreateModal}
                 closeHandler={closeCreateTaskModalHandler}
-                onSubmit={(title) => tasks.createTask({ title: title })}
+                onSubmit={async (title) => {
+                    const result = await tasks.createTask({ title: title });
+                    if (result) {
+                        closeCreateTaskModalHandler();
+                    }
+                }}
             />
         </>
     );
