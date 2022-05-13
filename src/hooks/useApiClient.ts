@@ -70,6 +70,11 @@ const useApiClient = () => {
         });
     };
 
+    /**
+     * Function call api creation endpoint
+     * @param data dto with data to create task
+     * @returns dto of created task
+     */
     const createTask = (data: NewTaskDTO) => {
         return new Promise<TaskDTO>((resolve, rejects) => {
             const resp = Axios.post(
@@ -102,6 +107,13 @@ const useApiClient = () => {
         });
     };
 
+    /**
+     * Function to update existing task
+     * @param data dto with data to be updated. `id` filed
+     * will decide about task being updated
+     *
+     * @returns dto with updated data
+     */
     const updateTask = (data: TaskDTO) => {
         return new Promise<TaskDTO>((resolve, rejects) => {
             const resp = Axios.put(
@@ -118,6 +130,11 @@ const useApiClient = () => {
         });
     };
 
+    /**
+     * Function to delete task
+     * @param id of task to be removed
+     * @returns dto of deleted task
+     */
     const deleteTask = (id: string) => {
         return new Promise<TaskDTO>((resolve, rejects) => {
             const resp = Axios.delete(
