@@ -1,5 +1,5 @@
 import { getDatabase, TASK_TABLE_NAME } from "@tmp/back/db";
-import { Page } from "@tmp/back/util";
+import { Page } from "@tmp/back/utils";
 import { RunResult } from "sqlite3";
 
 export type TaskEntity = {

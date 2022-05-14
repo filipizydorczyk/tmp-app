@@ -1,6 +1,6 @@
 import { TaskRepository } from "@tmp/back/repositories/task-repo";
 import { TaskDTO, NewTaskDTO } from "@tmp/back/dto";
-import { isIsoDate, Page } from "@tmp/back/util";
+import { isIsoDate, Page } from "@tmp/back/utils";
 import uuid4 from "uuid4";
 
 const PAGE_SIZE = 25;

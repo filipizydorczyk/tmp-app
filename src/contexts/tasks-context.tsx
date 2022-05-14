@@ -6,7 +6,7 @@ import React, {
     useEffect,
 } from "react";
 import useApiClient from "@tmp/front/hooks/useApiClient";
-import { Page } from "@tmp/back/util";
+import { Page } from "@tmp/back/utils";
 import { TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 
 type TaskContextProps = {

@@ -1,5 +1,5 @@
 import assert from "assert";
-import { isIsoDate } from "@tmp/back/util";
+import { isIsoDate } from "@tmp/back/utils";
 
 describe(`Utils tests`, () => {
     it("should validate correct iso string", () => {
