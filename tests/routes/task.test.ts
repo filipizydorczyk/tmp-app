@@ -11,7 +11,7 @@ const TEST_ID = "totally-not-fake-id";
 const TEST_TITLE = "Test title";
 const TEST_DATE = "2022-05-12T19:46:25.667Z";
 
-describe(`API ${ROUTER_PREFIX}`, () => {
+describe.only(`API ${ROUTER_PREFIX}`, () => {
     it("should return all tasks", (done) => {
         const service = useTaskService(useTaskRepository());
         sinon.stub(service, "getTasks").returns(
@@ -54,7 +54,32 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
         request(app.callback()).post(ROUTER_PREFIX).expect(400).end(done);
     });
-    it("should create task", (done) => {});
+    it("should create task", (done) => {
+        const service = useTaskService(useTaskRepository());
+        sinon.stub(service, "createTask").returns(
+            Promise.resolve({
+                id: TEST_ID,
+                title: TEST_TITLE,
+                date: TEST_DATE,
+                done: false,
+            })
+        );
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: service,
+        });
+
+        request(app.callback())
+            .post(ROUTER_PREFIX)
+            .send({
+                id: TEST_ID,
+                title: TEST_TITLE,
+                date: TEST_DATE,
+                done: false,
+            })
+            .expect(200)
+            .end(done);
+    });
     it("should update task", (done) => {});
     it("should fail updating with invalid body", (done) => {});
     it("should delete task", (done) => {});

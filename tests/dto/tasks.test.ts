@@ -10,7 +10,7 @@ const TEST_ID = "totally-not-fake-id";
 const TEST_TITLE = "Test title";
 const TEST_DATE = "2022-05-12T19:46:25.667Z";
 
-describe.only(`Task dtos body validation`, () => {
+describe(`Task dtos body validation`, () => {
     it("TaskDTO - should validate correct body", () => {
         const body = {
             id: TEST_ID,
