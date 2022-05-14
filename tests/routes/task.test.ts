@@ -37,7 +37,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .end(done);
     });
 
-    it.only("should fail creating task with invalid body", (done) => {
+    it("should fail creating task with invalid body", (done) => {
         const service = useTaskService(useTaskRepository());
         sinon.stub(service, "createTask").returns(
             Promise.resolve({
