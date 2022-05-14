@@ -1,0 +1,9 @@
+-   add validation on task and notes endpoints
+-   handle requet failures in app
+-   mobile view (progresive web app)
+-   docker image
+-   integration tests for repos
+-   frontend tests
+-   stroybook
+-   shortcuts
+-   handle login failure and success
