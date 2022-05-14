@@ -7,3 +7,5 @@
 -   stroybook
 -   shortcuts
 -   handle login failure and success
+-   sorting by dates and status
+-   moving dates if status is not done
