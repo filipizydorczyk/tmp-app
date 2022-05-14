@@ -2,7 +2,12 @@ import Router from "@koa/router";
 import bodyParser from "koa-bodyparser";
 import { API_VERSION } from "@tmp/back/routes";
 import { AppDependencies } from "@tmp/back/app";
-import { TaskDTO, NewTaskDTO, isNewTaskDTOValid } from "@tmp/back/dto";
+import {
+    TaskDTO,
+    NewTaskDTO,
+    isNewTaskDTOValid,
+    isTaskDTOValid,
+} from "@tmp/back/dto";
 
 const router = new Router({ prefix: `${API_VERSION}/tasks` });
 
@@ -35,6 +40,10 @@ router.put("/", bodyParser(), async (ctx) => {
     // TODO add token validation for now there is none
     const { updateTask } = (ctx.dependencies as AppDependencies).taskService;
     const newValues = ctx.request.body as TaskDTO;
+    if (!isTaskDTOValid(newValues)) {
+        ctx.status = 400;
+        return;
+    }
 
     const result = await updateTask(newValues);
 
