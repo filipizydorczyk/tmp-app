@@ -82,5 +82,30 @@ describe.only(`API ${ROUTER_PREFIX}`, () => {
     });
     it("should update task", (done) => {});
     it("should fail updating with invalid body", (done) => {});
-    it("should delete task", (done) => {});
+    it("should delete task", (done) => {
+        const service = useTaskService(useTaskRepository());
+        sinon.stub(service, "deleteTask").returns(Promise.resolve(true));
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: service,
+        });
+
+        request(app.callback())
+            .delete(`${ROUTER_PREFIX}/1`)
+            .expect(200)
+            .end(done);
+    });
+    it("should throw 500 when delete service failed", (done) => {
+        const service = useTaskService(useTaskRepository());
+        sinon.stub(service, "deleteTask").returns(Promise.resolve(false));
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: service,
+        });
+
+        request(app.callback())
+            .delete(`${ROUTER_PREFIX}/1`)
+            .expect(500)
+            .end(done);
+    });
 });
