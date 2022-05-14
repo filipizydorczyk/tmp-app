@@ -10,7 +10,7 @@ const TEST_ID = "totally-not-fake-id";
 const TEST_TITLE = "Test title";
 const TEST_DATE = "2022-05-12T19:46:25.667Z";
 
-describe(`Task dtos body validation`, () => {
+describe.only(`Task dtos body validation`, () => {
     it("TaskDTO - should validate correct body", () => {
         const body = {
             id: TEST_ID,
@@ -21,7 +21,7 @@ describe(`Task dtos body validation`, () => {
 
         assert.ok(isTaskDTOValid(body));
     });
-    it.only("TaskDTO - should refuse incorrect field values", () => {
+    it("TaskDTO - should refuse incorrect field values", () => {
         const body = {
             id: TEST_ID,
             title: 123,
@@ -40,7 +40,23 @@ describe(`Task dtos body validation`, () => {
 
         assert.ok(!isTaskDTOValid(body));
     });
-    it("NewTaskDTO - should validate correct body", () => {});
-    it("NewTaskDTO - should refuse incorrect field values", () => {});
-    it("NewTaskDTO - should refuse when fileds are missing", () => {});
+    it("NewTaskDTO - should validate correct body", () => {
+        const body = {
+            title: TEST_TITLE,
+        } as NewTaskDTO;
+
+        assert.ok(isNewTaskDTOValid(body));
+    });
+    it("NewTaskDTO - should refuse incorrect field values", () => {
+        const body = {
+            title: 3213,
+        } as unknown as NewTaskDTO;
+
+        assert.ok(!isNewTaskDTOValid(body));
+    });
+    it("NewTaskDTO - should refuse when fileds are missing", () => {
+        const body = {} as unknown as NewTaskDTO;
+
+        assert.ok(!isNewTaskDTOValid(body));
+    });
 });
