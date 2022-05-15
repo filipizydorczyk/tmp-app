@@ -98,7 +98,27 @@ export const useSecurity = (singletonService: SingletonService) => {
         };
     };
 
-    return { login, refresh };
+    const validate = (accessToken: string): Promise<boolean> => {
+        return new Promise((resolve, _) => {
+            jwt.verify(accessToken, ACCESS_TOKEN_SECRET, (err, _) => {
+                if (err) {
+                    Promise.reject(false);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    };
+
+    const logout = (refreshToken: string): boolean => {
+        if (refreshTokens.includes(refreshToken)) {
+            refreshTokens = refreshTokens.filter((c) => c != refreshToken);
+            return true;
+        }
+        return false;
+    };
+
+    return { login, refresh, validate, logout };
 };
 
 export default useSecurity;
