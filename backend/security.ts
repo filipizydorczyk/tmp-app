@@ -1,6 +1,12 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { SingletonService } from "@tmp/back/services/singleton-service";
 
+/**
+ * Username is hardcoded here since there is single user for whole app
+ * and because of that database doesn't store its username
+ */
+const USER = "admin";
 const ACCESS_TOKEN_SECRET =
     process.env.ACCESS_TOKEN_SECRET || crypto.randomBytes(64).toString("hex");
 const REFRESH_TOKEN_SECRET =
@@ -11,60 +17,88 @@ export type TokenResponse = {
     refreshToken: string | null;
 };
 
+export type SecurityResponseType = "login" | "create" | "refuse" | "refresh";
+
+export type SecurityResponse = {
+    type: SecurityResponseType;
+    tokens: TokenResponse;
+};
+
 /**
  * Functions to manage tokens to authorize app access
  * @returns ready object that contains functions to
  * manage tokens
  */
-export const useSecurity = () => {
+export const useSecurity = (singletonService: SingletonService) => {
     let refreshTokens: string[] = [];
 
-    /**
-     * Function to obtain access and refresh tokens and
-     * remember refresh token to future operations
-     * @param password to create tokens from
-     * @returns accessToken and refreshToken
-     */
-    const login = (password: string): TokenResponse => {
-        const accessToken = jwt.sign({ password }, ACCESS_TOKEN_SECRET, {
-            expiresIn: "15m",
-        });
-        const refreshToken = jwt.sign({ password }, REFRESH_TOKEN_SECRET, {
-            expiresIn: "20m",
-        });
-        refreshTokens.push(refreshToken);
+    const login = async (password: string): Promise<SecurityResponse> => {
+        const { getPassword, setPassword, comparePasswords } = singletonService;
+        const currentPassword = await getPassword();
+        let type: SecurityResponseType = "refuse";
+
+        if (currentPassword === null) {
+            const result = await setPassword(password);
+            type = result ? "create" : "refuse";
+        } else {
+            const result = await comparePasswords(password);
+            type = result ? "login" : "refuse";
+        }
+
+        if (type === "login" || type === "create") {
+            const accessToken = jwt.sign({ user: USER }, ACCESS_TOKEN_SECRET, {
+                expiresIn: "15m",
+            });
+            const refreshToken = jwt.sign(
+                { user: USER },
+                REFRESH_TOKEN_SECRET,
+                {
+                    expiresIn: "20m",
+                }
+            );
+            refreshTokens.push(refreshToken);
+
+            return {
+                type,
+                tokens: {
+                    accessToken,
+                    refreshToken,
+                },
+            };
+        }
 
         return {
-            accessToken,
-            refreshToken,
+            type,
+            tokens: {
+                accessToken: null,
+                refreshToken: null,
+            },
         };
     };
 
-    /**
-     * Function to clear refresh token and in consequence
-     * stop authorizing requests with this token
-     * @param token refresh token to be removed
-     * @returns if operation was successful
-     */
-    const logout = (token: string): boolean => {
-        return false;
-    };
-
-    /**
-     * Function to refresh expired token
-     * @param token refresh token to be used
-     * @returns accessToken and refreshToken
-     */
-    const refresh = (token: string): TokenResponse => {
+    const refresh = (token: string): SecurityResponse => {
         if (!refreshTokens.includes(token)) {
-            return { accessToken: null, refreshToken: null };
+            return {
+                type: "refuse",
+                tokens: { accessToken: null, refreshToken: null },
+            };
         }
         refreshTokens = refreshTokens.filter((tk) => tk !== token);
 
-        return { accessToken: null, refreshToken: null };
+        return {
+            type: "refresh",
+            tokens: {
+                accessToken: jwt.sign({ user: USER }, ACCESS_TOKEN_SECRET, {
+                    expiresIn: "15m",
+                }),
+                refreshToken: jwt.sign({ user: USER }, REFRESH_TOKEN_SECRET, {
+                    expiresIn: "20m",
+                }),
+            },
+        };
     };
 
-    return { login, logout, refresh };
+    return { login, refresh };
 };
 
 export default useSecurity;
