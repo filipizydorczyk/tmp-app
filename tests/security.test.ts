@@ -23,8 +23,17 @@ describe.only(`Security tests`, () => {
         assert.ok(response.tokens.refreshToken !== null);
     });
 
-    it("should create passwrod if there is no password yet", () => {
-        assert.ok(false);
+    it("should create passwrod if there is no password yet", async () => {
+        const service = useSingletonService({} as SingletonRepository);
+        sinon.stub(service, "getPassword").returns(Promise.resolve(null));
+        sinon.stub(service, "setPassword").returns(Promise.resolve(true));
+        sinon.stub(service, "comparePasswords").returns(Promise.resolve(false));
+
+        const { login } = useSecurity(service);
+        const response = await login(TEST_PASSWORD);
+        assert.deepEqual(response.type, "create");
+        assert.ok(response.tokens.accessToken !== null);
+        assert.ok(response.tokens.refreshToken !== null);
     });
     it("should reject if password is incorect", () => {
         assert.ok(false);
