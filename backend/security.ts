@@ -26,6 +26,12 @@ export type SecurityResponse = {
 
 /**
  * Functions to manage tokens to authorize app access
+ *
+ * @param singletonService singleton service to
+ * operate with password
+ * @param tokens list of tokens to be stored initially.
+ * Do not use it in the actuall app just in tests when
+ * test scenario assume some sort of initial state
  * @returns ready object that contains functions to
  * manage tokens
  */
