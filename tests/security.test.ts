@@ -20,7 +20,7 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 const USER = "admin";
 
-describe.only(`Security tests`, () => {
+describe(`Security tests`, () => {
     it("should login with correct creadentials", async () => {
         const service = useSingletonService({} as SingletonRepository);
         sinon
@@ -102,10 +102,22 @@ describe.only(`Security tests`, () => {
     });
 
     it("should refresh token", () => {
-        assert.ok(false);
+        const service = useSingletonService({} as SingletonRepository);
+        const { refresh } = useSecurity(service, [REFRESH_TOKEN_SECRET || ""]);
+        const result = refresh(REFRESH_TOKEN_SECRET || "");
+
+        assert.deepEqual(result.type, "refresh");
+        assert.ok(result.tokens.accessToken !== null);
+        assert.ok(result.tokens.refreshToken !== null);
     });
 
     it("should fail refreshing with incorect token", () => {
-        assert.ok(false);
+        const service = useSingletonService({} as SingletonRepository);
+        const { refresh } = useSecurity(service, [REFRESH_TOKEN_SECRET || ""]);
+        const result = refresh("wrong-token");
+
+        assert.deepEqual(result.type, "refuse");
+        assert.deepEqual(result.tokens.accessToken, null);
+        assert.deepEqual(result.tokens.refreshToken, null);
     });
 });
