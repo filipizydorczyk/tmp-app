@@ -102,7 +102,7 @@ export const useSecurity = (singletonService: SingletonService) => {
         return new Promise((resolve, _) => {
             jwt.verify(accessToken, ACCESS_TOKEN_SECRET, (err, _) => {
                 if (err) {
-                    Promise.reject(false);
+                    resolve(false);
                 } else {
                     resolve(true);
                 }
