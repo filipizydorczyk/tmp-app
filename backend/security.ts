@@ -29,8 +29,11 @@ export type SecurityResponse = {
  * @returns ready object that contains functions to
  * manage tokens
  */
-export const useSecurity = (singletonService: SingletonService) => {
-    let refreshTokens: string[] = [];
+export const useSecurity = (
+    singletonService: SingletonService,
+    tokens?: string[]
+) => {
+    let refreshTokens: string[] = tokens || [];
 
     const login = async (password: string): Promise<SecurityResponse> => {
         const { getPassword, setPassword, comparePasswords } = singletonService;

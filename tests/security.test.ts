@@ -82,15 +82,23 @@ describe.only(`Security tests`, () => {
         const service = useSingletonService({} as SingletonRepository);
         const { validate } = useSecurity(service);
         const response = await validate("totally-wrong-token");
-        assert.ok(response);
+        assert.ok(!response);
     });
 
     it("should logout", () => {
-        assert.ok(false);
+        const service = useSingletonService({} as SingletonRepository);
+        const { logout } = useSecurity(service, [REFRESH_TOKEN_SECRET || ""]);
+        const result = logout(REFRESH_TOKEN_SECRET || "");
+
+        assert.ok(result);
     });
 
     it("should not logout if refresh token doesnt exist", () => {
-        assert.ok(false);
+        const service = useSingletonService({} as SingletonRepository);
+        const { logout } = useSecurity(service, [REFRESH_TOKEN_SECRET || ""]);
+        const result = logout("wrong-token");
+
+        assert.ok(!result);
     });
 
     it("should refresh token", () => {
