@@ -1,61 +1,25 @@
-import jwt from "jsonwebtoken";
 import Router from "@koa/router";
 import { API_VERSION } from "@tmp/back/routes";
 import bodyParser from "koa-bodyparser";
-import crypto from "crypto";
 import { AppDependencies } from "@tmp/back/app";
 import { LoginDTO } from "@tmp/back/dto";
-
-const ACCESS_TOKEN_SECRET =
-    process.env.ACCESS_TOKEN_SECRET || crypto.randomBytes(64).toString("hex");
-const REFRESH_TOKEN_SECRET =
-    process.env.REFRESH_TOKEN_SECRET || crypto.randomBytes(64).toString("hex");
 
 const router = new Router({ prefix: `${API_VERSION}/token` });
 
 router.post("/login", bodyParser(), async (ctx) => {
-    const { getPassword, setPassword, comparePasswords } = (
-        ctx.dependencies as AppDependencies
-    ).singletonService;
-    const currentPassword = await getPassword();
+    const { login } = (ctx.dependencies as AppDependencies).security;
     const providedPassword = ctx.request.body.password || "";
 
-    let responseStatus = 401;
+    const result = await login(providedPassword);
 
-    if (currentPassword === null) {
-        const isPasswordSet = await setPassword(providedPassword);
-        responseStatus = isPasswordSet ? 200 : 401;
-    } else {
-        const result = await comparePasswords(providedPassword);
-        responseStatus = result ? 200 : 401;
-    }
-
-    ctx.status = responseStatus;
+    ctx.status = result.type === "refuse" ? 401 : 200;
     ctx.body = {
         message:
-            responseStatus === 401
+            result.type === "refuse"
                 ? "Provided password was not correct"
                 : "Successfully loged in!",
-        accessToken:
-            responseStatus === 200
-                ? jwt.sign(
-                      { password: providedPassword },
-                      ACCESS_TOKEN_SECRET,
-                      {
-                          expiresIn: "15m",
-                      }
-                  )
-                : null,
-        refreshToken:
-            responseStatus === 200
-                ? jwt.sign(
-                      { password: providedPassword },
-                      REFRESH_TOKEN_SECRET,
-                      {
-                          expiresIn: "20m",
-                      }
-                  )
-                : null,
+        accessToken: result.tokens.accessToken,
+        refreshToken: result.tokens.refreshToken,
     } as LoginDTO;
 });
 
