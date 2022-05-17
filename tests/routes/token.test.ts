@@ -5,6 +5,7 @@ import useSingletonService from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import assert from "assert";
 import { TaskService } from "@tmp/back/services/task-service";
+import { Security } from "@tmp/back/security";
 
 const ROUTER_PREFIX = "/api/v1/token";
 const TEST_PASSWORD = "test";
@@ -21,6 +22,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
@@ -49,6 +51,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
@@ -78,6 +81,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
@@ -107,6 +111,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)

@@ -6,6 +6,7 @@ import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import assert from "assert";
 import { NotesDTO } from "@tmp/back/dto";
 import { TaskService } from "@tmp/back/services/task-service";
+import { Security } from "@tmp/back/security";
 
 const ROUTER_PREFIX = "/api/v1/notes";
 const TEST_NOTE = "Hello world!";
@@ -18,6 +19,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .get(`${ROUTER_PREFIX}`)
@@ -36,6 +38,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .get(`${ROUTER_PREFIX}`)
@@ -53,6 +56,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)
@@ -74,6 +78,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)
@@ -99,6 +104,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
+            security: {} as Security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)

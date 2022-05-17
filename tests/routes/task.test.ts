@@ -5,6 +5,7 @@ import useApp from "@tmp/back/app";
 import { SingletonService } from "@tmp/back/services/singleton-service";
 import request from "supertest";
 import assert from "assert";
+import { Security } from "@tmp/back/security";
 
 const ROUTER_PREFIX = "/api/v1/tasks";
 const TEST_ID = "totally-not-fake-id";
@@ -26,6 +27,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
+            security: {} as Security,
         });
 
         request(app.callback())
@@ -50,6 +52,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
+            security: {} as Security,
         });
 
         request(app.callback()).post(ROUTER_PREFIX).expect(400).end(done);
@@ -68,6 +71,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
+            security: {} as Security,
         });
 
         request(app.callback())
@@ -88,6 +92,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
+            security: {} as Security,
         });
 
         request(app.callback())
@@ -108,6 +113,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
+            security: {} as Security,
         });
 
         request(app.callback()).put(ROUTER_PREFIX).expect(400).end(done);
@@ -119,6 +125,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
+            security: {} as Security,
         });
 
         request(app.callback())
@@ -139,6 +146,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
+            security: {} as Security,
         });
 
         request(app.callback())
@@ -153,6 +161,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
+            security: {} as Security,
         });
 
         request(app.callback())

@@ -3,10 +3,12 @@ import cors from "@koa/cors";
 import { tokenRoutes, notesRoutes, taskRoutes } from "@tmp/back/routes";
 import { SingletonService } from "@tmp/back/services/singleton-service";
 import { TaskService } from "@tmp/back/services/task-service";
+import { Security } from "@tmp/back/security";
 
 export type AppDependencies = {
     singletonService: SingletonService;
     taskService: TaskService;
+    security: Security;
 };
 
 /**

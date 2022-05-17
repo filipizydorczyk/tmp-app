@@ -24,6 +24,13 @@ export type SecurityResponse = {
     tokens: TokenResponse;
 };
 
+export type Security = {
+    login: (password: string) => Promise<SecurityResponse>;
+    refresh: (token: string) => SecurityResponse;
+    validate: (accessToken: string) => Promise<boolean>;
+    logout: (refreshToken: string) => boolean;
+};
+
 /**
  * Functions to manage tokens to authorize app access
  *
@@ -38,7 +45,7 @@ export type SecurityResponse = {
 export const useSecurity = (
     singletonService: SingletonService,
     tokens?: string[]
-) => {
+): Security => {
     let refreshTokens: string[] = tokens || [];
 
     /**
