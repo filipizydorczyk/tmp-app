@@ -1,28 +1,33 @@
 import request from "supertest";
 import useApp from "@tmp/back/app";
 import sinon from "sinon";
-import useSingletonService from "@tmp/back/services/singleton-service";
-import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
+import { SingletonService } from "@tmp/back/services/singleton-service";
 import assert from "assert";
 import { TaskService } from "@tmp/back/services/task-service";
-import { Security } from "@tmp/back/security";
+import useSecurity from "@tmp/back/security";
 
 const ROUTER_PREFIX = "/api/v1/token";
 const TEST_PASSWORD = "test";
+const TEST_ACCESS_TOKEN = "totally-not-fake-access-token";
+const TEST_REFRESH_TOKEN = "totally-not-fake-refresh-token";
 
 describe(`API ${ROUTER_PREFIX}`, () => {
     it("should validate when correct creds", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        sinon.stub(service, "comparePasswords").returns(Promise.resolve(true));
-        sinon
-            .stub(service, "getPassword")
-            .returns(Promise.resolve(TEST_PASSWORD));
-        sinon.stub(service, "setPassword").returns(Promise.resolve(true));
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "login").returns(
+            Promise.resolve({
+                type: "login",
+                tokens: {
+                    accessToken: TEST_ACCESS_TOKEN,
+                    refreshToken: TEST_REFRESH_TOKEN,
+                },
+            })
+        );
 
         const app = useApp({
-            singletonService: service,
+            singletonService: {} as SingletonService,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security: security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
@@ -39,19 +44,21 @@ describe(`API ${ROUTER_PREFIX}`, () => {
     });
 
     it("should create password when there is no paswd yet", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        const setPassSpy = sinon.spy(service, "setPassword");
-        const compPassSpy = sinon.spy(service, "comparePasswords");
-        sinon.stub(service, "getPassword").returns(
-            new Promise((resolve, _) => {
-                resolve(null);
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "login").returns(
+            Promise.resolve({
+                type: "create",
+                tokens: {
+                    accessToken: TEST_ACCESS_TOKEN,
+                    refreshToken: TEST_REFRESH_TOKEN,
+                },
             })
         );
 
         const app = useApp({
-            singletonService: service,
+            singletonService: {} as SingletonService,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security: security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
@@ -60,9 +67,6 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             })
             .expect(200)
             .expect((req) => {
-                assert.deepEqual(setPassSpy.callCount, 1);
-                assert.deepEqual(compPassSpy.callCount, 0);
-
                 assert.deepEqual(req.body.message, "Successfully loged in!");
                 assert.notDeepEqual(req.body.accessToken, null);
                 assert.notDeepEqual(req.body.refreshToken, null);
@@ -71,17 +75,21 @@ describe(`API ${ROUTER_PREFIX}`, () => {
     });
 
     it("should fail when wrong password provided", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        sinon.stub(service, "comparePasswords").returns(Promise.resolve(false));
-        sinon
-            .stub(service, "getPassword")
-            .returns(Promise.resolve(TEST_PASSWORD));
-        sinon.stub(service, "setPassword").returns(Promise.resolve(false));
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "login").returns(
+            Promise.resolve({
+                type: "refuse",
+                tokens: {
+                    accessToken: null,
+                    refreshToken: null,
+                },
+            })
+        );
 
         const app = useApp({
-            singletonService: service,
+            singletonService: {} as SingletonService,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security: security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
@@ -101,25 +109,20 @@ describe(`API ${ROUTER_PREFIX}`, () => {
     });
 
     it("should fail when no body was provided", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        sinon.stub(service, "comparePasswords").returns(Promise.resolve(false));
-        sinon
-            .stub(service, "getPassword")
-            .returns(Promise.resolve(TEST_PASSWORD));
-        sinon.stub(service, "setPassword").returns(Promise.resolve(false));
+        const security = useSecurity({} as SingletonService);
 
         const app = useApp({
-            singletonService: service,
+            singletonService: {} as SingletonService,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security: security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}/login`)
-            .expect(401)
+            .expect(400)
             .expect((req) => {
                 assert.deepEqual(
                     req.body.message,
-                    "Provided password was not correct"
+                    "Bad request! Missing body."
                 );
                 assert.deepEqual(req.body.accessToken, null);
                 assert.deepEqual(req.body.refreshToken, null);

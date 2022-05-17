@@ -8,8 +8,18 @@ const router = new Router({ prefix: `${API_VERSION}/token` });
 
 router.post("/login", bodyParser(), async (ctx) => {
     const { login } = (ctx.dependencies as AppDependencies).security;
-    const providedPassword = ctx.request.body.password || "";
 
+    if (!ctx.request.body.password) {
+        ctx.status = 400;
+        ctx.body = {
+            message: "Bad request! Missing body.",
+            accessToken: null,
+            refreshToken: null,
+        } as LoginDTO;
+        return;
+    }
+
+    const providedPassword = ctx.request.body.password;
     const result = await login(providedPassword);
 
     ctx.status = result.type === "refuse" ? 401 : 200;
