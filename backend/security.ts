@@ -41,6 +41,14 @@ export const useSecurity = (
 ) => {
     let refreshTokens: string[] = tokens || [];
 
+    /**
+     * Function to login with credentials
+     * @param password password to be verified. If password waws
+     * never provided and service will retrun null provided
+     * password will became a new password
+     * @returns type of performed operation and
+     * tokens to validation
+     */
     const login = async (password: string): Promise<SecurityResponse> => {
         const { getPassword, setPassword, comparePasswords } = singletonService;
         const currentPassword = await getPassword();
@@ -85,6 +93,11 @@ export const useSecurity = (
         };
     };
 
+    /**
+     * Function to refresh token
+     * @param token (refreh) to authorize refresh request
+     * @returns type of performed operation and new tokens
+     */
     const refresh = (token: string): SecurityResponse => {
         if (!refreshTokens.includes(token)) {
             return {
@@ -107,6 +120,12 @@ export const useSecurity = (
         };
     };
 
+    /**
+     * Function to validate token. It should be used in
+     * routes that are supposed to be restricted
+     * @param accessToken to be validated
+     * @returns boolean if token was validated
+     */
     const validate = (accessToken: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
             jwt.verify(accessToken, ACCESS_TOKEN_SECRET, (err, _) => {
@@ -119,6 +138,12 @@ export const useSecurity = (
         });
     };
 
+    /**
+     * Function to logout from app. It will me remove refresh
+     * token from memory so that you can't refresh token anymore
+     * @param refreshToken to be removed
+     * @returns boolean if token was removed
+     */
     const logout = (refreshToken: string): boolean => {
         if (refreshTokens.includes(refreshToken)) {
             refreshTokens = refreshTokens.filter((c) => c != refreshToken);
