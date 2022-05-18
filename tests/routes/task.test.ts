@@ -1,3 +1,14 @@
+/**
+ * As u can see I am not testsing here if request will fail
+ * when wrong token is provided. This file is basically testing
+ * if endpoints are restricted at all that being `validateToken`
+ * missleware is used on them. Actuall tests of this middleware
+ * are written in `tests/security.test.ts` and thats place where
+ * that is being tested. I basically dont repet this test for
+ * every route
+ *
+ * @author Filip Izydorczyk
+ */
 import useTaskRepository from "@tmp/back/repositories/task-repo";
 import useTaskService from "@tmp/back/services/task-service";
 import sinon from "sinon";
