@@ -43,6 +43,33 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .end(done);
     });
 
+    it("should not return all tasks due to missing auth header", (done) => {
+        const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        const getTaskSpy = sinon.stub(service, "getTasks").returns(
+            Promise.resolve({
+                page: 0,
+                pages: 1,
+                content: [],
+                total: 0,
+                size: 0,
+            })
+        );
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: service,
+            security,
+        });
+
+        request(app.callback())
+            .get(ROUTER_PREFIX)
+            .expect(400)
+            .expect((_) => {
+                assert.deepEqual(getTaskSpy.callCount, 0);
+            })
+            .end(done);
+    });
+
     it("should fail creating task with invalid body", (done) => {
         const service = useTaskService(useTaskRepository());
         const security = useSecurity({} as SingletonService);
@@ -99,6 +126,38 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .end(done);
     });
 
+    it("should not create task due to auth header missing", (done) => {
+        const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        const createTaskSpy = sinon.stub(service, "createTask").returns(
+            Promise.resolve({
+                id: TEST_ID,
+                title: TEST_TITLE,
+                date: TEST_DATE,
+                done: false,
+            })
+        );
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: service,
+            security,
+        });
+
+        request(app.callback())
+            .post(ROUTER_PREFIX)
+            .send({
+                id: TEST_ID,
+                title: TEST_TITLE,
+                date: TEST_DATE,
+                done: false,
+            })
+            .expect(400)
+            .expect((_) => {
+                assert.deepEqual(createTaskSpy.callCount, 0);
+            })
+            .end(done);
+    });
+
     it("should update task", (done) => {
         const service = useTaskService(useTaskRepository());
         const security = useSecurity({} as SingletonService);
@@ -120,6 +179,33 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 done: false,
             })
             .expect(200)
+            .end(done);
+    });
+
+    it("should not update task due to missing auth header", (done) => {
+        const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        const updateTaskSpy = sinon
+            .stub(service, "updateTask")
+            .returns(Promise.resolve(true));
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: service,
+            security,
+        });
+
+        request(app.callback())
+            .put(ROUTER_PREFIX)
+            .send({
+                id: TEST_ID,
+                title: TEST_TITLE,
+                date: TEST_DATE,
+                done: false,
+            })
+            .expect(400)
+            .expect((_) => {
+                assert.deepEqual(updateTaskSpy.callCount, 0);
+            })
             .end(done);
     });
 
@@ -176,6 +262,27 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .delete(`${ROUTER_PREFIX}/1`)
             .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .expect(200)
+            .end(done);
+    });
+
+    it("should not delete task due to missing auth header", (done) => {
+        const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        const deleteTaskSpy = sinon
+            .stub(service, "deleteTask")
+            .returns(Promise.resolve(true));
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: service,
+            security,
+        });
+
+        request(app.callback())
+            .delete(`${ROUTER_PREFIX}/1`)
+            .expect(400)
+            .expect((_) => {
+                assert.deepEqual(deleteTaskSpy.callCount, 0);
+            })
             .end(done);
     });
 
