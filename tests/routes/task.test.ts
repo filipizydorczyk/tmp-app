@@ -5,16 +5,19 @@ import useApp from "@tmp/back/app";
 import { SingletonService } from "@tmp/back/services/singleton-service";
 import request from "supertest";
 import assert from "assert";
-import { Security } from "@tmp/back/security";
+import useSecurity from "@tmp/back/security";
 
 const ROUTER_PREFIX = "/api/v1/tasks";
 const TEST_ID = "totally-not-fake-id";
 const TEST_TITLE = "Test title";
 const TEST_DATE = "2022-05-12T19:46:25.667Z";
+const TEST_ACCESS_TOKEN = "totally-not-fake-token";
 
 describe(`API ${ROUTER_PREFIX}`, () => {
     it("should return all tasks", (done) => {
         const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "getTasks").returns(
             Promise.resolve({
                 page: 0,
@@ -27,11 +30,12 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
-            security: {} as Security,
+            security,
         });
 
         request(app.callback())
             .get(ROUTER_PREFIX)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .expect(200)
             .expect((req) => {
                 assert.deepEqual(req.body.content, []);
@@ -41,6 +45,8 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should fail creating task with invalid body", (done) => {
         const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "createTask").returns(
             Promise.resolve({
                 id: TEST_ID,
@@ -52,30 +58,37 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
-            security: {} as Security,
-        });
-
-        request(app.callback()).post(ROUTER_PREFIX).expect(400).end(done);
-    });
-
-    it("should create task", (done) => {
-        const service = useTaskService(useTaskRepository());
-        sinon.stub(service, "createTask").returns(
-            Promise.resolve({
-                id: TEST_ID,
-                title: TEST_TITLE,
-                date: TEST_DATE,
-                done: false,
-            })
-        );
-        const app = useApp({
-            singletonService: {} as SingletonService,
-            taskService: service,
-            security: {} as Security,
+            security,
         });
 
         request(app.callback())
             .post(ROUTER_PREFIX)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
+            .expect(400)
+            .end(done);
+    });
+
+    it("should create task", (done) => {
+        const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
+        sinon.stub(service, "createTask").returns(
+            Promise.resolve({
+                id: TEST_ID,
+                title: TEST_TITLE,
+                date: TEST_DATE,
+                done: false,
+            })
+        );
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: service,
+            security,
+        });
+
+        request(app.callback())
+            .post(ROUTER_PREFIX)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .send({
                 id: TEST_ID,
                 title: TEST_TITLE,
@@ -88,15 +101,18 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should update task", (done) => {
         const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "updateTask").returns(Promise.resolve(true));
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
-            security: {} as Security,
+            security,
         });
 
         request(app.callback())
             .put(ROUTER_PREFIX)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .send({
                 id: TEST_ID,
                 title: TEST_TITLE,
@@ -109,11 +125,13 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should fail updating with invalid body", (done) => {
         const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "updateTask").returns(Promise.resolve(true));
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
-            security: {} as Security,
+            security,
         });
 
         request(app.callback()).put(ROUTER_PREFIX).expect(400).end(done);
@@ -121,15 +139,18 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should throw 500 when database operation failed", (done) => {
         const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "updateTask").returns(Promise.resolve(false));
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
-            security: {} as Security,
+            security,
         });
 
         request(app.callback())
             .put(ROUTER_PREFIX)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .send({
                 id: TEST_ID,
                 title: TEST_TITLE,
@@ -142,30 +163,36 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should delete task", (done) => {
         const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "deleteTask").returns(Promise.resolve(true));
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
-            security: {} as Security,
+            security,
         });
 
         request(app.callback())
             .delete(`${ROUTER_PREFIX}/1`)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .expect(200)
             .end(done);
     });
 
     it("should throw 500 when delete service failed", (done) => {
         const service = useTaskService(useTaskRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "deleteTask").returns(Promise.resolve(false));
         const app = useApp({
             singletonService: {} as SingletonService,
             taskService: service,
-            security: {} as Security,
+            security,
         });
 
         request(app.callback())
             .delete(`${ROUTER_PREFIX}/1`)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .expect(500)
             .end(done);
     });

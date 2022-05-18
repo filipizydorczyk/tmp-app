@@ -8,11 +8,12 @@ import {
     isNewTaskDTOValid,
     isTaskDTOValid,
 } from "@tmp/back/dto";
+import { validateToken } from "@tmp/back/security";
 
 const router = new Router({ prefix: `${API_VERSION}/tasks` });
+router.use(validateToken);
 
 router.get("/", bodyParser(), async (ctx) => {
-    // TODO add token validation for now there is none
     const { getTasks } = (ctx.dependencies as AppDependencies).taskService;
     const response = await getTasks();
 
@@ -21,7 +22,6 @@ router.get("/", bodyParser(), async (ctx) => {
 });
 
 router.post("/", bodyParser(), async (ctx) => {
-    // TODO add token validation for now there is none
     const { createTask } = (ctx.dependencies as AppDependencies).taskService;
     const body = ctx.request.body as NewTaskDTO;
     if (!isNewTaskDTOValid(body)) {
@@ -29,7 +29,6 @@ router.post("/", bodyParser(), async (ctx) => {
         return;
     }
 
-    // TODO move creating logic to service (also id creating from repo to service)
     const response = await createTask(body);
 
     ctx.status = 200;
@@ -37,7 +36,6 @@ router.post("/", bodyParser(), async (ctx) => {
 });
 
 router.put("/", bodyParser(), async (ctx) => {
-    // TODO add token validation for now there is none
     const { updateTask } = (ctx.dependencies as AppDependencies).taskService;
     const newValues = ctx.request.body as TaskDTO;
     if (!isTaskDTOValid(newValues)) {
@@ -52,7 +50,6 @@ router.put("/", bodyParser(), async (ctx) => {
 });
 
 router.delete("/:id", bodyParser(), async (ctx) => {
-    // TODO add token validation for now there is none
     const { deleteTask } = (ctx.dependencies as AppDependencies).taskService;
     const id = ctx.params.id;
 
