@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { SingletonService } from "@tmp/back/services/singleton-service";
+import Router from "@koa/router";
+import { DefaultContext, DefaultState } from "koa";
+import { AppDependencies } from "@tmp/back/app";
 
 /**
  * Username is hardcoded here since there is single user for whole app
@@ -160,6 +163,26 @@ export const useSecurity = (
     };
 
     return { login, refresh, validate, logout };
+};
+
+export const validateToken: Router.Middleware<
+    DefaultState,
+    DefaultContext
+> = async (ctx, next) => {
+    const { validate } = (ctx.dependencies as AppDependencies).security;
+    const authHeader = ctx.req.headers["authorization"];
+    if (!authHeader) {
+        ctx.status = 400;
+        return;
+    }
+    const token = authHeader.split(" ")[1];
+    const result = await validate(token);
+    if (result) {
+        await next();
+    } else {
+        ctx.status = 403;
+        return;
+    }
 };
 
 export default useSecurity;

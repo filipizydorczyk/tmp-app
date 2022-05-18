@@ -6,13 +6,17 @@
  *
  * @author Filip Izydorczyk
  */
-
+import Koa from "koa";
+import Router from "@koa/router";
 import { SingletonRepository } from "@tmp/back/repositories/singleton-repo";
-import useSecurity from "@tmp/back/security";
-import useSingletonService from "@tmp/back/services/singleton-service";
+import useSecurity, { validateToken } from "@tmp/back/security";
+import useSingletonService, {
+    SingletonService,
+} from "@tmp/back/services/singleton-service";
 import assert from "assert";
 import jwt from "jsonwebtoken";
 import sinon from "sinon";
+import request from "supertest";
 
 const TEST_PASSWORD = "test";
 
@@ -119,5 +123,21 @@ describe(`Security tests`, () => {
         assert.deepEqual(result.type, "refuse");
         assert.deepEqual(result.tokens.accessToken, null);
         assert.deepEqual(result.tokens.refreshToken, null);
+    });
+
+    it("Koa middleware - should fail bacause of missing authorization header", (done) => {
+        const app = new Koa();
+        const router = new Router();
+        router.get("/", (ctx, next) => {
+            ctx.status = 200;
+        });
+        app.use(async (ctx, next) => {
+            ctx.dependencies = { security: {} };
+            await next();
+        });
+        app.use(validateToken);
+        app.use(router.routes());
+
+        request(app.callback()).get("/").expect(400).end(done);
     });
 });
