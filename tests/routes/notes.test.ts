@@ -1,3 +1,14 @@
+/**
+ * As u can see I am not testsing here if request will fail
+ * when wrong token is provided. This file is basically testing
+ * if endpoints are restricted at all that being `validateToken`
+ * missleware is used on them. Actuall tests of this middleware
+ * are written in `tests/security.test.ts` and thats place where
+ * that is being tested. I basically dont repet this test for
+ * every route
+ *
+ * @author Filip Izydorczyk
+ */
 import request from "supertest";
 import useApp from "@tmp/back/app";
 import sinon from "sinon";
@@ -33,6 +44,27 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             .expect((req) => {
                 assert.deepEqual(req.body.message, "Notes sucessfully fetched");
                 assert.deepEqual(req.body.content, TEST_NOTE);
+            })
+            .end(done);
+    });
+
+    it("should note return note due to a missing auth header", (done) => {
+        const service = useSingletonService(useSingletonRepository());
+        const security = useSecurity({} as SingletonService);
+        const getNotesSpy = sinon
+            .stub(service, "getNotes")
+            .returns(Promise.resolve(TEST_NOTE));
+
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+            security,
+        });
+        request(app.callback())
+            .get(`${ROUTER_PREFIX}`)
+            .expect(400)
+            .expect((_) => {
+                assert.deepEqual(getNotesSpy.callCount, 0);
             })
             .end(done);
     });
@@ -103,6 +135,32 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 assert.deepEqual(req.body.message, "Notes sucessfully updated");
                 assert.deepEqual(req.body.content, TEST_NOTE);
                 assert.deepEqual(saveNotesSpy.callCount, 1);
+            })
+            .end(done);
+    });
+
+    it("should note return newly saved note due to a missingauth header", (done) => {
+        const service = useSingletonService(useSingletonRepository());
+        const security = useSecurity({} as SingletonService);
+        const saveNotesSpy = sinon
+            .stub(service, "saveNotes")
+            .returns(Promise.resolve(true));
+        const getNoetsSpy = sinon
+            .stub(service, "getNotes")
+            .returns(Promise.resolve(TEST_NOTE));
+
+        const app = useApp({
+            singletonService: service,
+            taskService: {} as TaskService,
+            security,
+        });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}`)
+            .send({ content: TEST_NOTE } as NotesDTO)
+            .expect(400)
+            .expect((_) => {
+                assert.deepEqual(saveNotesSpy.callCount, 0);
+                assert.deepEqual(getNoetsSpy.callCount, 0);
             })
             .end(done);
     });
