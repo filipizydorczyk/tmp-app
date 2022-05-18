@@ -1,28 +1,34 @@
 import request from "supertest";
 import useApp from "@tmp/back/app";
 import sinon from "sinon";
-import useSingletonService from "@tmp/back/services/singleton-service";
+import useSingletonService, {
+    SingletonService,
+} from "@tmp/back/services/singleton-service";
 import useSingletonRepository from "@tmp/back/repositories/singleton-repo";
 import assert from "assert";
 import { NotesDTO } from "@tmp/back/dto";
 import { TaskService } from "@tmp/back/services/task-service";
-import { Security } from "@tmp/back/security";
+import useSecurity from "@tmp/back/security";
 
 const ROUTER_PREFIX = "/api/v1/notes";
 const TEST_NOTE = "Hello world!";
+const TEST_ACCESS_TOKEN = "totally-not-fake-token";
 
 describe(`API ${ROUTER_PREFIX}`, () => {
     it("should return note", (done) => {
         const service = useSingletonService(useSingletonRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security,
         });
         request(app.callback())
             .get(`${ROUTER_PREFIX}`)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .expect(200)
             .expect((req) => {
                 assert.deepEqual(req.body.message, "Notes sucessfully fetched");
@@ -33,15 +39,18 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should return empy string when note is null", (done) => {
         const service = useSingletonService(useSingletonRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         sinon.stub(service, "getNotes").returns(Promise.resolve(null));
 
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security,
         });
         request(app.callback())
             .get(`${ROUTER_PREFIX}`)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .expect(200)
             .expect((req) => {
                 assert.deepEqual(req.body.message, "Notes sucessfully fetched");
@@ -52,14 +61,17 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should fail when no body was provided", (done) => {
         const service = useSingletonService(useSingletonRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
 
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .expect(400)
             .expect((req) => {
                 assert.deepEqual(req.body.message, "No body was provided");
@@ -70,6 +82,8 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should return newly saved note", (done) => {
         const service = useSingletonService(useSingletonRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         const saveNotesSpy = sinon
             .stub(service, "saveNotes")
             .returns(Promise.resolve(true));
@@ -78,10 +92,11 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .send({ content: TEST_NOTE } as NotesDTO)
             .expect(200)
             .expect((req) => {
@@ -94,6 +109,8 @@ describe(`API ${ROUTER_PREFIX}`, () => {
 
     it("should throw 500 if database request failed", (done) => {
         const service = useSingletonService(useSingletonRepository());
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
         const saveNotesSpy = sinon.stub(service, "saveNotes").returns(
             new Promise((resolve, _) => {
                 resolve(false);
@@ -104,10 +121,11 @@ describe(`API ${ROUTER_PREFIX}`, () => {
         const app = useApp({
             singletonService: service,
             taskService: {} as TaskService,
-            security: {} as Security,
+            security,
         });
         request(app.callback())
             .post(`${ROUTER_PREFIX}`)
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
             .send({ content: TEST_NOTE } as NotesDTO)
             .expect(500)
             .expect((req) => {

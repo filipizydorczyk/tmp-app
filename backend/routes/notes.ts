@@ -3,11 +3,12 @@ import bodyParser from "koa-bodyparser";
 import { NotesDTO } from "@tmp/back/dto";
 import { API_VERSION } from "@tmp/back/routes";
 import { AppDependencies } from "@tmp/back/app";
+import { validateToken } from "@tmp/back/security";
 
 const router = new Router({ prefix: `${API_VERSION}/notes` });
+router.use(validateToken);
 
 router.get("/", bodyParser(), async (ctx) => {
-    // TODO add token validation for now there is none
     const { getNotes } = (ctx.dependencies as AppDependencies).singletonService;
     const notes = await getNotes();
 
@@ -27,7 +28,6 @@ router.post("/", bodyParser(), async (ctx) => {
         } as NotesDTO;
         return;
     }
-    // TODO add token validation for now there is none
     const { getNotes, saveNotes } = (ctx.dependencies as AppDependencies)
         .singletonService;
     const result = await saveNotes(ctx.request.body.content);
