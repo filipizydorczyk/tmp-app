@@ -19,6 +19,7 @@ import sinon from "sinon";
 import request from "supertest";
 
 const TEST_PASSWORD = "test";
+const TEST_ACCESS_TOKEN = "totally-not-fake-token";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
@@ -128,7 +129,7 @@ describe(`Security tests`, () => {
     it("Koa middleware - should fail bacause of missing authorization header", (done) => {
         const app = new Koa();
         const router = new Router();
-        router.get("/", (ctx, next) => {
+        router.get("/", (ctx, _) => {
             ctx.status = 200;
         });
         app.use(async (ctx, next) => {
@@ -139,5 +140,51 @@ describe(`Security tests`, () => {
         app.use(router.routes());
 
         request(app.callback()).get("/").expect(400).end(done);
+    });
+
+    it("Koa middleware - should fail bacause of wrong authorization header", (done) => {
+        const app = new Koa();
+        const router = new Router();
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(false));
+
+        router.get("/", (ctx, _) => {
+            ctx.status = 200;
+        });
+        app.use(async (ctx, next) => {
+            ctx.dependencies = { security };
+            await next();
+        });
+        app.use(validateToken);
+        app.use(router.routes());
+
+        request(app.callback())
+            .get("/")
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
+            .expect(403)
+            .end(done);
+    });
+
+    it("Koa middleware - should authorize correct header", (done) => {
+        const app = new Koa();
+        const router = new Router();
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "validate").returns(Promise.resolve(true));
+
+        router.get("/", (ctx, _) => {
+            ctx.status = 200;
+        });
+        app.use(async (ctx, next) => {
+            ctx.dependencies = { security };
+            await next();
+        });
+        app.use(validateToken);
+        app.use(router.routes());
+
+        request(app.callback())
+            .get("/")
+            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
+            .expect(200)
+            .end(done);
     });
 });
