@@ -165,6 +165,12 @@ export const useSecurity = (
     return { login, refresh, validate, logout };
 };
 
+/**
+ * Koa Router Middleware that you can use to require
+ * authorization on your endpoints.
+ * @param ctx context to set responses statuses
+ * @param next will be called if user was successfully authorzied
+ */
 export const validateToken: Router.Middleware<
     DefaultState,
     DefaultContext
