@@ -5,6 +5,7 @@ import TodoList, {
 } from "@tmp/front/components/TodoList";
 import { useTasks } from "@tmp/front/contexts/tasks-context";
 import CreateTaskModal from "@tmp/front/components/CreateTaskModal";
+import ResultToast from "@tmp/front/components/ResultToast";
 
 function TodoSection() {
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -61,6 +62,15 @@ function TodoSection() {
                         closeCreateTaskModalHandler();
                     }
                 }}
+            />
+            <ResultToast
+                autoHide={false}
+                message={{
+                    type: tasks.error.isError ? "failure" : "none",
+                    header: "Error",
+                    content: tasks.error.message,
+                }}
+                onClose={tasks.closeError}
             />
         </>
     );

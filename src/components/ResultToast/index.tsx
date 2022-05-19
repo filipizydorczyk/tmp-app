@@ -9,19 +9,27 @@ export type ResultToastMessage = {
 
 type ResultToastProps = {
     message: ResultToastMessage;
+    autoHide?: boolean;
+    onClose?: () => void;
 };
 
 const FADE_OUT_MS = 5000;
 
-function ResultToast({ message }: ResultToastProps) {
+function ResultToast({
+    message,
+    autoHide = true,
+    onClose = () => {},
+}: ResultToastProps) {
     const [display, setDisplay] = useState(false);
 
     useEffect(() => {
         if (!display && message.type !== "none") {
             setDisplay(true);
-            setTimeout(() => {
-                setDisplay(false);
-            }, FADE_OUT_MS);
+            if (autoHide) {
+                setTimeout(() => {
+                    setDisplay(false);
+                }, FADE_OUT_MS);
+            }
         }
     }, [message]);
 
@@ -29,7 +37,10 @@ function ResultToast({ message }: ResultToastProps) {
         <Toast
             className="my-4 mx-5"
             style={{ position: "absolute", bottom: "0", right: "0" }}
-            onClose={() => setDisplay(false)}
+            onClose={() => {
+                onClose();
+                setDisplay(false);
+            }}
             show={display}
             animation={true}
         >
