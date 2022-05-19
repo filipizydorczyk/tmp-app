@@ -1,5 +1,5 @@
 import { useNotes } from "@tmp/front/contexts/notes-context";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Form, Row } from "react-bootstrap";
 import ResultToast, {
     ResultToastMessage,
@@ -13,6 +13,16 @@ function NotesSection() {
         header: "",
         content: "",
     });
+
+    useEffect(() => {
+        if (notes.error.isError) {
+            setResultToast({
+                type: "failure",
+                header: "Something went wrong",
+                content: notes.error.message,
+            });
+        }
+    }, [notes.error]);
 
     return (
         <>
@@ -40,12 +50,14 @@ function NotesSection() {
                         onClick={() => {
                             notes
                                 .saveNotes(notesRef.current?.value || "")
-                                .then((_) => {
-                                    setResultToast({
-                                        type: "success",
-                                        header: "The operation was successful",
-                                        content: "Notes successfully saved",
-                                    });
+                                .then((isSuccess) => {
+                                    if (isSuccess) {
+                                        setResultToast({
+                                            type: "success",
+                                            header: "The operation was successful",
+                                            content: "Notes successfully saved",
+                                        });
+                                    }
                                 });
                         }}
                     >
@@ -54,7 +66,7 @@ function NotesSection() {
                 </Form.Group>
             </Form>
 
-            <ResultToast message={resultToast} />
+            <ResultToast message={resultToast} onClose={notes.closeError} />
         </>
     );
 }
