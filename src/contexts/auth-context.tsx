@@ -42,7 +42,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const { logIn: logInCall } = useApiClient();
 
     /**
-     * Function to obtain backend authorization data
+     * Function to obtain backend authorization data.
+     * If operation will fail it will also set error
+     * message to be displayed
+     *
      * @param password password for the app
      * @returns if operation was sucessfull
      */

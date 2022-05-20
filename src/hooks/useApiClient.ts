@@ -1,14 +1,25 @@
 import { LoginDTO, NotesDTO, TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 import { Page } from "@tmp/back/utils";
 import Axios, { AxiosRequestConfig } from "axios";
+import { useAuth } from "../contexts/auth-context";
 
 const BACKEND_URL = "http://localhost:8080/api/v1";
 
-const requestHeaders = {
-    headers: { "Content-Type": "application/json" },
-} as AxiosRequestConfig;
-
+/**
+ * Custom hook to make backend requests. Its important to
+ * use it inside `AuthProvider` because this hook uses it
+ * to create authorization header
+ * @returns functions to make REST API requests
+ */
 const useApiClient = () => {
+    const { data } = useAuth();
+    const requestHeaders = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${data.accessToken}`,
+        },
+    } as AxiosRequestConfig;
+
     /**
      * Funtion to obtain accessToken and refreshToken from backend
      * @param password for the app required to get creds
