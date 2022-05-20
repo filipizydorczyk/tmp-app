@@ -15,7 +15,7 @@ const useApiClient = () => {
      * @returns object containing cred inforations
      */
     const logIn = (password: string) => {
-        return new Promise<LoginDTO>((resolve, rejects) => {
+        return new Promise<LoginDTO>((resolve, _) => {
             const resp = Axios.post(
                 `${BACKEND_URL}/token/login`,
                 {
@@ -27,7 +27,7 @@ const useApiClient = () => {
                 resolve(val.data as LoginDTO);
             });
             resp.catch((er) => {
-                rejects(er);
+                resolve(er.response.data as LoginDTO);
             });
         });
     };

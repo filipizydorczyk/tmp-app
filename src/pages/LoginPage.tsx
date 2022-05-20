@@ -4,12 +4,28 @@ import CatPuppy from "@tmp/front/components/CatPuppy";
 import { useNavigate } from "react-router-dom";
 import { OVERVIEW_URL } from "@tmp/front/constants";
 import { useAuth } from "@tmp/front/contexts/auth-context";
+import ResultToast from "@tmp/front/components/ResultToast";
 
 function LoginPage() {
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const passwdRef = useRef<HTMLInputElement>(null);
     const auth = useAuth();
     const nav = useNavigate();
+
+    const submitLogin = () => {
+        if (passwdRef && passwdRef.current) {
+            const current = passwdRef.current;
+            auth.logIn(current.value || "")
+                .then((response) => {
+                    if (response) {
+                        nav(OVERVIEW_URL);
+                    } else {
+                        current.value = "";
+                    }
+                })
+                .catch();
+        }
+    };
 
     useEffect(() => {
         document.addEventListener("keydown", () => {
@@ -48,8 +64,7 @@ function LoginPage() {
                         onBlur={() => setIsFocused(false)}
                         onKeyPress={(event) => {
                             if (event.key === "Enter") {
-                                auth.logIn(event.currentTarget.value);
-                                nav(OVERVIEW_URL);
+                                submitLogin();
                             }
                         }}
                     />
@@ -58,8 +73,18 @@ function LoginPage() {
                         your password.
                     </Form.Text>
                 </Form.Group>
-                <Button variant="primary">Submit</Button>
+                <Button variant="primary" onClick={submitLogin}>
+                    Submit
+                </Button>
             </Card>
+            <ResultToast
+                message={{
+                    type: auth.error.isError ? "failure" : "none",
+                    header: "Login failed",
+                    content: auth.error.message,
+                }}
+                onClose={auth.closeError}
+            />
         </Container>
     );
 }
