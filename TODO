@@ -1,5 +1,7 @@
--   mobile view (progresive web app)
+-   refactor project structure
+-   cleaning tokens daily
 -   docker image
+-   mobile view (progresive web app)
 -   integration tests for repos
 -   frontend tests
 -   stroybook
@@ -8,3 +10,5 @@
 -   moving dates if status is not done
 -   extend koa interface to get autocompletion for context
 -   some animations
+-   chanign password
+-   logging out
