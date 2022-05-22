@@ -194,7 +194,7 @@ export const useSecurity = (
 
         for (const token of refreshTokens) {
             const isValid = await validateRefreshToken(token);
-            console.log(isValid, token);
+
             if (isValid) {
                 newTokenArray.push(token);
             }

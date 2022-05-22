@@ -150,7 +150,7 @@ describe(`Security tests`, () => {
         assert.deepEqual(result.tokens.refreshToken, null);
     });
 
-    it.only("should fail refreshing with incorect token", async () => {
+    it("should fail refreshing with incorect token", async () => {
         const service = useSingletonService({} as SingletonRepository);
         const refreshToken = jwt.sign(
             { user: USER },
