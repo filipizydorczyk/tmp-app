@@ -1,5 +1,6 @@
 -   refactor project structure
 -   cleaning tokens daily
+-   refresh token
 -   docker image
 -   mobile view (progresive web app)
 -   integration tests for repos

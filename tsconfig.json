@@ -17,11 +17,11 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@tmp/front/*": ["./src/*"],
-            "@tmp/front": ["./src"],
+            "@tmp/front/*": ["./frontend/*"],
+            "@tmp/front": ["./frontend"],
             "@tmp/back/*": ["./backend/*"],
             "@tmp/back": ["./backend"]
         }
     },
-    "include": ["src", "backend", "tests"]
+    "include": ["frontend", "backend", "tests"]
 }
