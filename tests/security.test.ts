@@ -150,6 +150,24 @@ describe(`Security tests`, () => {
         assert.deepEqual(result.tokens.refreshToken, null);
     });
 
+    it.only("should fail refreshing with incorect token", async () => {
+        const service = useSingletonService({} as SingletonRepository);
+        const refreshToken = jwt.sign(
+            { user: USER },
+            REFRESH_TOKEN_SECRET || "",
+            {
+                expiresIn: "20m",
+            }
+        );
+        const { clearRefreshTokens } = useSecurity(service, [
+            REFRESH_TOKEN_SECRET || "",
+            refreshToken,
+        ]);
+        const response = await clearRefreshTokens();
+
+        assert.deepEqual(response.length, 1);
+    });
+
     it("Koa middleware - should fail bacause of missing authorization header", (done) => {
         const app = new Koa();
         const router = new Router();

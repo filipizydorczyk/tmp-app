@@ -32,6 +32,7 @@ export type Security = {
     refresh: (token: string) => Promise<SecurityResponse>;
     validate: (accessToken: string) => Promise<boolean>;
     logout: (refreshToken: string) => boolean;
+    clearRefreshTokens: () => Promise<string[]>;
 };
 
 /**
@@ -184,7 +185,27 @@ export const useSecurity = (
         return false;
     };
 
-    return { login, refresh, validate, logout };
+    /**
+     * Function clear refresh token array. It will delete all tokens
+     * that are not longer valid
+     */
+    const clearRefreshTokens = async () => {
+        const newTokenArray: string[] = [];
+
+        for (const token of refreshTokens) {
+            const isValid = await validateRefreshToken(token);
+            console.log(isValid, token);
+            if (isValid) {
+                newTokenArray.push(token);
+            }
+        }
+
+        refreshTokens = newTokenArray;
+
+        return refreshTokens;
+    };
+
+    return { login, refresh, validate, logout, clearRefreshTokens };
 };
 
 /**
