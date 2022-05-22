@@ -29,7 +29,7 @@ export type SecurityResponse = {
 
 export type Security = {
     login: (password: string) => Promise<SecurityResponse>;
-    refresh: (token: string) => SecurityResponse;
+    refresh: (token: string) => Promise<SecurityResponse>;
     validate: (accessToken: string) => Promise<boolean>;
     logout: (refreshToken: string) => boolean;
 };
@@ -50,6 +50,27 @@ export const useSecurity = (
     tokens?: string[]
 ): Security => {
     let refreshTokens: string[] = tokens || [];
+
+    /**
+     * Funciton to validate if provided refresh token is valid.
+     * Should be used in refresh token function to check if
+     * token even if exists could exist in first place. This
+     * function should be used only in this modue and should
+     * not be exported
+     * @param refreshToken to validate
+     * @returns boolean if token is valid or not
+     */
+    const validateRefreshToken = (refreshToken: string): Promise<boolean> => {
+        return new Promise((resolve, _) => {
+            jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, _) => {
+                if (err) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    };
 
     /**
      * Function to login with credentials
@@ -108,8 +129,9 @@ export const useSecurity = (
      * @param token (refreh) to authorize refresh request
      * @returns type of performed operation and new tokens
      */
-    const refresh = (token: string): SecurityResponse => {
-        if (!refreshTokens.includes(token)) {
+    const refresh = async (token: string): Promise<SecurityResponse> => {
+        const isValid = await validateRefreshToken(token);
+        if (!refreshTokens.includes(token) || !isValid) {
             return {
                 type: "refuse",
                 tokens: { accessToken: null, refreshToken: null },

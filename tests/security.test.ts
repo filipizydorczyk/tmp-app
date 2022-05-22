@@ -106,20 +106,44 @@ describe(`Security tests`, () => {
         assert.ok(!result);
     });
 
-    it("should refresh token", () => {
+    it("should refresh token", async () => {
         const service = useSingletonService({} as SingletonRepository);
-        const { refresh } = useSecurity(service, [REFRESH_TOKEN_SECRET || ""]);
-        const result = refresh(REFRESH_TOKEN_SECRET || "");
+        const refreshToken = jwt.sign(
+            { user: USER },
+            REFRESH_TOKEN_SECRET || "",
+            {
+                expiresIn: "20m",
+            }
+        );
+        const { refresh } = useSecurity(service, [refreshToken]);
+        const result = await refresh(refreshToken);
 
         assert.deepEqual(result.type, "refresh");
         assert.ok(result.tokens.accessToken !== null);
         assert.ok(result.tokens.refreshToken !== null);
     });
 
-    it("should fail refreshing with incorect token", () => {
+    it("should fail refreshing with incorect token", async () => {
         const service = useSingletonService({} as SingletonRepository);
         const { refresh } = useSecurity(service, [REFRESH_TOKEN_SECRET || ""]);
-        const result = refresh("wrong-token");
+        const result = await refresh("wrong-token");
+
+        assert.deepEqual(result.type, "refuse");
+        assert.deepEqual(result.tokens.accessToken, null);
+        assert.deepEqual(result.tokens.refreshToken, null);
+    });
+
+    it("should fail refreshing when refresh token is not in list", async () => {
+        const service = useSingletonService({} as SingletonRepository);
+        const refreshToken = jwt.sign(
+            { user: USER },
+            REFRESH_TOKEN_SECRET || "",
+            {
+                expiresIn: "20m",
+            }
+        );
+        const { refresh } = useSecurity(service, [REFRESH_TOKEN_SECRET || ""]);
+        const result = await refresh(refreshToken);
 
         assert.deepEqual(result.type, "refuse");
         assert.deepEqual(result.tokens.accessToken, null);
