@@ -129,4 +129,103 @@ describe(`API ${ROUTER_PREFIX}`, () => {
             })
             .end(done);
     });
+
+    it("should refresh token", (done) => {
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "refresh").returns(
+            Promise.resolve({
+                type: "create",
+                tokens: {
+                    accessToken: TEST_ACCESS_TOKEN,
+                    refreshToken: TEST_REFRESH_TOKEN,
+                },
+            })
+        );
+
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: {} as TaskService,
+            security: security,
+        });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}/refresh`)
+            .send({
+                refreshToken: TEST_REFRESH_TOKEN,
+            })
+            .expect(200)
+            .expect((req) => {
+                assert.deepEqual(
+                    req.body.message,
+                    "Token was successfully refreshed!"
+                );
+                assert.notDeepEqual(req.body.accessToken, null);
+                assert.notDeepEqual(req.body.refreshToken, null);
+            })
+            .end(done);
+    });
+
+    it("should fail refresh token action", (done) => {
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "refresh").returns(
+            Promise.resolve({
+                type: "refuse",
+                tokens: {
+                    accessToken: null,
+                    refreshToken: null,
+                },
+            })
+        );
+
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: {} as TaskService,
+            security: security,
+        });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}/refresh`)
+            .send({
+                refreshToken: TEST_REFRESH_TOKEN,
+            })
+            .expect(401)
+            .expect((req) => {
+                assert.deepEqual(
+                    req.body.message,
+                    "Provided token was not correct"
+                );
+                assert.deepEqual(req.body.accessToken, null);
+                assert.deepEqual(req.body.refreshToken, null);
+            })
+            .end(done);
+    });
+
+    it("should fail when body is missing", (done) => {
+        const security = useSecurity({} as SingletonService);
+        sinon.stub(security, "refresh").returns(
+            Promise.resolve({
+                type: "refuse",
+                tokens: {
+                    accessToken: null,
+                    refreshToken: null,
+                },
+            })
+        );
+
+        const app = useApp({
+            singletonService: {} as SingletonService,
+            taskService: {} as TaskService,
+            security: security,
+        });
+        request(app.callback())
+            .post(`${ROUTER_PREFIX}/refresh`)
+            .expect(400)
+            .expect((req) => {
+                assert.deepEqual(
+                    req.body.message,
+                    "Bad request! Missing body."
+                );
+                assert.deepEqual(req.body.accessToken, null);
+                assert.deepEqual(req.body.refreshToken, null);
+            })
+            .end(done);
+    });
 });
