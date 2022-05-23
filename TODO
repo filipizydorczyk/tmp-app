@@ -11,3 +11,4 @@
 -   some animations
 -   chanign password
 -   logging out
+-   session storage so that refreshing page doesnt logout?

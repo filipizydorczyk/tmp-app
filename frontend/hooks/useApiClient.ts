@@ -12,13 +12,20 @@ const BACKEND_URL = "http://localhost:8080/api/v1";
  * @returns functions to make REST API requests
  */
 const useApiClient = () => {
-    const { data } = useAuth();
-    const requestHeaders = {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${data.accessToken}`,
+    const { data, refresh } = useAuth();
+    const axiosApiInstance = Axios.create();
+    axiosApiInstance.interceptors.request.use(
+        async (config) => {
+            config.headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${data.accessToken}`,
+            };
+            return config;
         },
-    } as AxiosRequestConfig;
+        (error) => {
+            Promise.reject(error);
+        }
+    );
 
     /**
      * Funtion to obtain accessToken and refreshToken from backend
@@ -27,13 +34,28 @@ const useApiClient = () => {
      */
     const logIn = (password: string) => {
         return new Promise<LoginDTO>((resolve, _) => {
-            const resp = Axios.post(
-                `${BACKEND_URL}/token/login`,
-                {
-                    password: password,
-                },
-                requestHeaders
-            );
+            const resp = axiosApiInstance.post(`${BACKEND_URL}/token/login`, {
+                password: password,
+            });
+            resp.then((val) => {
+                resolve(val.data as LoginDTO);
+            });
+            resp.catch((er) => {
+                resolve(er.response.data as LoginDTO);
+            });
+        });
+    };
+
+    /**
+     * Function to refresh token
+     * @param token refresh token
+     * @returns new set of tokens
+     */
+    const refreshToken = (token: string) => {
+        return new Promise<LoginDTO>((resolve, _) => {
+            const resp = axiosApiInstance.post(`${BACKEND_URL}/token/refresh`, {
+                refreshToken: token,
+            });
             resp.then((val) => {
                 resolve(val.data as LoginDTO);
             });
@@ -50,7 +72,7 @@ const useApiClient = () => {
      */
     const getNotes = () => {
         return new Promise<NotesDTO>((resolve, rejects) => {
-            const resp = Axios.get(`${BACKEND_URL}/notes`, requestHeaders);
+            const resp = axiosApiInstance.get(`${BACKEND_URL}/notes`);
             resp.then((val) => {
                 resolve(val.data as NotesDTO);
             });
@@ -67,11 +89,9 @@ const useApiClient = () => {
      */
     const saveNotes = (notes: string) => {
         return new Promise<NotesDTO>((resolve, rejects) => {
-            const resp = Axios.post(
-                `${BACKEND_URL}/notes`,
-                { content: notes } as NotesDTO,
-                requestHeaders
-            );
+            const resp = axiosApiInstance.post(`${BACKEND_URL}/notes`, {
+                content: notes,
+            } as NotesDTO);
             resp.then((val) => {
                 resolve(val.data as NotesDTO);
             });
@@ -88,11 +108,7 @@ const useApiClient = () => {
      */
     const createTask = (data: NewTaskDTO) => {
         return new Promise<TaskDTO>((resolve, rejects) => {
-            const resp = Axios.post(
-                `${BACKEND_URL}/tasks`,
-                data,
-                requestHeaders
-            );
+            const resp = axiosApiInstance.post(`${BACKEND_URL}/tasks`, data);
             resp.then((val) => {
                 resolve(val.data as TaskDTO);
             });
@@ -108,7 +124,7 @@ const useApiClient = () => {
      */
     const getTasks = () => {
         return new Promise<Page<TaskDTO>>((resolve, rejects) => {
-            const resp = Axios.get(`${BACKEND_URL}/tasks`, requestHeaders);
+            const resp = axiosApiInstance.get(`${BACKEND_URL}/tasks`);
             resp.then((val) => {
                 resolve(val.data as Page<TaskDTO>);
             });
@@ -127,11 +143,7 @@ const useApiClient = () => {
      */
     const updateTask = (data: TaskDTO) => {
         return new Promise<TaskDTO>((resolve, rejects) => {
-            const resp = Axios.put(
-                `${BACKEND_URL}/tasks`,
-                data,
-                requestHeaders
-            );
+            const resp = axiosApiInstance.put(`${BACKEND_URL}/tasks`, data);
             resp.then((val) => {
                 resolve(val.data as TaskDTO);
             });
@@ -148,10 +160,7 @@ const useApiClient = () => {
      */
     const deleteTask = (id: string) => {
         return new Promise<TaskDTO>((resolve, rejects) => {
-            const resp = Axios.delete(
-                `${BACKEND_URL}/tasks/${id}`,
-                requestHeaders
-            );
+            const resp = axiosApiInstance.delete(`${BACKEND_URL}/tasks/${id}`);
             resp.then((val) => {
                 resolve(val.data);
             });
@@ -161,6 +170,22 @@ const useApiClient = () => {
         });
     };
 
+    axiosApiInstance.interceptors.response.use(
+        (response) => {
+            return response;
+        },
+        async function (error) {
+            const originalRequest = error.config;
+            if (error.response.status === 403 && !originalRequest._retry) {
+                originalRequest._retry = true;
+                console.log("Retry");
+                await refresh();
+                return axiosApiInstance(originalRequest);
+            }
+            return Promise.reject(error);
+        }
+    );
+
     return {
         logIn,
         getNotes,
@@ -169,6 +194,7 @@ const useApiClient = () => {
         updateTask,
         deleteTask,
         createTask,
+        refreshToken,
     };
 };
 

@@ -15,9 +15,10 @@ type AuthData = {
 type AuthContextProps = {
     data: AuthData;
     error: AuthError;
+    closeError: () => void;
     logIn: (password: string) => Promise<boolean>;
     logOut: () => Promise<boolean>;
-    closeError: () => void;
+    refresh: () => Promise<boolean>;
 };
 
 type AuthProviderProps = {
@@ -29,9 +30,10 @@ const defaultError = { message: "", isError: false };
 const defaulAuthContextProps = {
     data: { isLoggedIn: false, accessToken: null, refreshToken: null },
     error: defaultError,
+    closeError: () => {},
     logIn: (password: string) => Promise.resolve(false),
     logOut: () => Promise.resolve(false),
-    closeError: () => {},
+    refresh: () => Promise.resolve(false),
 };
 
 const AuthContext = createContext<AuthContextProps>(defaulAuthContextProps);
@@ -39,7 +41,7 @@ const AuthContext = createContext<AuthContextProps>(defaulAuthContextProps);
 const AuthProvider = ({ children }: AuthProviderProps) => {
     const [data, setData] = useState<AuthData>(defaulAuthContextProps.data);
     const [error, setError] = useState<AuthError>(defaultError);
-    const { logIn: logInCall } = useApiClient();
+    const { logIn: logInCall, refreshToken } = useApiClient();
 
     /**
      * Function to obtain backend authorization data.
@@ -85,9 +87,36 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setError(defaultError);
     };
 
+    /**
+     * Function to refresh tokens
+     * @returns if operation was sucessfull
+     */
+    const refresh = async (): Promise<boolean> => {
+        if (data.accessToken) {
+            const response = await refreshToken(data.accessToken);
+            if (response.accessToken) {
+                setData({
+                    isLoggedIn: true,
+                    accessToken: response.accessToken,
+                    refreshToken: response.refreshToken,
+                });
+                return Promise.resolve(true);
+            } else {
+                setData({
+                    isLoggedIn: false,
+                    accessToken: null,
+                    refreshToken: null,
+                });
+                setError({ message: response.message, isError: true });
+                return Promise.resolve(false);
+            }
+        }
+        return Promise.resolve(false);
+    };
+
     return (
         <AuthContext.Provider
-            value={{ error, data, logIn, logOut, closeError }}
+            value={{ error, data, logIn, logOut, closeError, refresh }}
         >
             {children}
         </AuthContext.Provider>
