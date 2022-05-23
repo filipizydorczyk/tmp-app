@@ -6,6 +6,7 @@ import React, {
     useEffect,
 } from "react";
 import useApiClient from "@tmp/front/hooks/useApiClient";
+import useTokensSession from "@tmp/front/hooks/useTokensSession";
 
 type AuthError = {
     message: string;
@@ -24,7 +25,6 @@ type AuthContextProps = {
     closeError: () => void;
     logIn: (password: string) => Promise<boolean>;
     logOut: () => Promise<boolean>;
-    refresh: () => Promise<AuthData>;
 };
 
 type AuthProviderProps = {
@@ -43,7 +43,6 @@ const defaulAuthContextProps = {
     closeError: () => {},
     logIn: (password: string) => Promise.resolve(false),
     logOut: () => Promise.resolve(false),
-    refresh: () => Promise.resolve(defaultData),
 };
 
 const AuthContext = createContext<AuthContextProps>(defaulAuthContextProps);
@@ -51,11 +50,21 @@ const AuthContext = createContext<AuthContextProps>(defaulAuthContextProps);
 const AuthProvider = ({ children }: AuthProviderProps) => {
     const [data, setData] = useState<AuthData>(defaulAuthContextProps.data);
     const [error, setError] = useState<AuthError>(defaultError);
-    const { logIn: logInCall, refreshToken } = useApiClient();
+    const { tokens } = useTokensSession();
+    const { logIn: logInCall } = useApiClient();
 
     useEffect(() => {
-        console.log("New token set", data);
-    }, [data]);
+        if (
+            tokens.accessToken !== data.accessToken &&
+            tokens.refreshToken !== data.refreshToken
+        ) {
+            setData({
+                isLoggedIn: tokens.accessToken !== null,
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken,
+            });
+        }
+    }, [tokens]);
 
     /**
      * Function to obtain backend authorization data.
@@ -101,33 +110,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setError(defaultError);
     };
 
-    /**
-     * Function to refresh tokens
-     * @returns if operation was sucessfull
-     */
-    const refresh = async (): Promise<AuthData> => {
-        if (data.accessToken && data.refreshToken) {
-            const response = await refreshToken(data.refreshToken);
-            if (response.accessToken) {
-                const newData = {
-                    isLoggedIn: true,
-                    accessToken: response.accessToken,
-                    refreshToken: response.refreshToken,
-                };
-                setData(newData);
-                return Promise.resolve(newData);
-            } else {
-                setData(defaultData);
-                setError({ message: response.message, isError: true });
-                return Promise.resolve(defaultData);
-            }
-        }
-        return Promise.resolve(defaultData);
-    };
-
     return (
         <AuthContext.Provider
-            value={{ error, data, logIn, logOut, closeError, refresh }}
+            value={{ error, data, logIn, logOut, closeError }}
         >
             {children}
         </AuthContext.Provider>

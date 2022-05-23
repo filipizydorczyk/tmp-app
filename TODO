@@ -1,10 +1,10 @@
--   refresh token
 -   docker image
 -   mobile view (progresive web app)
 -   integration tests for repos
 -   frontend tests
 -   stroybook
 -   shortcuts
+-   debouncing on notes
 -   sorting by dates and status
 -   moving dates if status is not done
 -   extend koa interface to get autocompletion for context
@@ -12,3 +12,4 @@
 -   chanign password
 -   logging out
 -   session storage so that refreshing page doesnt logout?
+-   api calls frontend refactor?

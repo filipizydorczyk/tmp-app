@@ -1,7 +1,7 @@
 import { LoginDTO, NotesDTO, TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 import { Page } from "@tmp/back/utils";
 import Axios from "axios";
-import { useAuth } from "@tmp/front/contexts/auth-context";
+import useTokensSession from "@tmp/front/hooks/useTokensSession";
 
 const BACKEND_URL = "http://localhost:8080/api/v1";
 
@@ -12,14 +12,15 @@ const BACKEND_URL = "http://localhost:8080/api/v1";
  * @returns functions to make REST API requests
  */
 const useApiClient = () => {
-    const { data, refresh } = useAuth();
+    const { getUpToDateTokens, updateTokens } = useTokensSession();
     const axiosApiInstance = Axios.create();
+
     axiosApiInstance.interceptors.request.use(
         async (config) => {
-            console.log("Config", config);
+            const { accessToken } = getUpToDateTokens();
             config.headers = {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${data.accessToken}`,
+                Authorization: `Bearer ${accessToken}`,
             };
             return config;
         },
@@ -39,9 +40,18 @@ const useApiClient = () => {
                 password: password,
             });
             resp.then((val) => {
-                resolve(val.data as LoginDTO);
+                const response = val.data as LoginDTO;
+                updateTokens({
+                    accessToken: response.accessToken,
+                    refreshToken: response.refreshToken,
+                });
+                resolve(response);
             });
             resp.catch((er) => {
+                updateTokens({
+                    accessToken: null,
+                    refreshToken: null,
+                });
                 resolve(er.response.data as LoginDTO);
             });
         });
@@ -58,9 +68,18 @@ const useApiClient = () => {
                 refreshToken: token,
             });
             resp.then((val) => {
-                resolve(val.data as LoginDTO);
+                const response = val.data as LoginDTO;
+                updateTokens({
+                    accessToken: response.accessToken,
+                    refreshToken: response.refreshToken,
+                });
+                resolve(response);
             });
             resp.catch((er) => {
+                updateTokens({
+                    accessToken: null,
+                    refreshToken: null,
+                });
                 resolve(er.response.data as LoginDTO);
             });
         });
@@ -143,15 +162,12 @@ const useApiClient = () => {
      * @returns dto with updated data
      */
     const updateTask = (data: TaskDTO) => {
-        console.log("Updating task");
         return new Promise<TaskDTO>((resolve, rejects) => {
             const resp = axiosApiInstance.put(`${BACKEND_URL}/tasks`, data);
             resp.then((val) => {
-                console.log("Response");
                 resolve(val.data as TaskDTO);
             });
             resp.catch((er) => {
-                console.log("Error");
                 rejects(er);
             });
         });
@@ -180,15 +196,13 @@ const useApiClient = () => {
         },
         async function (error) {
             const originalRequest = error.config;
-            console.log("Refreshing", originalRequest);
             if (error.response.status === 403 && !originalRequest._retry) {
                 originalRequest._retry = true;
-                const newAtuhData = await refresh();
-                // originalRequest._refrehedToken = newAtuhData.accessToken;
-                // console.log("New token:", newAtuhData.accessToken);
-                // originalRequest.headers.Authorization = `Bearer ${newAtuhData.accessToken}`;
-                // originalRequest.defaults.headers.common.Authorization = `Bearer ${newAtuhData.accessToken}`;
-                // Axios.defaults.headers.common.Authorization = `Bearer ${newAtuhData.accessToken}`;
+                const { refreshToken: refreshTokenFromSession } =
+                    getUpToDateTokens();
+                if (refreshTokenFromSession) {
+                    await refreshToken(refreshTokenFromSession);
+                }
                 return axiosApiInstance(originalRequest);
             }
             return Promise.reject(error);
