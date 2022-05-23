@@ -1,4 +1,10 @@
-import React, { useState, createContext, ReactNode, useContext } from "react";
+import React, {
+    useState,
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+} from "react";
 import useApiClient from "@tmp/front/hooks/useApiClient";
 
 type AuthError = {
@@ -46,6 +52,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const [data, setData] = useState<AuthData>(defaulAuthContextProps.data);
     const [error, setError] = useState<AuthError>(defaultError);
     const { logIn: logInCall, refreshToken } = useApiClient();
+
+    useEffect(() => {
+        console.log("New token set", data);
+    }, [data]);
 
     /**
      * Function to obtain backend authorization data.

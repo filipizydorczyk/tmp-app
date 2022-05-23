@@ -16,11 +16,10 @@ const useApiClient = () => {
     const axiosApiInstance = Axios.create();
     axiosApiInstance.interceptors.request.use(
         async (config) => {
-            const refreshToken = (config as unknown as any)._refrehedToken;
             console.log("Config", config);
             config.headers = {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${refreshToken || data.accessToken}`,
+                Authorization: `Bearer ${data.accessToken}`,
             };
             return config;
         },
@@ -185,7 +184,7 @@ const useApiClient = () => {
             if (error.response.status === 403 && !originalRequest._retry) {
                 originalRequest._retry = true;
                 const newAtuhData = await refresh();
-                originalRequest._refrehedToken = newAtuhData.accessToken;
+                // originalRequest._refrehedToken = newAtuhData.accessToken;
                 // console.log("New token:", newAtuhData.accessToken);
                 // originalRequest.headers.Authorization = `Bearer ${newAtuhData.accessToken}`;
                 // originalRequest.defaults.headers.common.Authorization = `Bearer ${newAtuhData.accessToken}`;
