@@ -21,6 +21,7 @@ describe(`Task dtos body validation`, () => {
 
         assert.ok(isTaskDTOValid(body));
     });
+
     it("TaskDTO - should refuse incorrect field values", () => {
         const body = {
             id: TEST_ID,
@@ -31,6 +32,7 @@ describe(`Task dtos body validation`, () => {
 
         assert.ok(!isTaskDTOValid(body));
     });
+
     it("TaskDTO - should refuse when fileds are missing", () => {
         const body = {
             id: TEST_ID,
@@ -40,6 +42,19 @@ describe(`Task dtos body validation`, () => {
 
         assert.ok(!isTaskDTOValid(body));
     });
+
+    it("TaskDTO - should refuse null", () => {
+        const body = null as unknown as TaskDTO;
+
+        assert.ok(!isTaskDTOValid(body));
+    });
+
+    it("TaskDTO - should refuse when undefined", () => {
+        const body = undefined as unknown as TaskDTO;
+
+        assert.ok(!isTaskDTOValid(body));
+    });
+
     it("NewTaskDTO - should validate correct body", () => {
         const body = {
             title: TEST_TITLE,
@@ -47,6 +62,7 @@ describe(`Task dtos body validation`, () => {
 
         assert.ok(isNewTaskDTOValid(body));
     });
+
     it("NewTaskDTO - should refuse incorrect field values", () => {
         const body = {
             title: 3213,
@@ -54,8 +70,21 @@ describe(`Task dtos body validation`, () => {
 
         assert.ok(!isNewTaskDTOValid(body));
     });
+
     it("NewTaskDTO - should refuse when fileds are missing", () => {
         const body = {} as unknown as NewTaskDTO;
+
+        assert.ok(!isNewTaskDTOValid(body));
+    });
+
+    it("NewTaskDTO - should refuse undefined", () => {
+        const body = undefined as unknown as NewTaskDTO;
+
+        assert.ok(!isNewTaskDTOValid(body));
+    });
+
+    it("NewTaskDTO - should refuse when null", () => {
+        const body = null as unknown as NewTaskDTO;
 
         assert.ok(!isNewTaskDTOValid(body));
     });

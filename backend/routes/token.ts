@@ -33,4 +33,8 @@ router.post("/login", bodyParser(), async (ctx) => {
     } as LoginDTO;
 });
 
+router.post("/refresh", bodyParser(), async (ctx) => {
+    const { refresh } = (ctx.dependencies as AppDependencies).security;
+});
+
 export default router;

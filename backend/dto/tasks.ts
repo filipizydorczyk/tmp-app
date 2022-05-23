@@ -20,6 +20,9 @@ export type NewTaskDTO = {
  * @returns boolean if body is correct
  */
 export const isTaskDTOValid = (object: TaskDTO) => {
+    if (!object) {
+        return false;
+    }
     return (
         typeof object.id === "string" &&
         typeof object.date === "string" &&
@@ -34,5 +37,8 @@ export const isTaskDTOValid = (object: TaskDTO) => {
  * @returns boolean if body is correct
  */
 export const isNewTaskDTOValid = (object: NewTaskDTO) => {
+    if (!object) {
+        return false;
+    }
     return typeof object.title === "string";
 };
