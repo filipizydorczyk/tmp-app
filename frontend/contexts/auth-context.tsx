@@ -26,19 +26,18 @@ type AuthProviderProps = {
 };
 
 const defaultError = { message: "", isError: false };
-
+const defaultData = {
+    isLoggedIn: false,
+    accessToken: null,
+    refreshToken: null,
+};
 const defaulAuthContextProps = {
-    data: { isLoggedIn: false, accessToken: null, refreshToken: null },
+    data: defaultData,
     error: defaultError,
     closeError: () => {},
     logIn: (password: string) => Promise.resolve(false),
     logOut: () => Promise.resolve(false),
-    refresh: () =>
-        Promise.resolve({
-            isLoggedIn: false,
-            accessToken: null,
-            refreshToken: null,
-        }),
+    refresh: () => Promise.resolve(defaultData),
 };
 
 const AuthContext = createContext<AuthContextProps>(defaulAuthContextProps);
@@ -108,24 +107,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
                 setData(newData);
                 return Promise.resolve(newData);
             } else {
-                setData({
-                    isLoggedIn: false,
-                    accessToken: null,
-                    refreshToken: null,
-                });
+                setData(defaultData);
                 setError({ message: response.message, isError: true });
-                return Promise.resolve({
-                    isLoggedIn: false,
-                    accessToken: null,
-                    refreshToken: null,
-                });
+                return Promise.resolve(defaultData);
             }
         }
-        return Promise.resolve({
-            isLoggedIn: false,
-            accessToken: null,
-            refreshToken: null,
-        });
+        return Promise.resolve(defaultData);
     };
 
     return (
