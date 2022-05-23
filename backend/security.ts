@@ -96,6 +96,7 @@ export const useSecurity = (
 
         if (type === "login" || type === "create") {
             const accessToken = jwt.sign({ user: USER }, ACCESS_TOKEN_SECRET, {
+                // TODO insert back 15m
                 expiresIn: "1m",
             });
             const refreshToken = jwt.sign(

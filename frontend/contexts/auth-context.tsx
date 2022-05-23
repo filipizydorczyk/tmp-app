@@ -92,8 +92,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
      * @returns if operation was sucessfull
      */
     const refresh = async (): Promise<boolean> => {
-        if (data.accessToken) {
-            const response = await refreshToken(data.accessToken);
+        if (data.accessToken && data.refreshToken) {
+            const response = await refreshToken(data.refreshToken);
             if (response.accessToken) {
                 setData({
                     isLoggedIn: true,

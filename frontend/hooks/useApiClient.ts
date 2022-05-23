@@ -178,7 +178,6 @@ const useApiClient = () => {
             const originalRequest = error.config;
             if (error.response.status === 403 && !originalRequest._retry) {
                 originalRequest._retry = true;
-                console.log("Retry");
                 await refresh();
                 return axiosApiInstance(originalRequest);
             }
