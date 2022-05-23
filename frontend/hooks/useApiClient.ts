@@ -1,6 +1,6 @@
 import { LoginDTO, NotesDTO, TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 import { Page } from "@tmp/back/utils";
-import Axios, { AxiosRequestConfig } from "axios";
+import Axios from "axios";
 import { useAuth } from "@tmp/front/contexts/auth-context";
 
 const BACKEND_URL = "http://localhost:8080/api/v1";
@@ -16,9 +16,11 @@ const useApiClient = () => {
     const axiosApiInstance = Axios.create();
     axiosApiInstance.interceptors.request.use(
         async (config) => {
+            const refreshToken = (config as unknown as any)._refrehedToken;
+            console.log("Config", config);
             config.headers = {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${data.accessToken}`,
+                Authorization: `Bearer ${refreshToken || data.accessToken}`,
             };
             return config;
         },
@@ -142,12 +144,15 @@ const useApiClient = () => {
      * @returns dto with updated data
      */
     const updateTask = (data: TaskDTO) => {
+        console.log("Updating task");
         return new Promise<TaskDTO>((resolve, rejects) => {
             const resp = axiosApiInstance.put(`${BACKEND_URL}/tasks`, data);
             resp.then((val) => {
+                console.log("Response");
                 resolve(val.data as TaskDTO);
             });
             resp.catch((er) => {
+                console.log("Error");
                 rejects(er);
             });
         });
@@ -176,9 +181,15 @@ const useApiClient = () => {
         },
         async function (error) {
             const originalRequest = error.config;
+            console.log("Refreshing", originalRequest);
             if (error.response.status === 403 && !originalRequest._retry) {
                 originalRequest._retry = true;
-                await refresh();
+                const newAtuhData = await refresh();
+                originalRequest._refrehedToken = newAtuhData.accessToken;
+                // console.log("New token:", newAtuhData.accessToken);
+                // originalRequest.headers.Authorization = `Bearer ${newAtuhData.accessToken}`;
+                // originalRequest.defaults.headers.common.Authorization = `Bearer ${newAtuhData.accessToken}`;
+                // Axios.defaults.headers.common.Authorization = `Bearer ${newAtuhData.accessToken}`;
                 return axiosApiInstance(originalRequest);
             }
             return Promise.reject(error);

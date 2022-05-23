@@ -18,7 +18,7 @@ type AuthContextProps = {
     closeError: () => void;
     logIn: (password: string) => Promise<boolean>;
     logOut: () => Promise<boolean>;
-    refresh: () => Promise<boolean>;
+    refresh: () => Promise<AuthData>;
 };
 
 type AuthProviderProps = {
@@ -33,7 +33,12 @@ const defaulAuthContextProps = {
     closeError: () => {},
     logIn: (password: string) => Promise.resolve(false),
     logOut: () => Promise.resolve(false),
-    refresh: () => Promise.resolve(false),
+    refresh: () =>
+        Promise.resolve({
+            isLoggedIn: false,
+            accessToken: null,
+            refreshToken: null,
+        }),
 };
 
 const AuthContext = createContext<AuthContextProps>(defaulAuthContextProps);
@@ -91,16 +96,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
      * Function to refresh tokens
      * @returns if operation was sucessfull
      */
-    const refresh = async (): Promise<boolean> => {
+    const refresh = async (): Promise<AuthData> => {
         if (data.accessToken && data.refreshToken) {
             const response = await refreshToken(data.refreshToken);
             if (response.accessToken) {
-                setData({
+                const newData = {
                     isLoggedIn: true,
                     accessToken: response.accessToken,
                     refreshToken: response.refreshToken,
-                });
-                return Promise.resolve(true);
+                };
+                setData(newData);
+                return Promise.resolve(newData);
             } else {
                 setData({
                     isLoggedIn: false,
@@ -108,10 +114,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
                     refreshToken: null,
                 });
                 setError({ message: response.message, isError: true });
-                return Promise.resolve(false);
+                return Promise.resolve({
+                    isLoggedIn: false,
+                    accessToken: null,
+                    refreshToken: null,
+                });
             }
         }
-        return Promise.resolve(false);
+        return Promise.resolve({
+            isLoggedIn: false,
+            accessToken: null,
+            refreshToken: null,
+        });
     };
 
     return (
