@@ -2,7 +2,7 @@ import Router from "@koa/router";
 import { API_VERSION } from "@tmp/back/routes";
 import bodyParser from "koa-bodyparser";
 import { AppDependencies } from "@tmp/back/app";
-import { LoginDTO } from "@tmp/back/dto";
+import { LoginDTO, RefreshDTO, isRefreshDTOValid } from "@tmp/back/dto";
 
 const router = new Router({ prefix: `${API_VERSION}/token` });
 
@@ -35,6 +35,28 @@ router.post("/login", bodyParser(), async (ctx) => {
 
 router.post("/refresh", bodyParser(), async (ctx) => {
     const { refresh } = (ctx.dependencies as AppDependencies).security;
+    const body = ctx.request.body as RefreshDTO;
+    if (!isRefreshDTOValid(body)) {
+        ctx.status = 400;
+        ctx.body = {
+            message: "Bad request! Missing body.",
+            accessToken: null,
+            refreshToken: null,
+        } as LoginDTO;
+        return;
+    }
+
+    const response = await refresh(body.refreshToken);
+
+    ctx.status = response.type === "refuse" ? 401 : 200;
+    ctx.body = {
+        message:
+            response.type === "refuse"
+                ? "Provided token was not correct"
+                : "Token was successfully refreshed!",
+        accessToken: response.tokens.accessToken,
+        refreshToken: response.tokens.refreshToken,
+    } as LoginDTO;
 });
 
 export default router;
