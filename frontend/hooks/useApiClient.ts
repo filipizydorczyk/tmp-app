@@ -1,7 +1,7 @@
 import { LoginDTO, NotesDTO, TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 import { Page } from "@tmp/back/utils";
 import Axios, { AxiosRequestConfig } from "axios";
-import { useAuth } from "../contexts/auth-context";
+import { useAuth } from "@tmp/front/contexts/auth-context";
 
 const BACKEND_URL = "http://localhost:8080/api/v1";
 
