@@ -7,6 +7,8 @@ const proc = spawn("docker", [
     "Dockerfile",
     "-t",
     `${name}:${version}`,
+    "-t",
+    `${name}:latest`,
     ".",
 ]);
 
