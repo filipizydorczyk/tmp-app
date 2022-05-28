@@ -13,3 +13,5 @@
 -   logging out
 -   session storage so that refreshing page doesnt logout?
 -   api calls frontend refactor?
+-   protect sql injections
+-   check vulneribilities
