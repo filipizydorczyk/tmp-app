@@ -33,7 +33,7 @@
         "backend-test": "ACCESS_TOKEN_SECRET=secret-test-token REFRESH_TOKEN_SECRET=secret-refresh-token mocha -r ts-node/register -r tsconfig-paths/register './tests/**/*.test.ts'",
         "inspect-db": "sqlite3 ./database.db",
         "clean-db": "rm ./database.db",
-        "build": "craco build",
+        "build": "node ./scripts/build.js",
         "test": "craco test",
         "eject": "react-scripts eject"
     },
