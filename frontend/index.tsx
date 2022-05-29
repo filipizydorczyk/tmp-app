@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-app-polyfill/stable";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "@tmp/front/App";
