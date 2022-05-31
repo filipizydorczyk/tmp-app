@@ -1,0 +1,26 @@
+# build environment
+FROM node:13.12.0-alpine as build
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+
+COPY . ./
+
+RUN rm -rf node_modules
+RUN npm install
+RUN npm run ts-compile
+
+
+# build environment
+FROM node:13.12.0-alpine
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+
+RUN apk update && apk upgrade
+RUN apk add --no-cache gcompat
+
+COPY ./package.json ./
+COPY ./package-lock.json ./
+COPY --from=build /app/dist/backend /app
+RUN npm ci
+EXPOSE 8080
+CMD ["node", "/app/index.js"]

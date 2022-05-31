@@ -1,29 +1,56 @@
 const { name, version } = require("../package.json");
 const { spawn } = require("child_process");
 
-const proc = spawn("docker", [
+const frontendProc = spawn("docker", [
     "build",
     "-f",
-    "Dockerfile",
+    "Dockerfile.frontend",
     "-t",
-    `${name}:${version}`,
+    `${name}-frontend:${version}`,
     "-t",
-    `${name}:latest`,
+    `${name}-frontend:latest`,
     ".",
 ]);
 
-proc.stdout.on("data", (data) => {
-    console.log(`${data}`);
+const backendProc = spawn("docker", [
+    "build",
+    "-f",
+    "Dockerfile.backend",
+    "-t",
+    `${name}-backend:${version}`,
+    "-t",
+    `${name}-backend:latest`,
+    ".",
+]);
+
+frontendProc.stdout.on("data", (data) => {
+    console.log(`[FRONT] ${data}`);
 });
 
-proc.stderr.on("data", (data) => {
-    console.log(`${data}`);
+frontendProc.stderr.on("data", (data) => {
+    console.log(`[FRONT] ${data}`);
 });
 
-proc.on("error", (error) => {
-    console.log(`${error.message}`);
+frontendProc.on("error", (error) => {
+    console.log(`[FRONT] ${error.message}`);
 });
 
-proc.on("close", (code) => {
-    console.log(`child process exited with code ${code}`);
+frontendProc.on("close", (code) => {
+    console.log(`[FRONT] child process exited with code ${code}`);
+});
+
+backendProc.stdout.on("data", (data) => {
+    console.log(`[BACK] ${data}`);
+});
+
+backendProc.stderr.on("data", (data) => {
+    console.log(`[BACK] ${data}`);
+});
+
+backendProc.on("error", (error) => {
+    console.log(`[BACK] ${error.message}`);
+});
+
+backendProc.on("close", (code) => {
+    console.log(`[BACK] child process exited with code ${code}`);
 });
