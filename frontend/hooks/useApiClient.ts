@@ -3,7 +3,7 @@ import { Page } from "@tmp/back/utils";
 import Axios from "axios";
 import useTokensSession from "@tmp/front/hooks/useTokensSession";
 
-const BACKEND_URL = "http://localhost:8080/api/v1";
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080/api/v1";
 
 /**
  * Custom hook to make backend requests. Its important to

@@ -1,0 +1,18 @@
+version: "3.2"
+services:
+    frontend:
+        image: tmp-app-frontend:latest
+        ports:
+            - 1338:80
+        environment:
+            BACKEND_URL: backend
+
+    backend:
+        image: tmp-app-backend:latest
+        ports:
+            - 1337:8080
+        volumes:
+            - ./database.db:/app/database.db
+        # environment:
+        # ACCESS_TOKEN_SECRET: dasda
+        # REFRESH_TOKEN_SECRET: asfsdfsd

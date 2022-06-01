@@ -1,7 +1,8 @@
 import sqlite3 from "sqlite3";
 import path from "path";
 
-export const DB_PATH = path.join(__dirname, "../database.db");
+export const DB_PATH =
+    process.env.SQLITE_PATH || path.join(__dirname, "../database.db");
 export const SINGLETON_TABLE_NAME = "Singletons";
 export const TASK_TABLE_NAME = "Tasks";
 
