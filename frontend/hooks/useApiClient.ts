@@ -3,7 +3,15 @@ import { Page } from "@tmp/back/utils";
 import Axios from "axios";
 import useTokensSession from "@tmp/front/hooks/useTokensSession";
 
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080/api/v1";
+/**
+ * For now app considers only docker builds and development mode.
+ * I am thinking about way to let user configure base `URL` for
+ * already built app.
+ */
+const BACKEND_URL =
+    process.env.NODE_ENV == "development"
+        ? "http://localhost:8080/api/v1"
+        : "backend";
 
 /**
  * Custom hook to make backend requests. Its important to

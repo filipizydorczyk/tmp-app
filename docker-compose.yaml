@@ -4,8 +4,6 @@ services:
         image: tmp-app-frontend:latest
         ports:
             - 1338:80
-        environment:
-            BACKEND_URL: backend
 
     backend:
         image: tmp-app-backend:latest

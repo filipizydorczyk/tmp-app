@@ -7,7 +7,7 @@ import { useAuth } from "@tmp/front/contexts/auth-context";
 import ResultToast from "@tmp/front/components/ResultToast";
 
 function LoginPage() {
-    const [isFocused, setIsFocused] = useState<boolean>(false);
+    const [isFocused, setIsFocused] = useState(false);
     const passwdRef = useRef<HTMLInputElement>(null);
     const auth = useAuth();
     const nav = useNavigate();
