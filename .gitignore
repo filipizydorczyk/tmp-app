@@ -23,5 +23,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# db file
+# app artifacts
 database.db
+./runtime-env.js

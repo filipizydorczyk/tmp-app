@@ -20,6 +20,7 @@
         "react-hook-form": "^7.27.1",
         "react-router-dom": "^6.2.2",
         "react-scripts": "5.0.0",
+        "runtime-env-cra": "^0.2.4",
         "sql-template-strings": "^2.2.2",
         "sqlite3": "5.0.8",
         "ts-node": "^10.7.0",
@@ -29,7 +30,7 @@
     },
     "scripts": {
         "start": "multiple-scripts-tmux \"npm run backend\" \"npm run frontend\"",
-        "frontend": "craco start",
+        "frontend": "NODE_ENV=development runtime-env-cra --config-name=./public/runtime-env.js && craco start",
         "backend": "ts-node-dev -r tsconfig-paths/register ./backend/index.ts",
         "backend-test": "ACCESS_TOKEN_SECRET=secret-test-token REFRESH_TOKEN_SECRET=secret-refresh-token mocha -r ts-node/register -r tsconfig-paths/register './tests/**/*.test.ts'",
         "inspect-db": "sqlite3 ./database.db",

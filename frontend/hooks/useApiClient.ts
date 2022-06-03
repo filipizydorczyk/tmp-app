@@ -8,10 +8,7 @@ import useTokensSession from "@tmp/front/hooks/useTokensSession";
  * I am thinking about way to let user configure base `URL` for
  * already built app.
  */
-const BACKEND_URL =
-    process.env.NODE_ENV == "development"
-        ? "http://localhost:8080/api/v1"
-        : "backend";
+const BACKEND_URL = window.__RUNTIME_CONFIG__.API_URL;
 
 /**
  * Custom hook to make backend requests. Its important to
@@ -22,6 +19,8 @@ const BACKEND_URL =
 const useApiClient = () => {
     const { getUpToDateTokens, updateTokens } = useTokensSession();
     const axiosApiInstance = Axios.create();
+
+    console.log("ENV", BACKEND_URL);
 
     axiosApiInstance.interceptors.request.use(
         async (config) => {
