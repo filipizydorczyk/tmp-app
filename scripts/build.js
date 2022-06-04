@@ -4,7 +4,7 @@ const { spawn } = require("child_process");
 const frontendProc = spawn("docker", [
     "build",
     "-f",
-    "Dockerfile.frontend",
+    "./docker/Dockerfile.frontend",
     "-t",
     `${name}-frontend:${version}`,
     "-t",
@@ -15,7 +15,7 @@ const frontendProc = spawn("docker", [
 const backendProc = spawn("docker", [
     "build",
     "-f",
-    "Dockerfile.backend",
+    "./docker/Dockerfile.backend",
     "-t",
     `${name}-backend:${version}`,
     "-t",

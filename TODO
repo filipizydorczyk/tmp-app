@@ -1,4 +1,9 @@
 -   docker image
+    -   check is `COPY` relative to current path or to dockerfile
+    -   solve nginx not found issue
+    -   solve frontend caching
+    -   backend does not work now
+    -   make `COPY` commands more specific
 -   mobile view (progresive web app)
 -   integration tests for repos
 -   frontend tests
