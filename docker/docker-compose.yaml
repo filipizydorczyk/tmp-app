@@ -12,8 +12,8 @@ services:
         image: tmp-app-backend:latest
         ports:
             - 1337:8080
-        volumes:
-            - ./database.db:/app/database.db # TODO: fix it database is not created yet ehn creating container
+        # volumes:
+        #     - ./database.db:/app/database.db # TODO: fix it database is not created yet ehn creating container
         # environment:
         # ACCESS_TOKEN_SECRET: dasda
         # REFRESH_TOKEN_SECRET: asfsdfsd

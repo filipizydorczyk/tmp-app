@@ -23,5 +23,7 @@ COPY ./package.json ./
 COPY ./package-lock.json ./
 COPY --from=build /app/dist/backend /app
 RUN npm ci
+RUN node ./create-database.js
+RUN ls /app
 EXPOSE 8080
 CMD ["node", "/app/index.js"]
