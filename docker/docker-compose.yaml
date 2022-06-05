@@ -4,8 +4,9 @@ services:
         image: tmp-app-frontend:latest
         ports:
             - 1338:80
-        # volumes:
-        #     - ./runtime-env.js:/usr/share/nginx/html/runtime-env.js
+        volumes:
+            # This file needs to be created before you compose container
+            - ./runtime-env.js:/usr/share/nginx/html/runtime-env.js
 
     backend:
         image: tmp-app-backend:latest
