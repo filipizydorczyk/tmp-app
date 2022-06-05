@@ -4,9 +4,8 @@ services:
         image: tmp-app-frontend:latest
         ports:
             - 1338:80
-        volumes:
-            # You need to create this file locally yourself
-            - ./runtime-env.js:/usr/share/nginx/html/runtime-env.js
+        # volumes:
+        #     - ./runtime-env.js:/usr/share/nginx/html/runtime-env.js
 
     backend:
         image: tmp-app-backend:latest
