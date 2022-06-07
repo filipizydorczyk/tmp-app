@@ -1,8 +1,5 @@
--   docker image
-    -   solve nginx not found issue
-    -   solve frontend caching
-    -   make `COPY` commands more specific
-    -   Add README for docker
+-   solve nginx not found issue
+-   solve frontend caching
 -   mobile view (progresive web app)
 -   integration tests for repos
 -   frontend tests

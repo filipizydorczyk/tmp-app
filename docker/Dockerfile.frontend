@@ -7,7 +7,15 @@ RUN apk update && apk upgrade
 RUN apk add --no-cache git
 
 
-COPY . ./
+COPY ./package.json ./package.json
+COPY ./package-lock.json ./package-lock.json
+COPY ./backend ./backend
+COPY ./frontend ./frontend
+COPY ./tests ./tests
+COPY ./public ./public
+COPY ./craco.config.js ./craco.config.js
+COPY ./tsconfig.json ./tsconfig.json
+
 RUN npm ci --silent
 RUN npm install react-scripts@5.0.0 -g --silent
 RUN npm install @craco/craco@6.4.3 --silent
