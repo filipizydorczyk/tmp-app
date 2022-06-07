@@ -1,6 +1,6 @@
 # Docker build
 
-This project is built as docker image. To do it you can run `npm run build`. It will produce two images (`tmp-app-frontend` and `tmp-app-backend`). These two images will work together without extra configuration assuming that you expose prorts `1338` for frontend and `1337` for backend.
+This project is built as docker image. To do it you can run `npm run build`. It will produce two images (`tmp-app-frontend` and `tmp-app-backend`) with version fetched from `package.json`. These two images will work together without extra configuration assuming that you expose prorts `1338` for frontend and `1337` for backend.
 
 If you want to provide extra configuration you can create docker compose like this one
 
