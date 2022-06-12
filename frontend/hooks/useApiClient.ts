@@ -79,15 +79,7 @@ const useApiClient = () => {
      * @returns dto with updated data
      */
     const updateTask = (data: TaskDTO) => {
-        return new Promise<TaskDTO>((resolve, rejects) => {
-            const resp = axiosApiInstance.put(`${BACKEND_URL}/tasks`, data);
-            resp.then((val) => {
-                resolve(val.data as TaskDTO);
-            });
-            resp.catch((er) => {
-                rejects(er);
-            });
-        });
+        return axiosApiInstance.put<TaskDTO>(`${BACKEND_URL}/tasks`, data);
     };
 
     /**

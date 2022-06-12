@@ -77,6 +77,8 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
         if (response?.status === 200) {
             setData(response.data);
         }
+
+        return Promise.resolve();
     };
 
     useEffect(() => {
@@ -109,18 +111,19 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
      * will decide what task will be udpated
      * @returns boolean if operation was successful or not
      */
-    const updateTask = async (data: TaskDTO): Promise<boolean> => {
-        return new Promise(async (resolve, _) => {
-            updateTaskREST(data)
-                .then(() => fetchTasks())
-                .catch((err) => {
-                    setError({
-                        isError: true,
-                        message: `Updating task failed. ${err}`,
-                    });
-                    resolve(false);
-                });
+    const updateTask = async (data: TaskDTO) => {
+        const response = await updateTaskREST(data).catch(() => {
+            setError({
+                isError: true,
+                message: `Updating task failed.`,
+            });
         });
+
+        if (response?.status === 200) {
+            await fetchTasks();
+        }
+
+        return Promise.resolve(response?.status === 200);
     };
 
     /**
