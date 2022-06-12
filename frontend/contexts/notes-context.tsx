@@ -71,25 +71,20 @@ const NotesProvider = ({ children }: NotesProviderProps) => {
      * It will also refresh notes state
      */
     const saveNotes = async (notes: string) => {
-        return new Promise<boolean>((resolve, _) => {
-            saveNotesRequest(notes)
-                .then((response) => {
-                    setNotes(response.content || "");
-                    resolve(true);
-                })
-                .catch((err) => {
-                    setError({
-                        isError: true,
-                        message: `Saving notes failed. ${err}`,
-                    });
-                    resolve(false);
-                });
+        const response = await saveNotesRequest(notes).catch(() => {
+            setError({
+                isError: true,
+                message: `Saving notes failed.`,
+            });
         });
+
+        if (response?.status === 200) {
+            setNotes(response.data.content || "");
+        }
+
+        return Promise.resolve(response?.status === 200);
     };
 
-    /**
-     * Function to clear error message
-     */
     const closeError = () => {
         setError(defaultError);
     };

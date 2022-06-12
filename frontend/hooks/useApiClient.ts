@@ -1,20 +1,13 @@
 import { LoginDTO, NotesDTO, TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 import { Page } from "@tmp/back/utils";
-import Axios, { AxiosInstance } from "axios";
+import Axios from "axios";
 import useAxiosInterceptors from "@tmp/front/hooks/useAxiosInterceptors";
 
-/**
- * For now app considers only docker builds and development mode.
- * I am thinking about way to let user configure base `URL` for
- * already built app.
- */
 const BACKEND_URL = window.__RUNTIME_CONFIG__.API_URL;
 
 /**
- * Custom hook to make backend requests. Its important to
- * use it inside `AuthProvider` because this hook uses it
- * to create authorization header
- * @returns functions to make REST API requests
+ * Custom hook to make backend requests.
+ * @returns functions to make authorized REST API requests
  */
 const useApiClient = () => {
     let axiosApiInstance = Axios.create();
@@ -56,17 +49,9 @@ const useApiClient = () => {
      * @returns updated notes dto
      */
     const saveNotes = (notes: string) => {
-        return new Promise<NotesDTO>((resolve, rejects) => {
-            const resp = axiosApiInstance.post(`${BACKEND_URL}/notes`, {
-                content: notes,
-            } as NotesDTO);
-            resp.then((val) => {
-                resolve(val.data as NotesDTO);
-            });
-            resp.catch((er) => {
-                rejects(er);
-            });
-        });
+        return axiosApiInstance.post<NotesDTO>(`${BACKEND_URL}/notes`, {
+            content: notes,
+        } as NotesDTO);
     };
 
     /**
