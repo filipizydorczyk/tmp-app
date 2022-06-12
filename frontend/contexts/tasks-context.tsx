@@ -90,18 +90,19 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
      * @param data dto with data needed for task creation
      * @returns boolean if operation was successful or not
      */
-    const createTask = async (data: NewTaskDTO): Promise<boolean> => {
-        return new Promise(async (resolve, _) => {
-            createTaskREST(data)
-                .then(() => fetchTasks())
-                .catch((err) => {
-                    setError({
-                        isError: true,
-                        message: `Creating new task failed. ${err}`,
-                    });
-                    resolve(false);
-                });
+    const createTask = async (data: NewTaskDTO) => {
+        const response = await createTaskREST(data).catch(() => {
+            setError({
+                isError: true,
+                message: "Creating new task failed.",
+            });
         });
+
+        if (response?.status === 200) {
+            fetchTasks();
+        }
+
+        return Promise.resolve(response?.status === 200);
     };
 
     /**

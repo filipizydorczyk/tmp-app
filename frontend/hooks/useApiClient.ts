@@ -60,15 +60,7 @@ const useApiClient = () => {
      * @returns dto of created task
      */
     const createTask = (data: NewTaskDTO) => {
-        return new Promise<TaskDTO>((resolve, rejects) => {
-            const resp = axiosApiInstance.post(`${BACKEND_URL}/tasks`, data);
-            resp.then((val) => {
-                resolve(val.data as TaskDTO);
-            });
-            resp.catch((er) => {
-                rejects(er);
-            });
-        });
+        return axiosApiInstance.post<TaskDTO>(`${BACKEND_URL}/tasks`, data);
     };
 
     /**
