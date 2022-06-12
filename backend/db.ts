@@ -10,7 +10,6 @@ const sqlite = sqlite3.verbose();
 
 export const getDatabase = () => {
     const db = new sqlite.Database(DB_PATH);
-    console.log(DB_PATH);
 
     db.run(
         `CREATE TABLE IF NOT EXISTS ${SINGLETON_TABLE_NAME} (Key TEXT NOT NULL, Value TEXT NOT NULL)`

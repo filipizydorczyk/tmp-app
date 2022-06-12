@@ -20,8 +20,6 @@ const useApiClient = () => {
     const { getUpToDateTokens, updateTokens } = useTokensSession();
     const axiosApiInstance = Axios.create();
 
-    console.log("ENV", BACKEND_URL);
-
     axiosApiInstance.interceptors.request.use(
         async (config) => {
             const { accessToken } = getUpToDateTokens();
@@ -42,25 +40,8 @@ const useApiClient = () => {
      * @returns object containing cred inforations
      */
     const logIn = (password: string) => {
-        return new Promise<LoginDTO>((resolve, _) => {
-            const resp = axiosApiInstance.post(`${BACKEND_URL}/token/login`, {
-                password: password,
-            });
-            resp.then((val) => {
-                const response = val.data as LoginDTO;
-                updateTokens({
-                    accessToken: response.accessToken,
-                    refreshToken: response.refreshToken,
-                });
-                resolve(response);
-            });
-            resp.catch((er) => {
-                updateTokens({
-                    accessToken: null,
-                    refreshToken: null,
-                });
-                resolve(er.response.data as LoginDTO);
-            });
+        return axiosApiInstance.post<LoginDTO>(`${BACKEND_URL}/token/login`, {
+            password: password,
         });
     };
 
@@ -203,7 +184,11 @@ const useApiClient = () => {
         },
         async function (error) {
             const originalRequest = error.config;
-            if (error.response.status === 403 && !originalRequest._retry) {
+            if (
+                error.response &&
+                error.response.status === 403 &&
+                !originalRequest._retry
+            ) {
                 originalRequest._retry = true;
                 const { refreshToken: refreshTokenFromSession } =
                     getUpToDateTokens();

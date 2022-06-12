@@ -50,7 +50,7 @@ const AuthContext = createContext<AuthContextProps>(defaulAuthContextProps);
 const AuthProvider = ({ children }: AuthProviderProps) => {
     const [data, setData] = useState<AuthData>(defaulAuthContextProps.data);
     const [error, setError] = useState<AuthError>(defaultError);
-    const { tokens } = useTokensSession();
+    const { tokens, updateTokens } = useTokensSession();
     const { logIn: logInCall } = useApiClient();
 
     useEffect(() => {
@@ -74,27 +74,16 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
      * @param password password for the app
      * @returns if operation was sucessfull
      */
-    const logIn = (password: string) => {
-        return new Promise<boolean>(async (resolve, _) => {
-            logInCall(password)
-                .then((creds) => {
-                    if (creds.accessToken !== null) {
-                        setData({
-                            isLoggedIn: creds.accessToken !== null,
-                            accessToken: creds.accessToken,
-                            refreshToken: creds.refreshToken,
-                        });
-                        resolve(true);
-                    } else {
-                        setError({ isError: true, message: creds.message });
-                        resolve(false);
-                    }
-                })
-                .catch((error) => {
-                    setError({ isError: true, message: error });
-                    resolve(false);
-                });
+    const logIn = async (password: string) => {
+        const response = await logInCall(password).catch((err) => {
+            setError({ isError: true, message: "Something went wrong!" });
         });
+
+        if (response?.status === 200) {
+            updateTokens(response.data);
+        }
+
+        return Promise.resolve(response?.status === 200);
     };
 
     /**

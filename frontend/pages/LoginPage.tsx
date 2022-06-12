@@ -23,7 +23,9 @@ function LoginPage() {
                         current.value = "";
                     }
                 })
-                .catch();
+                .catch(() => {
+                    current.value = "";
+                });
         }
     };
 
