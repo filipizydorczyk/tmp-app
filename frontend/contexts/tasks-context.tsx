@@ -67,18 +67,16 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
      * @returns promise
      */
     const fetchTasks = async () => {
-        return Promise.resolve(
-            getTasks()
-                .then((response) => {
-                    setData(response);
-                })
-                .catch((err) => {
-                    setError({
-                        isError: true,
-                        message: `Fetching tasks failed. ${err}`,
-                    });
-                })
-        );
+        const response = await getTasks().catch(() => {
+            setError({
+                isError: true,
+                message: `Fetching tasks failed.`,
+            });
+        });
+
+        if (response?.status === 200) {
+            setData(response.data);
+        }
     };
 
     useEffect(() => {

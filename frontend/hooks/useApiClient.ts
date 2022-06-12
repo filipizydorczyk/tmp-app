@@ -68,15 +68,7 @@ const useApiClient = () => {
      * @returns paginated list of tasks
      */
     const getTasks = () => {
-        return new Promise<Page<TaskDTO>>((resolve, rejects) => {
-            const resp = axiosApiInstance.get(`${BACKEND_URL}/tasks`);
-            resp.then((val) => {
-                resolve(val.data as Page<TaskDTO>);
-            });
-            resp.catch((er) => {
-                rejects(er);
-            });
-        });
+        return axiosApiInstance.get<Page<TaskDTO>>(`${BACKEND_URL}/tasks`);
     };
 
     /**
