@@ -51,25 +51,8 @@ const useApiClient = () => {
      * @returns new set of tokens
      */
     const refreshToken = (token: string) => {
-        return new Promise<LoginDTO>((resolve, _) => {
-            const resp = axiosApiInstance.post(`${BACKEND_URL}/token/refresh`, {
-                refreshToken: token,
-            });
-            resp.then((val) => {
-                const response = val.data as LoginDTO;
-                updateTokens({
-                    accessToken: response.accessToken,
-                    refreshToken: response.refreshToken,
-                });
-                resolve(response);
-            });
-            resp.catch((er) => {
-                updateTokens({
-                    accessToken: null,
-                    refreshToken: null,
-                });
-                resolve(er.response.data as LoginDTO);
-            });
+        return axiosApiInstance.post<LoginDTO>(`${BACKEND_URL}/token/refresh`, {
+            refreshToken: token,
         });
     };
 
@@ -193,7 +176,17 @@ const useApiClient = () => {
                 const { refreshToken: refreshTokenFromSession } =
                     getUpToDateTokens();
                 if (refreshTokenFromSession) {
-                    await refreshToken(refreshTokenFromSession);
+                    const response = await refreshToken(
+                        refreshTokenFromSession
+                    ).catch(() => {
+                        updateTokens({
+                            accessToken: null,
+                            refreshToken: null,
+                        });
+                    });
+                    if (response) {
+                        updateTokens(response.data);
+                    }
                 }
                 return axiosApiInstance(originalRequest);
             }
