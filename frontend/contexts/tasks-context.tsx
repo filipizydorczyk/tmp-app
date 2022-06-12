@@ -133,17 +133,18 @@ const TaskProvider = ({ children }: TaskProviderProps) => {
      * @returns boolean if operation was successful or not
      */
     const deleteTask = async (data: TaskDTO): Promise<boolean> => {
-        return new Promise(async (resolve, _) => {
-            deleteTaskREST(data.id)
-                .then(() => fetchTasks())
-                .catch((err) => {
-                    setError({
-                        isError: true,
-                        message: `Deleting task failed. ${err}`,
-                    });
-                    resolve(false);
-                });
+        const response = await deleteTaskREST(data.id).catch(() => {
+            setError({
+                isError: true,
+                message: `Deleting task failed.`,
+            });
         });
+
+        if (response?.status === 200) {
+            await fetchTasks();
+        }
+
+        return Promise.resolve(response?.status === 200);
     };
 
     /**

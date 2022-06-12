@@ -88,15 +88,7 @@ const useApiClient = () => {
      * @returns dto of deleted task
      */
     const deleteTask = (id: string) => {
-        return new Promise<TaskDTO>((resolve, rejects) => {
-            const resp = axiosApiInstance.delete(`${BACKEND_URL}/tasks/${id}`);
-            resp.then((val) => {
-                resolve(val.data);
-            });
-            resp.catch((er) => {
-                rejects(er);
-            });
-        });
+        return axiosApiInstance.delete(`${BACKEND_URL}/tasks/${id}`);
     };
 
     axiosApiInstance = useAxiosInterceptors({
