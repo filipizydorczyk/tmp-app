@@ -50,20 +50,18 @@ const NotesProvider = ({ children }: NotesProviderProps) => {
      * It will also refresh notes state
      */
     const fetchNotes = async () => {
-        return new Promise<boolean>((resolve, _) => {
-            getNotes()
-                .then((notes) => {
-                    setNotes(notes.content || "");
-                    resolve(true);
-                })
-                .catch((err) => {
-                    setError({
-                        isError: true,
-                        message: `Feching notes failed. ${err}`,
-                    });
-                    resolve(false);
-                });
+        const response = await getNotes().catch(() => {
+            setError({
+                isError: true,
+                message: `Feching notes failed.`,
+            });
         });
+
+        if (response?.status === 200) {
+            setNotes(response.data.content || "");
+        }
+
+        return Promise.resolve(response?.status === 200);
     };
 
     /**

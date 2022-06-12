@@ -47,15 +47,7 @@ const useApiClient = () => {
      * @returns dto conatining notes
      */
     const getNotes = () => {
-        return new Promise<NotesDTO>((resolve, rejects) => {
-            const resp = axiosApiInstance.get(`${BACKEND_URL}/notes`);
-            resp.then((val) => {
-                resolve(val.data as NotesDTO);
-            });
-            resp.catch((er) => {
-                rejects(er);
-            });
-        });
+        return axiosApiInstance.get<NotesDTO>(`${BACKEND_URL}/notes`);
     };
 
     /**
