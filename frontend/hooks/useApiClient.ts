@@ -1,7 +1,7 @@
 import { LoginDTO, NotesDTO, TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 import { Page } from "@tmp/back/utils";
-import Axios from "axios";
-import useTokensSession from "@tmp/front/hooks/useTokensSession";
+import Axios, { AxiosInstance } from "axios";
+import useAxiosInterceptors from "@tmp/front/hooks/useAxiosInterceptors";
 
 /**
  * For now app considers only docker builds and development mode.
@@ -17,22 +17,7 @@ const BACKEND_URL = window.__RUNTIME_CONFIG__.API_URL;
  * @returns functions to make REST API requests
  */
 const useApiClient = () => {
-    const { getUpToDateTokens, updateTokens } = useTokensSession();
-    const axiosApiInstance = Axios.create();
-
-    axiosApiInstance.interceptors.request.use(
-        async (config) => {
-            const { accessToken } = getUpToDateTokens();
-            config.headers = {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
-            };
-            return config;
-        },
-        (error) => {
-            Promise.reject(error);
-        }
-    );
+    let axiosApiInstance = Axios.create();
 
     /**
      * Funtion to obtain accessToken and refreshToken from backend
@@ -161,38 +146,10 @@ const useApiClient = () => {
         });
     };
 
-    axiosApiInstance.interceptors.response.use(
-        (response) => {
-            return response;
-        },
-        async function (error) {
-            const originalRequest = error.config;
-            if (
-                error.response &&
-                error.response.status === 403 &&
-                !originalRequest._retry
-            ) {
-                originalRequest._retry = true;
-                const { refreshToken: refreshTokenFromSession } =
-                    getUpToDateTokens();
-                if (refreshTokenFromSession) {
-                    const response = await refreshToken(
-                        refreshTokenFromSession
-                    ).catch(() => {
-                        updateTokens({
-                            accessToken: null,
-                            refreshToken: null,
-                        });
-                    });
-                    if (response) {
-                        updateTokens(response.data);
-                    }
-                }
-                return axiosApiInstance(originalRequest);
-            }
-            return Promise.reject(error);
-        }
-    );
+    axiosApiInstance = useAxiosInterceptors({
+        axios: axiosApiInstance,
+        refreshToken,
+    });
 
     return {
         logIn,
