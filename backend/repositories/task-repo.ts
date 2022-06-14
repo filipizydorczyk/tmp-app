@@ -62,7 +62,7 @@ const useTaskRepository = (): TaskRepository => {
             const totalElements = await getTotalTaskCount();
 
             db.all(
-                `SELECT * FROM ${TASK_TABLE_NAME} LIMIT ${size} OFFSET ${
+                `SELECT * FROM ${TASK_TABLE_NAME} ORDER BY Done, Date DESC LIMIT ${size} OFFSET ${
                     page * size
                 }`,
                 (err, resp) => {
