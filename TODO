@@ -1,5 +1,4 @@
 -   add version o login screen
--   solve nginx not found issue
 -   solve frontend caching
 -   mobile view (progresive web app)
 -   integration tests for repos
