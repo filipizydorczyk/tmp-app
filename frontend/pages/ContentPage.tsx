@@ -19,14 +19,18 @@ function ContentPage() {
     }, []);
 
     return (
-        <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
+        <Container
+            className="bg-light p-5"
+            style={{ height: "100vh", maxHeight: "100vh" }}
+            fluid
+        >
             <Row style={{ height: "100%" }}>
-                <Col>
+                <Col style={{ height: "100%" }}>
                     <TaskProvider>
-                        <TodoSection />
+                        <TodoSection style={{ height: "100%" }} />
                     </TaskProvider>
                 </Col>
-                <Col>
+                <Col style={{ height: "100%" }}>
                     <NotesProvider>
                         <NotesSection />
                     </NotesProvider>

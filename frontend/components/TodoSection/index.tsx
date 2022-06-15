@@ -7,7 +7,11 @@ import { useTasks } from "@tmp/front/contexts/tasks-context";
 import CreateTaskModal from "@tmp/front/components/CreateTaskModal";
 import ResultToast from "@tmp/front/components/ResultToast";
 
-function TodoSection() {
+type TodoSectionProps = {
+    style?: React.CSSProperties;
+};
+
+function TodoSection({ style }: TodoSectionProps) {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const tasks = useTasks();
 
@@ -30,7 +34,7 @@ function TodoSection() {
     };
 
     return (
-        <>
+        <div style={style}>
             <Row className="py-2">
                 <Col>
                     <Form.Label>Todo section</Form.Label>
@@ -51,6 +55,7 @@ function TodoSection() {
                     date: new Date(element.date),
                 }))}
                 onAction={onActionHandler}
+                style={{ maxHeight: "90%" }}
             />
 
             <CreateTaskModal
@@ -72,7 +77,7 @@ function TodoSection() {
                 }}
                 onClose={tasks.closeError}
             />
-        </>
+        </div>
     );
 }
 
