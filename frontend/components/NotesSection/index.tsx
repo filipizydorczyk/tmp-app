@@ -1,6 +1,6 @@
 import { useNotes } from "@tmp/front/contexts/notes-context";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import ResultToast, {
     ResultToastMessage,
 } from "@tmp/front/components/ResultToast";
@@ -32,8 +32,35 @@ function NotesSection() {
                     style={{ height: "100%" }}
                     controlId="notes"
                 >
-                    <Row className="py-2">
-                        <Form.Label>Temporary notes</Form.Label>
+                    <Row className="py-2" style={{ position: "sticky" }}>
+                        <Col>
+                            <Form.Label>Temporary notes</Form.Label>
+                        </Col>
+
+                        <Col xs="auto">
+                            <Button
+                                className="px-2 py-0"
+                                variant="primary"
+                                onClick={() => {
+                                    notes
+                                        .saveNotes(
+                                            notesRef.current?.value || ""
+                                        )
+                                        .then((isSuccess) => {
+                                            if (isSuccess) {
+                                                setResultToast({
+                                                    type: "success",
+                                                    header: "The operation was successful",
+                                                    content:
+                                                        "Notes successfully saved",
+                                                });
+                                            }
+                                        });
+                                }}
+                            >
+                                Save
+                            </Button>
+                        </Col>
                     </Row>
 
                     <Form.Control
@@ -43,26 +70,6 @@ function NotesSection() {
                         rows={30}
                         defaultValue={notes.notes}
                     />
-
-                    <Button
-                        className="my-2"
-                        variant="primary"
-                        onClick={() => {
-                            notes
-                                .saveNotes(notesRef.current?.value || "")
-                                .then((isSuccess) => {
-                                    if (isSuccess) {
-                                        setResultToast({
-                                            type: "success",
-                                            header: "The operation was successful",
-                                            content: "Notes successfully saved",
-                                        });
-                                    }
-                                });
-                        }}
-                    >
-                        Save
-                    </Button>
                 </Form.Group>
             </Form>
 

@@ -39,7 +39,7 @@ function TodoSection({ style }: TodoSectionProps) {
                 <Col>
                     <Form.Label>Todo section</Form.Label>
                 </Col>
-                <Col className="px-0" sm="auto">
+                <Col className="px-0" xs="auto">
                     <Button
                         variant="secondary"
                         className="px-2 py-0"

@@ -51,7 +51,7 @@ function TodoList({ items, onAction = () => {}, style }: TodoListProps) {
                                 {item.title}
                             </p>
                         </Col>
-                        <Col sm="auto">
+                        <Col xs="auto">
                             <img
                                 onClick={() =>
                                     onAction({
@@ -63,7 +63,7 @@ function TodoList({ items, onAction = () => {}, style }: TodoListProps) {
                                 style={iconStyle}
                             />
                         </Col>
-                        <Col sm="auto">
+                        <Col xs="auto">
                             <img
                                 onClick={() =>
                                     onAction({ action: "delete", item })

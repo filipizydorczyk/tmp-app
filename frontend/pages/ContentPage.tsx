@@ -52,11 +52,11 @@ function ContentPage() {
                     style={{ height: "100vh", maxHeight: "100vh" }}
                     fluid
                 >
-                    <Tabs defaultActiveKey="profile" className="mb-3">
+                    <Tabs defaultActiveKey="tasks" className="mb-3">
                         <Tab eventKey="tasks" title="Tasks">
                             {TaskFragment}
                         </Tab>
-                        <Tab eventKey="profile" title="Profile">
+                        <Tab eventKey="notes" title="Notes">
                             {TodoFragment}
                         </Tab>
                     </Tabs>
