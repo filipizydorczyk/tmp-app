@@ -1,6 +1,6 @@
 {
     "name": "tmp-app",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "private": true,
     "dependencies": {
         "@artsy/fresnel": "^3.5.0",
