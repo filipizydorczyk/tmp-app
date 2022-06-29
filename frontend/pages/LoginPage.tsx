@@ -38,7 +38,11 @@ function LoginPage() {
     }, []);
 
     return (
-        <Container className="bg-light p-5" style={{ height: "100vh" }} fluid>
+        <Container
+            className="bg-light py-5 px-3"
+            style={{ height: "100vh" }}
+            fluid
+        >
             <Card className="px-3 py-4 mx-auto" style={{ maxWidth: "32rem" }}>
                 <h1>
                     <strong>THE TMP APP!</strong>
