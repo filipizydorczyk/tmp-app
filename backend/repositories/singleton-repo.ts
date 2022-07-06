@@ -17,14 +17,14 @@ export type SingletonRepository = {
  * Repository to make db calls for key value data
  * @returns functions make db transactions on "Singletons" table
  */
-const useSingletonRepository = (): SingletonRepository => {
+const useSingletonRepository = (dbPath?: string): SingletonRepository => {
     /**
      * Function to get password from db
      * @returns password from db if exists false otherwise
      */
     const getPassword = (): Promise<string | null> => {
         return new Promise((resolve, _) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.get(
                 `SELECT * FROM ${SINGLETON_TABLE_NAME} WHERE Key="${PASSWORD_KEY}"`,
@@ -48,7 +48,7 @@ const useSingletonRepository = (): SingletonRepository => {
      */
     const setPassword = (password: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.run(
                 `INSERT INTO ${SINGLETON_TABLE_NAME} VALUES ('${PASSWORD_KEY}', '${password}')`,
@@ -72,7 +72,7 @@ const useSingletonRepository = (): SingletonRepository => {
      */
     const changePassword = (password: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.run(
                 `UPDATE ${SINGLETON_TABLE_NAME} SET Value = '${password}' WHERE Key = '${PASSWORD_KEY}'`,
@@ -96,7 +96,7 @@ const useSingletonRepository = (): SingletonRepository => {
      */
     const getNotes = (): Promise<string | null> => {
         return new Promise((resolve, _) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.get(
                 `SELECT * FROM ${SINGLETON_TABLE_NAME} WHERE Key="${NOTES_KEY}"`,
@@ -120,7 +120,7 @@ const useSingletonRepository = (): SingletonRepository => {
      */
     const setNotes = (notes: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.run(
                 `INSERT INTO ${SINGLETON_TABLE_NAME} VALUES ('${NOTES_KEY}', '${notes}')`,
@@ -144,7 +144,7 @@ const useSingletonRepository = (): SingletonRepository => {
      */
     const updateNotes = (notes: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.run(
                 `UPDATE ${SINGLETON_TABLE_NAME} SET Value = '${notes}' WHERE Key = '${NOTES_KEY}'`,
