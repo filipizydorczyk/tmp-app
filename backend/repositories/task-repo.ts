@@ -21,7 +21,7 @@ export type TaskRepository = {
  * Funtion to get database calls realted to Tasks table in db
  * @returns collection of functions
  */
-const useTaskRepository = (): TaskRepository => {
+const useTaskRepository = (dbPath?: string): TaskRepository => {
     /**
      * Function tp get number of how many tasks are being
      * stored in db
@@ -30,11 +30,11 @@ const useTaskRepository = (): TaskRepository => {
      */
     const getTotalTaskCount = async (): Promise<number> => {
         return new Promise((resolve, reject) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.get(`SELECT COUNT(*) FROM ${TASK_TABLE_NAME}`, (err, resp) => {
                 if (err) {
-                    reject(err);
+                    resolve(0);
                 } else {
                     resolve(resp["COUNT(*)"] as number);
                 }
@@ -58,7 +58,7 @@ const useTaskRepository = (): TaskRepository => {
         size: number
     ): Promise<Page<TaskEntity>> => {
         return new Promise(async (resolve, reject) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
             const totalElements = await getTotalTaskCount();
 
             db.all(
@@ -102,7 +102,7 @@ const useTaskRepository = (): TaskRepository => {
         Done,
     }: TaskEntity): Promise<TaskEntity> => {
         return new Promise((resolve, rejects) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.run(
                 `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${Id}', '${Title}', '${Date}', ${Done})`,
@@ -135,7 +135,7 @@ const useTaskRepository = (): TaskRepository => {
         Done,
     }: TaskEntity): Promise<boolean> => {
         return new Promise((resolve, _) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.run(
                 `UPDATE ${TASK_TABLE_NAME} SET Title = '${Title}', Date = '${Date}', Done = ${Done} WHERE Id = '${Id}'`,
@@ -161,7 +161,7 @@ const useTaskRepository = (): TaskRepository => {
      */
     const deleteTask = async (id: string): Promise<boolean> => {
         return new Promise((resolve, _) => {
-            const db = getDatabase();
+            const db = getDatabase({ path: dbPath });
 
             db.run(
                 `DELETE FROM ${TASK_TABLE_NAME} WHERE Id = '${id}'`,
