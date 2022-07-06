@@ -8,8 +8,20 @@ export const TASK_TABLE_NAME = "Tasks";
 
 const sqlite = sqlite3.verbose();
 
-export const getDatabase = () => {
-    const db = new sqlite.Database(DB_PATH);
+const versions = <const>["1.0"];
+
+export type DatabaseVersion = "latest" | typeof versions[number];
+
+export type Database = {
+    path?: string;
+    version?: DatabaseVersion;
+};
+
+export const getDatabase = ({
+    path = DB_PATH,
+    version = "latest",
+}: Database = {}) => {
+    const db = new sqlite.Database(path);
 
     db.run(
         `CREATE TABLE IF NOT EXISTS ${SINGLETON_TABLE_NAME} (Key TEXT NOT NULL, Value TEXT NOT NULL)`
@@ -18,5 +30,5 @@ export const getDatabase = () => {
         `CREATE TABLE IF NOT EXISTS ${TASK_TABLE_NAME} (Id TEXT NOT NULL, Title TEXT NOT NULL, Date TEXT NOT NULL, Done INTEGER NOT NULL)`
     );
 
-    return new sqlite.Database(DB_PATH);
+    return db;
 };
