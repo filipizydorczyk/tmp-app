@@ -15,7 +15,7 @@ export type TodoListElement = {
 };
 
 export type TodoListElementActionCallback = (callbackArgs: {
-    action: "delete" | "done" | "open";
+    action: "delete" | "done" | "open" | "today" | "color";
     item: TodoListElement;
 }) => void;
 
@@ -67,6 +67,10 @@ function TodoList({ items, onAction = () => {}, style }: TodoListProps) {
                                         "#EFEA5A",
                                         "#F29E4C",
                                     ]}
+                                    onColorSelected={(color) => {
+                                        console.log(color);
+                                        onAction({ action: "color", item });
+                                    }}
                                 />
                             </Row>
                         </Col>
@@ -75,7 +79,12 @@ function TodoList({ items, onAction = () => {}, style }: TodoListProps) {
                             xs="auto"
                         >
                             <img
-                                onClick={() => {}}
+                                onClick={() =>
+                                    onAction({
+                                        action: item.done ? "today" : "done",
+                                        item,
+                                    })
+                                }
                                 src={item.done ? undoTodayIcon : doneTodayIcon}
                                 style={iconStyle}
                             />
