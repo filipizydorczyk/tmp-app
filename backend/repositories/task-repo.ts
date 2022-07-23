@@ -1,4 +1,4 @@
-import { getDatabase, TASK_TABLE_NAME } from "@tmp/back/db";
+import { getDatabase, TASK_TABLE_NAME } from "@tmp/back/db/";
 import { Page } from "@tmp/back/utils";
 import { RunResult } from "sqlite3";
 
@@ -29,8 +29,8 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
      * @returns number of stored task
      */
     const getTotalTaskCount = async (): Promise<number> => {
-        return new Promise((resolve, reject) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, reject) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.get(`SELECT COUNT(*) FROM ${TASK_TABLE_NAME}`, (err, resp) => {
                 if (err) {
@@ -58,7 +58,7 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
         size: number
     ): Promise<Page<TaskEntity>> => {
         return new Promise(async (resolve, reject) => {
-            const db = getDatabase({ path: dbPath });
+            const db = await getDatabase({ path: dbPath });
             const totalElements = await getTotalTaskCount();
 
             db.all(
@@ -101,8 +101,8 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
         Date,
         Done,
     }: TaskEntity): Promise<TaskEntity> => {
-        return new Promise((resolve, rejects) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, rejects) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.run(
                 `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${Id}', '${Title}', '${Date}', ${Done})`,
@@ -134,8 +134,8 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
         Date,
         Done,
     }: TaskEntity): Promise<boolean> => {
-        return new Promise((resolve, _) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, _) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.run(
                 `UPDATE ${TASK_TABLE_NAME} SET Title = '${Title}', Date = '${Date}', Done = ${Done} WHERE Id = '${Id}'`,
@@ -160,8 +160,8 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
      * @returns boolean if operation was successful
      */
     const deleteTask = async (id: string): Promise<boolean> => {
-        return new Promise((resolve, _) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, _) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.run(
                 `DELETE FROM ${TASK_TABLE_NAME} WHERE Id = '${id}'`,

@@ -1,8 +1,7 @@
-import { getDatabase, SINGLETON_TABLE_NAME } from "@tmp/back/db";
+import { getDatabase, NOTES_KEY, PASSWORD_KEY, SINGLETON_TABLE_NAME } from "@tmp/back/db/";
 import { RunResult } from "sqlite3";
 
-const PASSWORD_KEY = "password";
-const NOTES_KEY = "notes";
+
 
 export type SingletonRepository = {
     getPassword: () => Promise<string | null>;
@@ -23,8 +22,8 @@ const useSingletonRepository = (dbPath?: string): SingletonRepository => {
      * @returns password from db if exists false otherwise
      */
     const getPassword = (): Promise<string | null> => {
-        return new Promise((resolve, _) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, _) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.get(
                 `SELECT * FROM ${SINGLETON_TABLE_NAME} WHERE Key="${PASSWORD_KEY}"`,
@@ -47,8 +46,8 @@ const useSingletonRepository = (dbPath?: string): SingletonRepository => {
      * @returns boolean if transaction was successfull
      */
     const setPassword = (password: string): Promise<boolean> => {
-        return new Promise((resolve, _) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, _) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.run(
                 `INSERT INTO ${SINGLETON_TABLE_NAME} VALUES ('${PASSWORD_KEY}', '${password}')`,
@@ -71,8 +70,8 @@ const useSingletonRepository = (dbPath?: string): SingletonRepository => {
      * @returns boolean if transaction was successfull
      */
     const changePassword = (password: string): Promise<boolean> => {
-        return new Promise((resolve, _) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, _) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.run(
                 `UPDATE ${SINGLETON_TABLE_NAME} SET Value = '${password}' WHERE Key = '${PASSWORD_KEY}'`,
@@ -95,8 +94,8 @@ const useSingletonRepository = (dbPath?: string): SingletonRepository => {
      * @returns string note fetched from db or null if there is no one yet
      */
     const getNotes = (): Promise<string | null> => {
-        return new Promise((resolve, _) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, _) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.get(
                 `SELECT * FROM ${SINGLETON_TABLE_NAME} WHERE Key="${NOTES_KEY}"`,
@@ -119,8 +118,8 @@ const useSingletonRepository = (dbPath?: string): SingletonRepository => {
      * @returns boolean if operation was successfull or not
      */
     const setNotes = (notes: string): Promise<boolean> => {
-        return new Promise((resolve, _) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, _) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.run(
                 `INSERT INTO ${SINGLETON_TABLE_NAME} VALUES ('${NOTES_KEY}', '${notes}')`,
@@ -143,8 +142,8 @@ const useSingletonRepository = (dbPath?: string): SingletonRepository => {
      * @returns boolean if operation was successfull or not
      */
     const updateNotes = (notes: string): Promise<boolean> => {
-        return new Promise((resolve, _) => {
-            const db = getDatabase({ path: dbPath });
+        return new Promise(async (resolve, _) => {
+            const db = await getDatabase({ path: dbPath });
 
             db.run(
                 `UPDATE ${SINGLETON_TABLE_NAME} SET Value = '${notes}' WHERE Key = '${NOTES_KEY}'`,

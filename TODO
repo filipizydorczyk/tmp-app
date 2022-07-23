@@ -17,7 +17,7 @@
 -   add regural tasks
 -   add done for today mark
 
--   add db version to signleton table
 -   reading db version on launch with service and repostory
 -   updating database with iterations
 -   adding columns (ALTER TABLE Tasks ADD COLUMN DoneToday NUMBER default 0, ALTER TABLE Tasks ADD COLUMN color TEXT default null)
+-   refactor with
