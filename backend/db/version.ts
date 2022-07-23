@@ -1,38 +1,15 @@
-import sqlite3, { RunResult } from "sqlite3";
+import sqlite3 from "sqlite3";
 import {
   DB_VERSION_KEY,
   SINGLETON_TABLE_NAME,
   TASK_TABLE_NAME,
 } from "@tmp/back/db/db";
+import { execute, fetch } from "@tmp/back/utils";
 
 export enum DbVersion {
   V1 = "v1",
   V2 = "v2",
 }
-
-const execute = async (db: sqlite3.Database, sql: string) => {
-  return new Promise(async (resolve, reject) => {
-    db.run(sql, (result: RunResult, err: Error | null) => {
-      if (err) {
-        resolve(err);
-      } else {
-        resolve(result);
-      }
-    });
-  });
-};
-
-const fetch = async (db: sqlite3.Database, sql: string): Promise<any> => {
-  return new Promise(async (resolve, reject) => {
-    db.get(sql, (err, row) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(row);
-      }
-    });
-  });
-};
 
 const v1 = async (db: sqlite3.Database) => {
   await execute(
@@ -67,7 +44,7 @@ export const getVersion = async (
   if (tableExists) {
     const response = await fetch(db, fetchVersionSql);
 
-    return response["Value"];
+    return response ? response["Value"] : null;
   }
 
   return null;

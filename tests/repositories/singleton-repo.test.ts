@@ -1,3 +1,4 @@
+/* eslint-disable jest/valid-describe-callback */
 import uuid4 from "uuid4";
 import fs from "fs";
 import assert from "assert";
