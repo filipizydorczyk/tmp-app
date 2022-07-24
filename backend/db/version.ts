@@ -34,7 +34,7 @@ const v2 = async (db: sqlite3.Database) => {
 
 export const getVersion = async (
   db: sqlite3.Database
-): Promise<DbVersion | null> => {
+): Promise<DbVersion> => {
   const tableExistsSql = `SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='${SINGLETON_TABLE_NAME}'`;
   const fetchVersionSql = `SELECT Value FROM ${SINGLETON_TABLE_NAME} WHERE Key='${DB_VERSION_KEY}'`;
 

@@ -20,10 +20,13 @@ export type Database = {
 
 export const getDatabase = async ({ path = DB_PATH }: Database) => {
   const db = new sqlite.Database(path);
-  const version = await getVersion(db);
+  let version = await getVersion(db);
 
-  if (version === DbVersion.V0) {
-    await VerionResolvers[DbVersion.V0](db);
+  if (version !== DbVersion.V1) {
+    do {
+      await VerionResolvers[version](db);
+      version = await getVersion(db);
+    } while (version !== DbVersion.V1);
   }
 
   return db;
