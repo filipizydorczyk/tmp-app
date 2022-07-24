@@ -7,6 +7,8 @@ export type TaskEntity = {
     Title: string;
     Date: string;
     Done: 0 | 1;
+    Color: string;
+    Today: 0 | 1;
 };
 
 export type TaskRepository = {
@@ -100,17 +102,19 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
         Title,
         Date,
         Done,
+        Color,
+        Today,
     }: TaskEntity): Promise<TaskEntity> => {
         return new Promise(async (resolve, rejects) => {
             const db = await getDatabase({ path: dbPath });
 
             db.run(
-                `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${Id}', '${Title}', '${Date}', ${Done})`,
+                `INSERT INTO ${TASK_TABLE_NAME} VALUES ('${Id}', '${Title}', '${Date}', ${Done}, '${Color}', ${Today})`,
                 (_: RunResult, err: Error | null) => {
                     if (err) {
                         rejects(err);
                     } else {
-                        resolve({ Id, Title, Date, Done });
+                        resolve({ Id, Title, Date, Done, Color, Today });
                     }
                 }
             );

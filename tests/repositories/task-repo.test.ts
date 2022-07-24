@@ -17,6 +17,8 @@ describe(`TaskRepository integration tests`, async () => {
             Title: "Title",
             Date: new Date().toISOString(),
             Done: 0,
+            Color: "",
+            Today: 0,
         });
         count = await repo.getTotalTaskCount();
         assert.deepEqual(count, 1);
@@ -26,6 +28,8 @@ describe(`TaskRepository integration tests`, async () => {
             Title: "Title",
             Date: new Date().toISOString(),
             Done: 1,
+            Color: "",
+            Today: 0,
         });
         const allTasks = await repo.getAllTasks(0, 5);
         assert.deepEqual(result, true);

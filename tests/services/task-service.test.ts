@@ -23,6 +23,8 @@ describe("TaskService", () => {
                         Title: TEST_TITLE,
                         Date: TEST_DATE,
                         Done: 0,
+                        Color: "",
+                        Today: 0,
                     },
                 ],
             })
@@ -50,6 +52,8 @@ describe("TaskService", () => {
                 Title: TEST_TITLE,
                 Date: TEST_DATE,
                 Done: 1,
+                Color: "",
+                Today: 0,
             })
         );
         const { createTask } = useTaskService(repository);

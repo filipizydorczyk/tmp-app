@@ -66,6 +66,8 @@ export const useTaskService = (repository: TaskRepository): TaskService => {
             Title: task.title,
             Date: isIsoDate(task.date) ? task.date : "",
             Done: task.done ? 1 : 0,
+            Color: "",
+            Today: 0,
         });
     };
 
@@ -82,6 +84,8 @@ export const useTaskService = (repository: TaskRepository): TaskService => {
             Title: task.title,
             Done: 0,
             Date: new Date().toISOString(),
+            Color: "",
+            Today: 0,
         });
 
         return {
