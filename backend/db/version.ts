@@ -7,6 +7,7 @@ import {
 import { execute, fetch } from "@tmp/back/utils";
 
 export enum DbVersion {
+  V0 = "v0",
   V1 = "v1",
   V2 = "v2",
 }
@@ -44,16 +45,17 @@ export const getVersion = async (
   if (tableExists) {
     const response = await fetch(db, fetchVersionSql);
 
-    return response ? response["Value"] : null;
+    return response ? response["Value"] : DbVersion.V0;
   }
 
-  return null;
+  return DbVersion.V0;
 };
 
 export const VerionResolvers: Record<
   DbVersion,
   (db: sqlite3.Database) => Promise<void>
 > = {
-  [DbVersion.V1]: v1,
-  [DbVersion.V2]: v2,
+  [DbVersion.V0]: v1,
+  [DbVersion.V1]: v2,
+  [DbVersion.V2]: async () => {},
 } as const;

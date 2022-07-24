@@ -22,8 +22,8 @@ export const getDatabase = async ({ path = DB_PATH }: Database) => {
   const db = new sqlite.Database(path);
   const version = await getVersion(db);
 
-  if (!version) {
-    await VerionResolvers[DbVersion.V1](db);
+  if (version === DbVersion.V0) {
+    await VerionResolvers[DbVersion.V0](db);
   }
 
   return db;

@@ -26,7 +26,7 @@ describe("Database versioning integration tests", async () => {
 
     const response = await getVersion(db);
 
-    assert.deepEqual(response, null);
+    assert.deepEqual(response, DbVersion.V0);
     
     fs.rmSync(dbPath);
   });
@@ -37,7 +37,7 @@ describe("Database versioning integration tests", async () => {
 
     const response = await getVersion(db);
 
-    assert.deepEqual(response, null);
+    assert.deepEqual(response, DbVersion.V0);
     
     fs.rmSync(dbPath);
   });
@@ -46,7 +46,7 @@ describe("Database versioning integration tests", async () => {
     const dbPath = path.join(__dirname, `../artifacts/${uuid4()}.db`);
     const db = new sqlite.Database(dbPath);
 
-    await VerionResolvers[DbVersion.V1](db);
+    await VerionResolvers[DbVersion.V0](db);
 
     const response = await getVersion(db);
 
