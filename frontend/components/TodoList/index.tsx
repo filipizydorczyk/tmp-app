@@ -12,6 +12,8 @@ export type TodoListElement = {
     title: string;
     date: Date;
     done: boolean;
+    today: boolean;
+    color: string;
 };
 
 export type TodoListElementActionCallback = (callbackArgs: {
@@ -38,11 +40,12 @@ function TodoList({ items, onAction = () => {}, style }: TodoListProps) {
                 {items.map((item) => (
                     <Row
                         className={`py-3 px-2 mb-1 rounded ${
-                            item.done ? `bg-light` : `bg-white`
+                            item.done || item.today ? `bg-light` : ``
                         }`}
                         style={{
                             border: "1px solid #ced4da",
                             position: "relative",
+                            backgroundColor: item.color,
                         }}
                         key={item.id}
                     >
@@ -50,7 +53,7 @@ function TodoList({ items, onAction = () => {}, style }: TodoListProps) {
                             <Row>
                                 <p
                                     className={`mb-0 ${
-                                        item.done
+                                        item.done || item.today
                                             ? `text-secondary text-decoration-line-through`
                                             : `text-dark`
                                     }`}
@@ -68,8 +71,10 @@ function TodoList({ items, onAction = () => {}, style }: TodoListProps) {
                                         "#F29E4C",
                                     ]}
                                     onColorSelected={(color) => {
-                                        console.log(color);
-                                        onAction({ action: "color", item });
+                                        onAction({
+                                            action: "color",
+                                            item: { ...item, color },
+                                        });
                                     }}
                                 />
                             </Row>
@@ -81,11 +86,11 @@ function TodoList({ items, onAction = () => {}, style }: TodoListProps) {
                             <img
                                 onClick={() =>
                                     onAction({
-                                        action: item.done ? "today" : "done",
+                                        action: item.today ? "open" : "today",
                                         item,
                                     })
                                 }
-                                src={item.done ? undoTodayIcon : doneTodayIcon}
+                                src={item.today ? undoTodayIcon : doneTodayIcon}
                                 style={iconStyle}
                             />
                         </Col>

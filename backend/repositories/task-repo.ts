@@ -137,12 +137,14 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
         Title,
         Date,
         Done,
+        Color,
+        Today,
     }: TaskEntity): Promise<boolean> => {
         return new Promise(async (resolve, _) => {
             const db = await getDatabase({ path: dbPath });
 
             db.run(
-                `UPDATE ${TASK_TABLE_NAME} SET Title = '${Title}', Date = '${Date}', Done = ${Done} WHERE Id = '${Id}'`,
+                `UPDATE ${TASK_TABLE_NAME} SET Title = '${Title}', Date = '${Date}', Done = ${Done}, Color = '${Color}', Today = ${Today} WHERE Id = '${Id}'`,
                 (_: RunResult, err: Error | null) => {
                     if (err) {
                         resolve(false);

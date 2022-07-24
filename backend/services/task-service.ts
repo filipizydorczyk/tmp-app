@@ -39,6 +39,8 @@ export const useTaskService = (repository: TaskRepository): TaskService => {
                     title: task.Title,
                     date: isIsoDate(task.Date) ? task.Date : "",
                     done: !!task.Done,
+                    color: task.Color,
+                    today: !!task.Today,
                 } as TaskDTO;
             }),
         };
@@ -66,8 +68,8 @@ export const useTaskService = (repository: TaskRepository): TaskService => {
             Title: task.title,
             Date: isIsoDate(task.date) ? task.date : "",
             Done: task.done ? 1 : 0,
-            Color: "",
-            Today: 0,
+            Color: task.color || "#ffffff",
+            Today: task.today ? 1 : 0,
         });
     };
 

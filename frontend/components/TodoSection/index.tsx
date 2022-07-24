@@ -25,6 +25,7 @@ function TodoSection({ style }: TodoSectionProps) {
             ...item,
             date: "",
             done: action === "done",
+            today: action === "today",
         };
         if (action === "delete") {
             tasks.deleteTask(dto);
@@ -53,6 +54,7 @@ function TodoSection({ style }: TodoSectionProps) {
                 items={tasks.data.content.map((element) => ({
                     ...element,
                     date: new Date(element.date),
+                    color: element.color || "#ffffff",
                 }))}
                 onAction={onActionHandler}
                 style={{ maxHeight: "90%" }}

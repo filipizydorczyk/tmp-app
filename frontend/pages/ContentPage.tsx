@@ -19,7 +19,7 @@ function ContentPage() {
         },
     });
 
-    // workaround to fresnel type issue
+    // workaround to fresnel type issue (https://github.com/artsy/fresnel/issues/281)
     const MediaContextProvider =
         QueryBreakpoints.MediaContextProvider as unknown as React.FC;
     const Media = QueryBreakpoints.Media as unknown as React.FC<{

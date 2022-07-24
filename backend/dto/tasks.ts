@@ -8,6 +8,8 @@ export type TaskDTO = {
     title: string;
     date: string;
     done: boolean;
+    today: boolean;
+    color?: string;
 };
 
 export type NewTaskDTO = {
@@ -27,7 +29,8 @@ export const isTaskDTOValid = (object: TaskDTO) => {
         typeof object.id === "string" &&
         typeof object.date === "string" &&
         typeof object.title === "string" &&
-        typeof object.done === "boolean"
+        typeof object.done === "boolean" &&
+        typeof object.today === "boolean"
     );
 };
 
