@@ -14,8 +14,6 @@
 -   protect sql injections
 -   check vulneribilities
 -   refactor dependencies
--   tasks list seems to need a refactor?
 
 -   update way to sort
 -   buttons logic
--   undoning every today
