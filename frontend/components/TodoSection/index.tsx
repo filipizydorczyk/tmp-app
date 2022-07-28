@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import TodoList, {
-    TodoListElementActionCallback,
-} from "@tmp/front/components/TodoList";
+import TodoList from "@tmp/front/components/TodoList";
 import { useTasks } from "@tmp/front/contexts/tasks-context";
 import CreateTaskModal from "@tmp/front/components/CreateTaskModal";
 import ResultToast from "@tmp/front/components/ResultToast";
+import { TodoListElementActionCallback } from "@tmp/front/components/TodoItem";
 
 type TodoSectionProps = {
     style?: React.CSSProperties;
