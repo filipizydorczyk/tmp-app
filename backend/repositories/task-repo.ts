@@ -13,6 +13,7 @@ export type TaskEntity = {
 
 export type TaskRepository = {
     getTotalTaskCount: () => Promise<number>;
+    getDoneForToday: () => Promise<TaskEntity[]>;
     getAllTasks: (page: number, size: number) => Promise<Page<TaskEntity>>;
     createTask: (values: TaskEntity) => Promise<TaskEntity>;
     updateTask: (values: TaskEntity) => Promise<boolean>;
@@ -78,6 +79,29 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
                             total: totalElements,
                             content: resp as TaskEntity[],
                         });
+                    }
+                }
+            );
+
+            db.close();
+        });
+    };
+
+    /**
+     * Funtion that gets all tasks that were mark as done for today
+     * @returns list of TaskEntity
+     */
+    const getDoneForToday = async (): Promise<TaskEntity[]> => {
+        return new Promise(async (resolve, reject) => {
+            const db = await getDatabase({ path: dbPath });
+
+            db.all(
+                `SELECT * FROM ${TASK_TABLE_NAME} WHERE Today = 1`,
+                (err, resp) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(resp as TaskEntity[]);
                     }
                 }
             );
@@ -186,6 +210,7 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
 
     return {
         getTotalTaskCount,
+        getDoneForToday,
         getAllTasks,
         createTask,
         updateTask,

@@ -6,9 +6,14 @@ import { AppDependencies } from "@tmp/back/app";
  * @param dependencies app dependencies
  */
 const useTaskSchedule = (dependencies: AppDependencies) => {
-    schedule.scheduleJob("* * 0 * * *", () => {
+    schedule.scheduleJob("0 0 0 * * *", () => {
         const { clearRefreshTokens } = dependencies.security;
         clearRefreshTokens();
+    });
+
+    schedule.scheduleJob("0 26 23 * * *", () => {
+        const { renewDoneForToday } = dependencies.taskService;
+        renewDoneForToday();
     });
 };
 

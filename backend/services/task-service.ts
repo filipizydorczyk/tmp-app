@@ -1,4 +1,4 @@
-import { TaskRepository } from "@tmp/back/repositories/task-repo";
+import { TaskEntity, TaskRepository } from "@tmp/back/repositories/task-repo";
 import { TaskDTO, NewTaskDTO } from "@tmp/back/dto";
 import { isIsoDate, Page } from "@tmp/back/utils";
 import uuid4 from "uuid4";
@@ -10,6 +10,7 @@ export type TaskService = {
     deleteTask: (id: string) => Promise<boolean>;
     updateTask: (task: TaskDTO) => Promise<boolean>;
     createTask: (task: NewTaskDTO) => Promise<TaskDTO>;
+    renewDoneForToday: () => Promise<void>;
 };
 
 /**
@@ -20,6 +21,7 @@ export type TaskService = {
 export const useTaskService = (repository: TaskRepository): TaskService => {
     const {
         getAllTasks,
+        getDoneForToday,
         deleteTask: deleteTaskFromDb,
         updateTask: updateTaskInDb,
         createTask: createTaskInDb,
@@ -98,7 +100,23 @@ export const useTaskService = (repository: TaskRepository): TaskService => {
         } as TaskDTO;
     };
 
-    return { getTasks, deleteTask, updateTask, createTask };
+    /**
+     * Function to renew all tasks that were done for today. It will
+     * fetch all tasks that have `Today` filed in db = 1 and will
+     * set them to 0
+     */
+    const renewDoneForToday = async (): Promise<void> => {
+        const tasksToRenew = await getDoneForToday();
+
+        Promise.all(
+            tasksToRenew.map(async (task) => {
+                const updatedTask: TaskEntity = { ...task, Today: 0 };
+                await updateTaskInDb(updatedTask);
+            })
+        );
+    };
+
+    return { getTasks, deleteTask, updateTask, createTask, renewDoneForToday };
 };
 
 export default useTaskService;

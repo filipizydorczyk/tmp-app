@@ -9,7 +9,8 @@
 -   some animations
 -   chanign password
 -   logging out
--   session storage so that refreshing page doesnt logout?
+-   change method of authorization
+-   listen for events in order to frefresh data whenever it was chaged
 -   protect sql injections
 -   check vulneribilities
 -   refactor dependencies
