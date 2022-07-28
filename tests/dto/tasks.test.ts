@@ -17,6 +17,7 @@ describe(`Task dtos body validation`, () => {
             title: TEST_TITLE,
             date: TEST_DATE,
             done: false,
+            today: false,
         } as TaskDTO;
 
         assert.ok(isTaskDTOValid(body));

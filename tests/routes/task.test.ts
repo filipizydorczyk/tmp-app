@@ -191,6 +191,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 title: TEST_TITLE,
                 date: TEST_DATE,
                 done: false,
+                today: false,
             })
             .expect(200)
             .end(done);
@@ -256,6 +257,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 title: TEST_TITLE,
                 date: TEST_DATE,
                 done: false,
+                today: false,
             })
             .expect(500)
             .end(done);

@@ -98,7 +98,7 @@ describe("TaskService", () => {
         assert.strictEqual(deleteTaskSpy.callCount, 1);
     });
 
-    it.only("should renew all tasks done for today", async () => {
+    it("should renew all tasks done for today", async () => {
         const repository = useTaskRepository();
         const updateSpy = sinon.stub(repository, "updateTask");
         sinon.stub(repository, "getDoneForToday").returns(
