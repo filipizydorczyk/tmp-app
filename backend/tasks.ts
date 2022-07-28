@@ -11,7 +11,7 @@ const useTaskSchedule = (dependencies: AppDependencies) => {
         clearRefreshTokens();
     });
 
-    schedule.scheduleJob("0 26 23 * * *", () => {
+    schedule.scheduleJob("0 0 3 * * *", () => {
         const { renewDoneForToday } = dependencies.taskService;
         renewDoneForToday();
     });
