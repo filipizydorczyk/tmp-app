@@ -80,6 +80,7 @@ describe("TaskService", () => {
             title: TEST_TITLE,
             date: TEST_DATE,
             done: true,
+            today: false,
         });
         assert.strictEqual(reponse, true);
         assert.strictEqual(updateTaskSpy.callCount, 1);
@@ -95,5 +96,36 @@ describe("TaskService", () => {
         const reponse = await deleteTask(TEST_ID);
         assert.strictEqual(reponse, true);
         assert.strictEqual(deleteTaskSpy.callCount, 1);
+    });
+
+    it.only("should renew all tasks done for today", async () => {
+        const repository = useTaskRepository();
+        const updateSpy = sinon.stub(repository, "updateTask");
+        sinon.stub(repository, "getDoneForToday").returns(
+            Promise.resolve([
+                {
+                    Id: TEST_ID,
+                    Title: TEST_TITLE,
+                    Date: TEST_DATE,
+                    Done: 1,
+                    Color: "",
+                    Today: 0,
+                },
+                {
+                    Id: TEST_ID,
+                    Title: TEST_TITLE,
+                    Date: TEST_DATE,
+                    Done: 1,
+                    Color: "",
+                    Today: 0,
+                },
+            ])
+        );
+
+        const { renewDoneForToday } = useTaskService(repository);
+
+        await renewDoneForToday();
+
+        assert.strictEqual(updateSpy.callCount, 2);
     });
 });

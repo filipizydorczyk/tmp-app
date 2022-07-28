@@ -91,6 +91,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 title: TEST_TITLE,
                 date: TEST_DATE,
                 done: false,
+                today: false,
             })
         );
         const app = useApp({
@@ -116,6 +117,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 title: TEST_TITLE,
                 date: TEST_DATE,
                 done: false,
+                today: false,
             })
         );
         const app = useApp({
@@ -146,6 +148,7 @@ describe(`API ${ROUTER_PREFIX}`, () => {
                 title: TEST_TITLE,
                 date: TEST_DATE,
                 done: false,
+                today: false,
             })
         );
         const app = useApp({
