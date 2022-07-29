@@ -48,13 +48,17 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
     };
 
     /**
-     * Function to get all tasks from db
+     * Function to get all tasks from db, Entity
+     * keys are matching database columns names
+     * and because of that type keys are uppercased
      *
      * @param page which page should be fetch. First page should be 0
      * @param size ammount of element at single page
-     * @returns list of task entitites. Entity keys are matching
-     * database columns names and because of that type keys are
-     * uppercased
+     * @returns page of soreted list of task entitites.
+     * Returned list is soreted first if either task is done
+     * or not. Than it sorts it by color so that tasks whit the same
+     * colors stays in groups.
+     *
      */
     const getAllTasks = async (
         page: number,
@@ -65,7 +69,7 @@ const useTaskRepository = (dbPath?: string): TaskRepository => {
             const totalElements = await getTotalTaskCount();
 
             db.all(
-                `SELECT * FROM ${TASK_TABLE_NAME} ORDER BY Done, Date DESC LIMIT ${size} OFFSET ${
+                `SELECT * FROM ${TASK_TABLE_NAME} ORDER BY Done, Today, length(Color), Color DESC NULLS FIRST LIMIT ${size} OFFSET ${
                     page * size
                 }`,
                 (err, resp) => {

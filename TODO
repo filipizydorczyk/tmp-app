@@ -14,6 +14,5 @@
 -   protect sql injections
 -   check vulneribilities
 -   refactor dependencies
-
--   update way to sort
--   buttons logic
+-   changin color of done tasks renew them
+-   add test util for testing sqlite

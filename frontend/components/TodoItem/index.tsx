@@ -32,13 +32,16 @@ const iconStyle = {
 };
 
 function TodoItem({ item, onAction = () => {} }: TodoItemProps) {
+    const displayColorBorder =
+        item.color && item.color != "#ffffff" && !item.done && !item.today;
+
     const itemStyle: React.CSSProperties = {
         border: "1px solid #ced4da",
         position: "relative",
         backgroundColor: "#ffffff",
-        borderLeft: `5px solid ${
-            item.color !== "#ffffff" ? item.color : undefined
-        }`,
+        borderLeft: displayColorBorder
+            ? `5px solid ${item.color}`
+            : `1px solid rgb(206, 212, 218)`,
     };
 
     return (
