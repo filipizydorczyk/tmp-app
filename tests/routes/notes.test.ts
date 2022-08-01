@@ -20,32 +20,38 @@ import assert from "assert";
 import { NotesDTO } from "@tmp/back/dto";
 import { TaskService } from "@tmp/back/services/task-service";
 import useSecurity from "@tmp/back/security";
+import withDatabase from "tests/tests-utils";
 
 const ROUTER_PREFIX = "/api/v1/notes";
 const TEST_NOTE = "Hello world!";
 const TEST_ACCESS_TOKEN = "totally-not-fake-token";
 
 describe(`API ${ROUTER_PREFIX}`, () => {
-    it("should return note", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        const security = useSecurity({} as SingletonService);
-        sinon.stub(security, "validate").returns(Promise.resolve(true));
-        sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
+    it.only("should return note", (done) => {
+        withDatabase(async ({ path }) => {
+            const service = useSingletonService(useSingletonRepository(path));
+            const security = useSecurity({} as SingletonService);
+            sinon.stub(security, "validate").returns(Promise.resolve(true));
+            sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
-        const app = useApp({
-            singletonService: service,
-            taskService: {} as TaskService,
-            security,
+            const app = useApp({
+                singletonService: service,
+                taskService: {} as TaskService,
+                security,
+            });
+            request(app.callback())
+                .get(`${ROUTER_PREFIX}`)
+                .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
+                .expect(200)
+                .expect((req) => {
+                    assert.deepEqual(
+                        req.body.message,
+                        "Notes sucessfully fetched"
+                    );
+                    assert.deepEqual(req.body.content, TEST_NOTE);
+                })
+                .end(done);
         });
-        request(app.callback())
-            .get(`${ROUTER_PREFIX}`)
-            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
-            .expect(200)
-            .expect((req) => {
-                assert.deepEqual(req.body.message, "Notes sucessfully fetched");
-                assert.deepEqual(req.body.content, TEST_NOTE);
-            })
-            .end(done);
     });
 
     it("should note return note due to a missing auth header", (done) => {
