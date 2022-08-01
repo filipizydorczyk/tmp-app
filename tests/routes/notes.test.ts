@@ -20,14 +20,14 @@ import assert from "assert";
 import { NotesDTO } from "@tmp/back/dto";
 import { TaskService } from "@tmp/back/services/task-service";
 import useSecurity from "@tmp/back/security";
-import withDatabase from "tests/tests-utils";
+import withDatabase from "../tests-utils";
 
 const ROUTER_PREFIX = "/api/v1/notes";
 const TEST_NOTE = "Hello world!";
 const TEST_ACCESS_TOKEN = "totally-not-fake-token";
 
 describe(`API ${ROUTER_PREFIX}`, () => {
-    it.only("should return note", (done) => {
+    it("should return note", (done) => {
         withDatabase(async ({ path }) => {
             const service = useSingletonService(useSingletonRepository(path));
             const security = useSecurity({} as SingletonService);
@@ -55,151 +55,169 @@ describe(`API ${ROUTER_PREFIX}`, () => {
     });
 
     it("should note return note due to a missing auth header", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        const security = useSecurity({} as SingletonService);
-        const getNotesSpy = sinon
-            .stub(service, "getNotes")
-            .returns(Promise.resolve(TEST_NOTE));
+        withDatabase(async ({ path }) => {
+            const service = useSingletonService(useSingletonRepository(path));
+            const security = useSecurity({} as SingletonService);
+            const getNotesSpy = sinon
+                .stub(service, "getNotes")
+                .returns(Promise.resolve(TEST_NOTE));
 
-        const app = useApp({
-            singletonService: service,
-            taskService: {} as TaskService,
-            security,
+            const app = useApp({
+                singletonService: service,
+                taskService: {} as TaskService,
+                security,
+            });
+            request(app.callback())
+                .get(`${ROUTER_PREFIX}`)
+                .expect(400)
+                .expect((_) => {
+                    assert.deepEqual(getNotesSpy.callCount, 0);
+                })
+                .end(done);
         });
-        request(app.callback())
-            .get(`${ROUTER_PREFIX}`)
-            .expect(400)
-            .expect((_) => {
-                assert.deepEqual(getNotesSpy.callCount, 0);
-            })
-            .end(done);
     });
 
     it("should return empy string when note is null", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        const security = useSecurity({} as SingletonService);
-        sinon.stub(security, "validate").returns(Promise.resolve(true));
-        sinon.stub(service, "getNotes").returns(Promise.resolve(null));
+        withDatabase(async ({ path }) => {
+            const service = useSingletonService(useSingletonRepository(path));
+            const security = useSecurity({} as SingletonService);
+            sinon.stub(security, "validate").returns(Promise.resolve(true));
+            sinon.stub(service, "getNotes").returns(Promise.resolve(null));
 
-        const app = useApp({
-            singletonService: service,
-            taskService: {} as TaskService,
-            security,
+            const app = useApp({
+                singletonService: service,
+                taskService: {} as TaskService,
+                security,
+            });
+            request(app.callback())
+                .get(`${ROUTER_PREFIX}`)
+                .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
+                .expect(200)
+                .expect((req) => {
+                    assert.deepEqual(
+                        req.body.message,
+                        "Notes sucessfully fetched"
+                    );
+                    assert.deepEqual(req.body.content, "");
+                })
+                .end(done);
         });
-        request(app.callback())
-            .get(`${ROUTER_PREFIX}`)
-            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
-            .expect(200)
-            .expect((req) => {
-                assert.deepEqual(req.body.message, "Notes sucessfully fetched");
-                assert.deepEqual(req.body.content, "");
-            })
-            .end(done);
     });
 
     it("should fail when no body was provided", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        const security = useSecurity({} as SingletonService);
-        sinon.stub(security, "validate").returns(Promise.resolve(true));
+        withDatabase(async ({ path }) => {
+            const service = useSingletonService(useSingletonRepository(path));
+            const security = useSecurity({} as SingletonService);
+            sinon.stub(security, "validate").returns(Promise.resolve(true));
 
-        const app = useApp({
-            singletonService: service,
-            taskService: {} as TaskService,
-            security,
+            const app = useApp({
+                singletonService: service,
+                taskService: {} as TaskService,
+                security,
+            });
+            request(app.callback())
+                .post(`${ROUTER_PREFIX}`)
+                .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
+                .expect(400)
+                .expect((req) => {
+                    assert.deepEqual(req.body.message, "No body was provided");
+                    assert.deepEqual(req.body.content, null);
+                })
+                .end(done);
         });
-        request(app.callback())
-            .post(`${ROUTER_PREFIX}`)
-            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
-            .expect(400)
-            .expect((req) => {
-                assert.deepEqual(req.body.message, "No body was provided");
-                assert.deepEqual(req.body.content, null);
-            })
-            .end(done);
     });
 
     it("should return newly saved note", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        const security = useSecurity({} as SingletonService);
-        sinon.stub(security, "validate").returns(Promise.resolve(true));
-        const saveNotesSpy = sinon
-            .stub(service, "saveNotes")
-            .returns(Promise.resolve(true));
-        sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
+        withDatabase(async ({ path }) => {
+            const service = useSingletonService(useSingletonRepository(path));
+            const security = useSecurity({} as SingletonService);
+            sinon.stub(security, "validate").returns(Promise.resolve(true));
+            const saveNotesSpy = sinon
+                .stub(service, "saveNotes")
+                .returns(Promise.resolve(true));
+            sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
-        const app = useApp({
-            singletonService: service,
-            taskService: {} as TaskService,
-            security,
+            const app = useApp({
+                singletonService: service,
+                taskService: {} as TaskService,
+                security,
+            });
+            request(app.callback())
+                .post(`${ROUTER_PREFIX}`)
+                .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
+                .send({ content: TEST_NOTE } as NotesDTO)
+                .expect(200)
+                .expect((req) => {
+                    assert.deepEqual(
+                        req.body.message,
+                        "Notes sucessfully updated"
+                    );
+                    assert.deepEqual(req.body.content, TEST_NOTE);
+                    assert.deepEqual(saveNotesSpy.callCount, 1);
+                })
+                .end(done);
         });
-        request(app.callback())
-            .post(`${ROUTER_PREFIX}`)
-            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
-            .send({ content: TEST_NOTE } as NotesDTO)
-            .expect(200)
-            .expect((req) => {
-                assert.deepEqual(req.body.message, "Notes sucessfully updated");
-                assert.deepEqual(req.body.content, TEST_NOTE);
-                assert.deepEqual(saveNotesSpy.callCount, 1);
-            })
-            .end(done);
     });
 
     it("should note return newly saved note due to a missingauth header", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        const security = useSecurity({} as SingletonService);
-        const saveNotesSpy = sinon
-            .stub(service, "saveNotes")
-            .returns(Promise.resolve(true));
-        const getNoetsSpy = sinon
-            .stub(service, "getNotes")
-            .returns(Promise.resolve(TEST_NOTE));
+        withDatabase(async ({ path }) => {
+            const service = useSingletonService(useSingletonRepository(path));
+            const security = useSecurity({} as SingletonService);
+            const saveNotesSpy = sinon
+                .stub(service, "saveNotes")
+                .returns(Promise.resolve(true));
+            const getNoetsSpy = sinon
+                .stub(service, "getNotes")
+                .returns(Promise.resolve(TEST_NOTE));
 
-        const app = useApp({
-            singletonService: service,
-            taskService: {} as TaskService,
-            security,
+            const app = useApp({
+                singletonService: service,
+                taskService: {} as TaskService,
+                security,
+            });
+            request(app.callback())
+                .post(`${ROUTER_PREFIX}`)
+                .send({ content: TEST_NOTE } as NotesDTO)
+                .expect(400)
+                .expect((_) => {
+                    assert.deepEqual(saveNotesSpy.callCount, 0);
+                    assert.deepEqual(getNoetsSpy.callCount, 0);
+                })
+                .end(done);
         });
-        request(app.callback())
-            .post(`${ROUTER_PREFIX}`)
-            .send({ content: TEST_NOTE } as NotesDTO)
-            .expect(400)
-            .expect((_) => {
-                assert.deepEqual(saveNotesSpy.callCount, 0);
-                assert.deepEqual(getNoetsSpy.callCount, 0);
-            })
-            .end(done);
     });
 
     it("should throw 500 if database request failed", (done) => {
-        const service = useSingletonService(useSingletonRepository());
-        const security = useSecurity({} as SingletonService);
-        sinon.stub(security, "validate").returns(Promise.resolve(true));
-        const saveNotesSpy = sinon.stub(service, "saveNotes").returns(
-            new Promise((resolve, _) => {
-                resolve(false);
-            })
-        );
-        sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
+        withDatabase(async ({ path }) => {
+            const service = useSingletonService(useSingletonRepository(path));
+            const security = useSecurity({} as SingletonService);
+            sinon.stub(security, "validate").returns(Promise.resolve(true));
+            const saveNotesSpy = sinon.stub(service, "saveNotes").returns(
+                new Promise((resolve, _) => {
+                    resolve(false);
+                })
+            );
+            sinon.stub(service, "getNotes").returns(Promise.resolve(TEST_NOTE));
 
-        const app = useApp({
-            singletonService: service,
-            taskService: {} as TaskService,
-            security,
+            const app = useApp({
+                singletonService: service,
+                taskService: {} as TaskService,
+                security,
+            });
+            request(app.callback())
+                .post(`${ROUTER_PREFIX}`)
+                .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
+                .send({ content: TEST_NOTE } as NotesDTO)
+                .expect(500)
+                .expect((req) => {
+                    assert.deepEqual(
+                        req.body.message,
+                        "We werent able to save this note"
+                    );
+                    assert.deepEqual(req.body.content, null);
+                    assert.deepEqual(saveNotesSpy.callCount, 1);
+                })
+                .end(done);
         });
-        request(app.callback())
-            .post(`${ROUTER_PREFIX}`)
-            .set({ Authorization: `Bearer ${TEST_ACCESS_TOKEN}` })
-            .send({ content: TEST_NOTE } as NotesDTO)
-            .expect(500)
-            .expect((req) => {
-                assert.deepEqual(
-                    req.body.message,
-                    "We werent able to save this note"
-                );
-                assert.deepEqual(req.body.content, null);
-                assert.deepEqual(saveNotesSpy.callCount, 1);
-            })
-            .end(done);
     });
 });
