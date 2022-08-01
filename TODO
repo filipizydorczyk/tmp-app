@@ -1,5 +1,4 @@
 -   add version o login screen
--   solve frontend caching
 -   frontend tests
 -   stroybook
 -   shortcuts
@@ -14,5 +13,8 @@
 -   protect sql injections
 -   check vulneribilities
 -   refactor dependencies
--   changin color of done tasks renew them
+-   think of better authorization
+
 -   add test util for testing sqlite
+-   add shortcut to create new item
+-   dont turn off dialog on creating new item

@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import useAutoInputFocus from "@tmp/front/hooks/useAutoInputFocus";
+import React, { useEffect, useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 type CreateTaskModalProps = {
@@ -13,6 +14,15 @@ function CreateTaskModal({
     onSubmit = () => {},
 }: CreateTaskModalProps) {
     const titleRef = useRef<HTMLInputElement>(null);
+    const handleSubmit = () => {
+        if (titleRef.current?.value) {
+            onSubmit(titleRef.current?.value);
+        }
+    };
+
+    useEffect(() => {
+        useAutoInputFocus(titleRef);
+    }, [titleRef]);
 
     return (
         <Modal show={show} onHide={closeHandler} size="lg" centered>
@@ -26,19 +36,16 @@ function CreateTaskModal({
                         type="title"
                         placeholder="Task to be done"
                         ref={titleRef}
+                        onKeyPress={(event) => {
+                            if (event.key === "Enter") {
+                                handleSubmit();
+                            }
+                        }}
                     />
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-                <Button
-                    onClick={() => {
-                        if (titleRef.current?.value) {
-                            onSubmit(titleRef.current?.value);
-                        }
-                    }}
-                >
-                    Submit
-                </Button>
+                <Button onClick={handleSubmit}>Submit</Button>
             </Modal.Footer>
         </Modal>
     );

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { OVERVIEW_URL } from "@tmp/front/constants";
 import { useAuth } from "@tmp/front/contexts/auth-context";
 import ResultToast from "@tmp/front/components/ResultToast";
+import useAutoInputFocus from "@tmp/front/hooks/useAutoInputFocus";
 
 function LoginPage() {
     const [isFocused, setIsFocused] = useState(false);
@@ -30,12 +31,8 @@ function LoginPage() {
     };
 
     useEffect(() => {
-        document.addEventListener("keydown", () => {
-            if (passwdRef) {
-                passwdRef.current?.focus();
-            }
-        });
-    }, []);
+        useAutoInputFocus(passwdRef);
+    }, [passwdRef]);
 
     return (
         <Container

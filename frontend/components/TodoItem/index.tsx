@@ -64,22 +64,24 @@ function TodoItem({ item, onAction = () => {} }: TodoItemProps) {
                     </p>
                 </Row>
                 <Row>
-                    <ColorPicker
-                        colors={[
-                            "#aa76ff",
-                            "#ff68d5",
-                            "#ff76a2",
-                            "#ff9f74",
-                            "#ffcd5e",
-                            "#f9f871",
-                        ]}
-                        onColorSelected={(color) => {
-                            onAction({
-                                action: "color",
-                                item: { ...item, color },
-                            });
-                        }}
-                    />
+                    {!item.done && !item.today && (
+                        <ColorPicker
+                            colors={[
+                                "#aa76ff",
+                                "#ff68d5",
+                                "#ff76a2",
+                                "#ff9f74",
+                                "#ffcd5e",
+                                "#f9f871",
+                            ]}
+                            onColorSelected={(color) => {
+                                onAction({
+                                    action: "color",
+                                    item: { ...item, color },
+                                });
+                            }}
+                        />
+                    )}
                 </Row>
             </Col>
             <Col className="d-flex justify-content-center" xs="auto">
