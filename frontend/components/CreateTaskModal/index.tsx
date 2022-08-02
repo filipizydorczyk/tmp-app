@@ -5,7 +5,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 type CreateTaskModalProps = {
     show: boolean;
     closeHandler: () => void;
-    onSubmit?: (tite: string) => void;
+    onSubmit: (tite: string, clearText: () => void) => void;
 };
 
 function CreateTaskModal({
@@ -14,9 +14,14 @@ function CreateTaskModal({
     onSubmit = () => {},
 }: CreateTaskModalProps) {
     const titleRef = useRef<HTMLInputElement>(null);
+    const clearText = () => {
+        if (titleRef.current) {
+            titleRef.current.value = "";
+        }
+    };
     const handleSubmit = () => {
         if (titleRef.current?.value) {
-            onSubmit(titleRef.current?.value);
+            onSubmit(titleRef.current?.value, clearText);
         }
     };
 
