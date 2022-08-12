@@ -15,3 +15,4 @@
 -   refactor dependencies
 -   think of better authorization
 -   some of tests are not cleaning artifacts
+-   add .dokceringore file
