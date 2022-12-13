@@ -1,7 +1,6 @@
 -   add version o login screen
 -   frontend tests
 -   stroybook
--   shortcuts
 -   debouncing on notes
 -   moving dates if status is not done
 -   extend koa interface to get autocompletion for context
@@ -16,5 +15,4 @@
 -   think of better authorization
 -   some of tests are not cleaning artifacts
 -   add .dokceringore file
--   disable spelling check in notes section
 -   add multiple notes?
