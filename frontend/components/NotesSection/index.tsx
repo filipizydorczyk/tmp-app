@@ -4,6 +4,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import ResultToast, {
     ResultToastMessage,
 } from "@tmp/front/components/ResultToast";
+import useShortcuts, { CTRL_S } from "@tmp/front/hooks/useShortcuts";
 
 function NotesSection() {
     const notes = useNotes();
@@ -13,6 +14,17 @@ function NotesSection() {
         header: "",
         content: "",
     });
+    const saveNotes = () => {
+        notes.saveNotes(notesRef.current?.value || "").then((isSuccess) => {
+            if (isSuccess) {
+                setResultToast({
+                    type: "success",
+                    header: "The operation was successful",
+                    content: "Notes successfully saved",
+                });
+            }
+        });
+    };
 
     useEffect(() => {
         if (notes.error.isError) {
@@ -23,6 +35,10 @@ function NotesSection() {
             });
         }
     }, [notes.error]);
+
+    useEffect(() => {
+        useShortcuts([[CTRL_S, saveNotes]]);
+    }, []);
 
     return (
         <>
@@ -41,22 +57,7 @@ function NotesSection() {
                             <Button
                                 className="px-2 py-0"
                                 variant="primary"
-                                onClick={() => {
-                                    notes
-                                        .saveNotes(
-                                            notesRef.current?.value || ""
-                                        )
-                                        .then((isSuccess) => {
-                                            if (isSuccess) {
-                                                setResultToast({
-                                                    type: "success",
-                                                    header: "The operation was successful",
-                                                    content:
-                                                        "Notes successfully saved",
-                                                });
-                                            }
-                                        });
-                                }}
+                                onClick={saveNotes}
                             >
                                 Save
                             </Button>
@@ -67,7 +68,7 @@ function NotesSection() {
                         style={{ height: "90%" }}
                         ref={notesRef}
                         as="textarea"
-                        rows={30}
+                        spellCheck={false}
                         defaultValue={notes.notes}
                     />
                 </Form.Group>

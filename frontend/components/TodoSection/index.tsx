@@ -5,7 +5,7 @@ import { useTasks } from "@tmp/front/contexts/tasks-context";
 import CreateTaskModal from "@tmp/front/components/CreateTaskModal";
 import ResultToast from "@tmp/front/components/ResultToast";
 import { TodoListElementActionCallback } from "@tmp/front/components/TodoItem";
-import useShortcuts, { CTR_PLUS } from "@tmp/front/hooks/useShortcuts";
+import useShortcuts, { CTRL_PLUS } from "@tmp/front/hooks/useShortcuts";
 
 type TodoSectionProps = {
     style?: React.CSSProperties;
@@ -35,7 +35,7 @@ function TodoSection({ style }: TodoSectionProps) {
     };
 
     useEffect(() => {
-        useShortcuts({ [CTR_PLUS]: () => setShowCreateModal(true) });
+        useShortcuts([[CTRL_PLUS, () => setShowCreateModal(true)]]);
     }, []);
 
     return (

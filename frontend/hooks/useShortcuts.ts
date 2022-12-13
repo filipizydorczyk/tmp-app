@@ -1,9 +1,12 @@
-export const CTR_PLUS = "ctrl-plus";
+export const CTRL_PLUS = "ctrl-plus";
+export const CTRL_S = "ctrl-s";
 
-type Shortcut = typeof CTR_PLUS;
+type Shortcut = typeof CTRL_PLUS | typeof CTRL_S;
+type ShortcutActions = [Shortcut, () => void][];
 
 const CONDITIONS: Record<Shortcut, (ev: KeyboardEvent) => boolean> = {
-    [CTR_PLUS]: (ev: KeyboardEvent) => ev.ctrlKey && ev.key === "+",
+    [CTRL_PLUS]: (ev: KeyboardEvent) => ev.ctrlKey && ev.key === "+",
+    [CTRL_S]: (ev: KeyboardEvent) => ev.ctrlKey && ev.key === "s",
 };
 
 /**
@@ -13,17 +16,17 @@ const CONDITIONS: Record<Shortcut, (ev: KeyboardEvent) => boolean> = {
  * export constants that are keys that u need to define actions for.
  *
  * @param actions json object that has shortcut constants as a key
- * (eg. `CTR_PLUS` exported from this module) and functions to be
+ * (eg. `CTRL_PLUS` exported from this module) and functions to be
  * performed on selected key combination as value. Eq.
- * `{ [CTR_PLUS]: () => setShowCreateModal(true) }`
+ * `{ [CTRL_PLUS]: () => setShowCreateModal(true) }`
  */
-const useShortcuts = (actions: Record<Shortcut, () => void>) => {
+const useShortcuts = (actions: ShortcutActions) => {
     document.addEventListener("keydown", (ev) => {
-        Object.keys(actions).forEach((key) => {
-            const actionKey = key as Shortcut;
+        actions.forEach((tuple) => {
+            const actionKey = tuple[0];
             if (CONDITIONS[actionKey](ev)) {
                 ev.preventDefault();
-                actions[actionKey]();
+                tuple[1]();
             }
         });
     });

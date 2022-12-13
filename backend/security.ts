@@ -96,13 +96,13 @@ export const useSecurity = (
 
         if (type === "login" || type === "create") {
             const accessToken = jwt.sign({ user: USER }, ACCESS_TOKEN_SECRET, {
-                expiresIn: "15m",
+                expiresIn: "4h",
             });
             const refreshToken = jwt.sign(
                 { user: USER },
                 REFRESH_TOKEN_SECRET,
                 {
-                    expiresIn: "20m",
+                    expiresIn: "8h",
                 }
             );
             refreshTokens.push(refreshToken);
@@ -144,10 +144,10 @@ export const useSecurity = (
             type: "refresh",
             tokens: {
                 accessToken: jwt.sign({ user: USER }, ACCESS_TOKEN_SECRET, {
-                    expiresIn: "15m",
+                    expiresIn: "4h",
                 }),
                 refreshToken: jwt.sign({ user: USER }, REFRESH_TOKEN_SECRET, {
-                    expiresIn: "20m",
+                    expiresIn: "8h",
                 }),
             },
         };
