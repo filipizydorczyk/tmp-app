@@ -1,3 +1,12 @@
+**This repository was archived!**
+
+Suprisingly I actually used that app for almost a year now but I found better solution for what it was doing and also it was a side project to try to implement logic I know from springboot in nodejs using functionall approach I know from react development. At the end of the day it was fun project and I got what I needed from it and its time to move on.
+
+---
+
+![](./login.png)
+![](./overview.png)
+
 # Developing
 
 This repository contains both frontend and backend code.
